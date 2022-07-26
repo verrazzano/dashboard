@@ -1,0 +1,124 @@
+<script>
+// Added by Verrazzano
+import CoherenceWorkloadHelper from '@/mixins/verrazzano/coherence-workload-helper';
+import LabeledArrayList from '@/components/verrazzano/LabeledArrayList';
+import LabeledInput from '@/components/form/LabeledInput';
+import LabeledSelect from '@/components/form/LabeledSelect';
+
+export default {
+  name:       'PrometheusRelabelConfig',
+  components: {
+    LabeledArrayList,
+    LabeledInput,
+    LabeledSelect,
+  },
+  mixins: [CoherenceWorkloadHelper],
+  props:  {
+    value: {
+      type:    Object,
+      default: () => ({})
+    },
+    mode: {
+      type:    String,
+      default: 'create'
+    },
+  },
+  computed: {
+    actionOptions() {
+      return [
+        { value: 'replace', label: this.t('verrazzano.coherence.types.relabelAction.replace') },
+        { value: 'lowercase', label: this.t('verrazzano.coherence.types.relabelAction.lowercase') },
+        { value: 'uppercase', label: this.t('verrazzano.coherence.types.relabelAction.uppercase') },
+        { value: 'keep', label: this.t('verrazzano.coherence.types.relabelAction.keep') },
+        { value: 'drop', label: this.t('verrazzano.coherence.types.relabelAction.drop') },
+        { value: 'hashmod', label: this.t('verrazzano.coherence.types.relabelAction.hashmod') },
+        { value: 'labelmap', label: this.t('verrazzano.coherence.types.relabelAction.labelmap') },
+        { value: 'labeldrop', label: this.t('verrazzano.coherence.types.relabelAction.labeldrop') },
+        { value: 'labelkeep', label: this.t('verrazzano.coherence.types.relabelAction.labelkeep') },
+      ];
+    }
+  }
+};
+</script>
+
+<template>
+  <div>
+    <div class="row">
+      <div class="col span-6">
+        <LabeledArrayList
+          :value="getListField('sourceLabels')"
+          :mode="mode"
+          :value-label="t('verrazzano.coherence.fields.relabelConfig.sourceLabel')"
+          :add-label="t('verrazzano.coherence.buttons.addSourceLabel')"
+          @input="setFieldIfNotEmpty('sourceLabels', $event)"
+        />
+      </div>
+      <div class="col span-3">
+        <LabeledInput
+          :value="getField('separator')"
+          :mode="mode"
+          :placeholder="getNotSetPlaceholder(value, 'separator')"
+          :label="t('verrazzano.coherence.fields.relabelConfig.separator')"
+          @input="setFieldIfNotEmpty('separator', $event)"
+        />
+      </div>
+      <div class="col span-3">
+        <LabeledInput
+          :value="getField('targetLabel')"
+          :mode="mode"
+          :placeholder="getNotSetPlaceholder(value, 'targetLabel')"
+          :label="t('verrazzano.coherence.fields.relabelConfig.targetLabel')"
+          @input="setFieldIfNotEmpty('targetLabel', $event)"
+        />
+      </div>
+    </div>
+    <div class="spacer-small" />
+    <div class="row">
+      <div class="col span-3">
+        <LabeledInput
+          :value="getField('regex')"
+          :mode="mode"
+          :placeholder="getNotSetPlaceholder(value, 'regex')"
+          :label="t('verrazzano.coherence.fields.relabelConfig.regex')"
+          @input="setFieldIfNotEmpty('regex', $event)"
+        />
+      </div>
+      <div class="col span-3">
+        <LabeledInput
+          :value="getField('modulus')"
+          :mode="mode"
+          type="Number"
+          min="0"
+          :placeholder="getNotSetPlaceholder(value, 'modulus')"
+          :label="t('verrazzano.coherence.fields.relabelConfig.modulus')"
+          @input="setNumberField('modulus', $event)"
+        />
+      </div>
+      <div class="col span-3">
+        <LabeledInput
+          :value="getField('replacement')"
+          :mode="mode"
+          :placeholder="getNotSetPlaceholder(value, 'replacement')"
+          :label="t('verrazzano.coherence.fields.relabelConfig.replacement')"
+          @input="setFieldIfNotEmpty('replacement', $event)"
+        />
+      </div>
+      <div class="col span-3">
+        <LabeledSelect
+          :value="getField('action')"
+          :mode="mode"
+          :options="actionOptions"
+          option-key="value"
+          option-label="label"
+          :placeholder="getNotSetPlaceholder(value, 'action')"
+          :label="t('verrazzano.coherence.fields.relabelConfig.action')"
+          @input="setFieldIfNotEmpty('action', $event)"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+
+</style>

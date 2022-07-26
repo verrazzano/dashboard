@@ -68,6 +68,10 @@ console.log(`API: ${ api }`); // eslint-disable-line no-console
 module.exports = {
   dev,
 
+  // Added by Verrazzano Start
+  ssr: false,
+  // Added by Verrazzano End
+
   // Configuration visible to the client, https://nuxtjs.org/api/configuration-env
   env: {
     commit,
@@ -156,7 +160,10 @@ module.exports = {
 
     extend(config, { isClient, isDev }) {
       if ( isDev ) {
-        config.devtool = 'cheap-module-source-map';
+        // Added by Verrazzano Start
+        // config.devtool = 'cheap-module-source-map';
+        config.devtool = isClient ? 'source-map' : 'cheap-module-source-map';
+        // Added by Verrazzano End
       } else {
         config.devtool = 'source-map';
       }

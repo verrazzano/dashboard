@@ -97,7 +97,12 @@ export default {
     multiClusterApps() {
       const options = this.options;
 
-      return options.filter(opt => opt.inStore === 'management' && opt.category !== 'configuration' && opt.category !== 'legacy');
+      // Added by Verrazzano Start
+      //
+      // return options.filter(opt => opt.inStore === 'management' && opt.category !== 'configuration' && opt.category !== 'legacy');
+      return options.filter(opt => opt.inStore === 'management' && opt.category !== 'configuration' && opt.category !== 'legacy' &&
+        opt.category !== 'verrazzano');
+      // Added by Verrazzano End
     },
 
     legacyApps() {
@@ -111,6 +116,14 @@ export default {
 
       return options.filter(opt => opt.category === 'configuration');
     },
+
+    // Added by Verrazzano Start
+    verrazzanoApps() {
+      const options = this.options;
+
+      return options.filter(opt => opt.category === 'verrazzano');
+    },
+    // Added by Verrazzano End
 
     options() {
       const cluster = this.clusterId || this.$store.getters['defaultClusterId'];
@@ -284,6 +297,19 @@ export default {
               </nuxt-link>
             </div>
           </template>
+          <!-- Added by Verrazzano Start -->
+          <template>
+            <div class="category">
+              {{ t('verrazzano.nav.category') }}
+            </div>
+            <div v-for="a in verrazzanoApps" :key="a.label" @click="hide()">
+              <nuxt-link class="option" :to="a.to">
+                <i class="icon group-icon" :class="a.icon" />
+                <div>{{ a.label }}</div>
+              </nuxt-link>
+            </div>
+          </template>
+          <!-- Added by Verrazzano End   -->
           <template v-if="configurationApps.length">
             <div class="category">
               {{ t('nav.categories.configuration') }}

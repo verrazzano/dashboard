@@ -97,3 +97,10 @@ cypress/screenshots
 
 # Storybook
 storybook-static/
+
+# Added by Verrazzano Start
+# WebStorm/IntelliJ Project files
+*.iml
+.idea/
+# Added by Verrazzano End
+

@@ -1,0 +1,79 @@
+<script>
+// Added by Verrazzano
+import LabeledInput from '@/components/form/LabeledInput';
+import LabeledSelect from '@/components/form/LabeledSelect';
+import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
+
+export default {
+  name:       'SeccompProfile',
+  components: {
+    LabeledInput,
+    LabeledSelect
+  },
+  mixins: [VerrazzanoHelper],
+  props:  {
+    value: {
+      type:     Object,
+      default: () => ({})
+    },
+    mode: {
+      type:    String,
+      default: 'create'
+    }
+  },
+  computed: {
+    typeOptions() {
+      return [
+        {
+          value: 'Localhost',
+          label: this.t('verrazzano.config.values.types.seccompProfile.type.localhost')
+        },
+        {
+          value: 'RuntimeDefault',
+          label: this.t('verrazzano.config.values.types.seccompProfile.type.runtimeDefault')
+        },
+        {
+          value: 'Unconfined',
+          label: this.t('verrazzano.config.values.types.seccompProfile.type.unconfined')
+        },
+      ];
+    },
+    showLocalhost() {
+      return this.value.type === 'Localhost';
+    }
+  },
+  watch: {
+    'value.type'(newType, oldType) {
+      if (oldType === 'Localhost' && newType !== 'Localhost') {
+        this.setField('localhostProfile', undefined);
+      }
+    }
+  },
+};
+</script>
+
+<template>
+  <div>
+    <div class="row">
+      <div class="col span-6">
+        <LabeledSelect
+          :value="getField('type')"
+          :mode="mode"
+          :label="t('verrazzano.config.fields.seccompProfile.type')"
+          :options="typeOptions"
+          option-key="value"
+          option-label="label"
+          @input="setField('type', $event)"
+        />
+      </div>
+      <div v-if="showLocalhost" class="col span-6">
+        <LabeledInput
+          :value="getField('localhostProfile')"
+          :mode="mode"
+          :label="t('verrazzano.config.fields.seccompProfile.localhostProfile')"
+          @input="setField('localhostProfile', $event)"
+        />
+      </div>
+    </div>
+  </div>
+</template>

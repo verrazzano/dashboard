@@ -1,0 +1,242 @@
+<script>
+// Added by Verrazzano
+import head from 'lodash/head';
+import isEmpty from 'lodash/isEmpty';
+import { addObject, removeObject, findBy } from '@/utils/array';
+import NavigationHelper from '@/mixins/verrazzano/navigation-helper';
+import NavigationNode from '@/components/verrazzano/TreeTabbed/NavigationNode';
+
+export default {
+  name: 'TreeTabbed',
+
+  components: { NavigationNode },
+
+  mixins: [NavigationHelper],
+
+  props: {
+    defaultTab: {
+      type:    String,
+      default: null,
+    },
+
+    // whether or not to scroll to the top of the new tab on tab change. This is particularly ugly with side tabs
+    scrollOnChange: {
+      type:    Boolean,
+      default: false
+    },
+
+    useHash: {
+      type:    Boolean,
+      default: true,
+    },
+
+    noContent: {
+      type:    Boolean,
+      default: false,
+    },
+  },
+
+  provide() {
+    const tabs = this.tabs;
+    const navigationNode = this.navigationNode;
+
+    return {
+      addTab(tab) {
+        const existing = findBy(tabs, 'name', tab.name);
+
+        if ( existing ) {
+          removeObject(tabs, existing);
+        }
+
+        addObject(tabs, tab);
+      },
+
+      removeTab(tab) {
+        removeObject(tabs, tab);
+      },
+
+      addNavigation(navigation) {
+        navigationNode.children.push(navigation);
+      },
+
+      removeNavigation(navigation) {
+        const index = navigationNode.children.indexOf(navigation);
+
+        if (index >= 0) {
+          navigationNode.children.splice(index, 1);
+        }
+      },
+    };
+  },
+
+  data() {
+    return {
+      tabs:           [],
+      activeTabName:  null,
+      navigationNode: {
+        children:     [],
+        showChildren: true
+      },
+    };
+  },
+
+  computed: {
+    // keep the tabs list ordered for dynamic tabs
+    sortedTabs() {
+      // POC - not sure if these will need to be sorted for dynamic, but don't sort for static.
+      // return sortBy(this.tabs, ['weight:desc', 'labelDisplay', 'name']);
+      return this.tabs;
+    },
+  },
+
+  watch: {
+    sortedTabs(tabs) {
+      const {
+        defaultTab,
+        useHash,
+        $route: { hash }
+      } = this;
+      const activeTab = tabs.find(t => t.active);
+
+      const windowHash = hash.slice(1);
+      const windowHashTabMatch = tabs.find(t => t.name === windowHash && !t.active);
+      const firstTab = head(tabs) || null;
+
+      if (isEmpty(activeTab)) {
+        if (useHash && !isEmpty(windowHashTabMatch)) {
+          this.select(windowHashTabMatch.name);
+        } else if (!isEmpty(defaultTab) && !isEmpty(tabs.find(t => t.name === defaultTab))) {
+          this.select(defaultTab);
+        } else if (firstTab?.name) {
+          this.select(firstTab.name);
+        }
+      } else if (useHash && activeTab?.name === windowHash) {
+        this.select(activeTab.name);
+      }
+    },
+  },
+
+  mounted() {
+    if ( this.useHash ) {
+      window.addEventListener('hashchange', this.hashChange);
+    }
+  },
+
+  unmounted() {
+    if ( this.useHash ) {
+      window.removeEventListener('hashchange', this.hashChange);
+    }
+  },
+
+  methods: {
+    hashChange() {
+      if (!this.scrollOnChange) {
+        const scrollable = document.getElementsByTagName('main')[0];
+
+        if (scrollable) {
+          scrollable.scrollTop = 0;
+        }
+      }
+
+      this.select(this.$route.hash);
+    },
+
+    find(name) {
+      return this.sortedTabs.find(x => x.name === name );
+    },
+
+    select(name/* , event */) {
+      const {
+        sortedTabs,
+        $route: { hash: routeHash },
+        $router: { currentRoute },
+      } = this;
+
+      const selected = this.find(name);
+      const hashName = `#${ name }`;
+
+      if ( !selected || selected.disabled) {
+        return;
+      }
+
+      if (this.useHash && routeHash !== hashName) {
+        const kurrentRoute = { ...currentRoute };
+
+        kurrentRoute.hash = hashName;
+
+        this.$router.replace(kurrentRoute);
+      }
+
+      for ( const tab of sortedTabs ) {
+        tab.active = (tab.name === selected.name);
+      }
+
+      this.$emit('changed', { tab: selected });
+      this.activeTabName = selected.name;
+    },
+
+    selectNext(direction) {
+      const { sortedTabs } = this;
+      const currentIdx = sortedTabs.findIndex(x => x.active);
+      const nextIdx = getCyclicalIdx(currentIdx, direction, sortedTabs.length);
+      const nextName = sortedTabs[nextIdx].name;
+
+      this.select(nextName);
+
+      this.$nextTick(() => {
+        this.$refs.tablist.focus();
+      });
+
+      function getCyclicalIdx(currentIdx, direction, tabsLength) {
+        const nxt = currentIdx + direction;
+
+        if (nxt >= tabsLength) {
+          return 0;
+        } else if (nxt <= 0) {
+          return tabsLength - 1;
+        } else {
+          return nxt;
+        }
+      }
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="tree-tabbed">
+    <NavigationNode
+      :nav-node="navigationNode"
+      :navigator="this"
+      :active-tab-name="activeTabName"
+    >
+    </NavigationNode>
+    <div :class="{ 'tab-container': !!tabs.length, 'no-content': noContent }">
+      <slot />
+      <slot name="nestedTabs" />
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+  $nav-tabs-width: 260px;
+
+  .tree-tabbed{
+    display: flex;
+    box-shadow: 0 0 20px var(--shadow);
+    border-radius: calc(var(--border-radius) * 2);
+    background-color: var(--tabbed-sidebar-bg);
+
+    .tab-container {
+      padding: 20px;
+      // box-shadow: 0 0 20px var(--shadow);
+      width: calc(100% - #{$nav-tabs-width});
+      flex-grow: 1;
+      background-color: var(--body-bg);
+
+      &.no-content {
+        padding: 0 0 3px 0;
+      }
+    }
+  }
+</style>
