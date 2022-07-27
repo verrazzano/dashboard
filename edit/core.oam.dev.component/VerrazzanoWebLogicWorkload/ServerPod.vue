@@ -171,7 +171,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.config.titles.serverPod.hostAliases') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.serverPod.hostAliases') }}</h3>
       <HostAliases
         :value="getListField('hostAliases')"
         :mode="mode"
@@ -301,7 +301,7 @@ export default {
           v-model="value"
           :mode="mode"
           :namespaced-object="value"
-          :add-button-label="t('verrazzano.config.buttons.addInitContainer')"
+          :add-button-label="t('verrazzano.common.buttons.addInitContainer')"
           root-field-name="initContainers"
         />
       </TreeTab>
