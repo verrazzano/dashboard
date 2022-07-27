@@ -9,7 +9,7 @@ import WebLogicGeneralData from '@/edit/core.oam.dev.component/VerrazzanoWebLogi
 import ManagedServer from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ManagedServer';
 import MonitoringExporter from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/MonitoringExporter';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
-import ServerPod from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPod';
+import ServerPodTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
 import ServerService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerService';
 import TreeTabbed from '@/components/verrazzano/TreeTabbed';
 import WebLogicCluster from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/WebLogicCluster';
@@ -27,7 +27,7 @@ export default {
     FluentdSpecification,
     ManagedServer,
     MonitoringExporter,
-    ServerPod,
+    ServerPodTab,
     ServerService,
     TreeTab,
     TreeTabbed,
@@ -96,7 +96,7 @@ export default {
           :value="getWorkloadSpecListField('auxiliaryImageVolumes')"
           :default-add-value="{ }"
           :mode="mode"
-          :add-label="t('verrazzano.VerrazzanoWebLogicWorkload.config.buttons.addAuxiliaryImage')"
+          :add-label="t('verrazzano.weblogic.buttons.addAuxiliaryImageVolume')"
           @input="setWorkloadSpecFieldIfNotEmpty('auxiliaryImageVolumes', $event)"
         >
           <template #remove-button="removeProps">
@@ -136,7 +136,7 @@ export default {
        |                                         Server Pod Tabs                                              |
        -------------------------------------------------------------------------------------------------------->
 
-      <ServerPod
+      <ServerPodTab
         :value="getWorkloadSpecField('serverPod')"
         :mode="mode"
         :namespaced-object="value"
@@ -164,7 +164,7 @@ export default {
           :value="getWorkloadSpecListField('clusters')"
           :default-add-value="{ }"
           :mode="mode"
-          :add-label="t('verrazzano.VerrazzanoWebLogicWorkload.config.buttons.addCluster')"
+          :add-label="t('verrazzano.weblogic.buttons.addCluster')"
           @input="setWorkloadSpecFieldIfNotEmpty('clusters', $event)"
         >
           <template #remove-button="removeProps">
@@ -198,7 +198,7 @@ export default {
           @input="setWorkloadSpecFieldIfNotEmpty('adminServer', $event)"
         />
         <template #nestedTabs>
-          <ServerPod
+          <ServerPodTab
             :value="getWorkloadSpecField('adminServer.serverPod')"
             :mode="mode"
             :namespaced-object="value"
@@ -217,7 +217,7 @@ export default {
           :value="getWorkloadSpecListField('managedServers')"
           :default-add-value="{ }"
           :mode="mode"
-          :add-label="t('verrazzano.VerrazzanoWebLogicWorkload.config.buttons.addManagedServer')"
+          :add-label="t('verrazzano.weblogic.buttons.addManagedServer')"
           @input="setWorkloadSpecFieldIfNotEmpty('managedServers', $event)"
         >
           <template #remove-button="removeProps">

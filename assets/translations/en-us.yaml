@@ -7303,6 +7303,7 @@ verrazzano:
       matchExpressions: Match Expressions
       matchLabels: Match Labels
       ownerReferences: Owner References
+      podSecurityContext: Pod Security Context
       podSpec:
         affinity: Affinity-Related Settings
         containers: Containers
@@ -7317,12 +7318,16 @@ verrazzano:
         volumes: Volumes
       podTemplate: Pod Template
       ports: Ports
+      readinessGates: Readiness Gates
       readinessProbe: Readiness Probe
       resources: Resources
+      scheduling: Pod Scheduling-Related Settings
       selector: Selector
       startupProbe: Startup Probe
+      tolerations: Tolerations
       volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
+      volumes: Volumes
     types:
       accessModes:
         roMany: Read-Only Many
@@ -7467,6 +7472,12 @@ verrazzano:
   ### verrazzano.weblogic ###
   ###########################
   weblogic:
+    buttons:
+      addAuxiliaryImage: Add Auxiliary Image
+      addAuxiliaryImageVolume: Add Auxiliary Image Volume
+      addChannel: Add Channel
+      addCluster: Add Cluster
+      addManagedServer: Add Managed Server
     fields:
       introspectorJobActiveDeadlineSeconds: Introspector Job Active Deadline Seconds
       overrideDistributionStrategy: Overrides Distribution Strategy
@@ -7490,6 +7501,14 @@ verrazzano:
     titles:
       modelConfiguration: WebLogic Deploy Tooling Model-Related Settings
       opss: OPSS-Related Settings
+      serverPod:
+        affinity: Affinity
+        containers: Containers
+        hostAliases: Host Aliases
+        initContainers: Init Containers
+        nodeSelector: Node Selectors
+        shutdown: WebLogic Server Shutdown
+        title: Server Pod
     types:
       overrideDistributionStrategy:
         dynamic: Dynamic
@@ -8035,12 +8054,6 @@ verrazzano:
 
   VerrazzanoWebLogicWorkload:
     config:
-      buttons:
-        addAuxiliaryImage: Add Auxiliary Image
-        addChannel: Add Channel
-        addCluster: Add Cluster
-        addConfigurationSetting: Add Configuration Setting
-        addManagedServer: Add Managed Server
       fields:
         adminChannelPortForwardingEnabled: Enable Admin Channel Port Forwarding
         adminServer:
@@ -8149,24 +8162,6 @@ verrazzano:
           configuration: Configuration
         onlineUpdates: Online Update Settings
         resources: Resource Requirements
-        serverPod:
-          affinity: Affinity
-          containerSecurityContext: Container Security Context
-          containers: Containers
-          hostAliases: Host Aliases
-          initContainers: Init Containers
-          livenessProbe: Liveness Probe
-          nodeSelector: Node Selectors
-          podSecurityContext: Pod Security Context
-          readinessGates: Readiness Gates
-          readinessProbe: Readiness Probe
-          resources: Resources
-          scheduling: Pod Scheduling-Related Settings
-          shutdown: WebLogic Server Shutdown
-          title: Server Pod
-          tolerations: Tolerations
-          volumeMounts: Volume Mounts
-          volumes: Volumes
         serverService: Server Service
         volumeMounts: Volume Mounts
         wdtTimeouts: WebLogic Deploy Tooling Online Timeouts
