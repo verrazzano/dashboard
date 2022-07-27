@@ -79,11 +79,11 @@ export default {
   },
   watch: {
     fetchInProgress() {
-      this.resetSecrets();
+      this.resetServiceAccounts();
     },
     'namespacedObject.metadata.namespace'(neu, old) {
       this.namespace = neu;
-      this.resetSecrets();
+      this.resetServiceAccounts();
     },
     'value.hostIPC'(neu, old) {
       if (!this.loading && neu) {
