@@ -1,12 +1,13 @@
 // Added by Verrazzano
+import CreateEditView from '~/mixins/create-edit-view';
+import NavigationHelper from '~/mixins/verrazzano/navigation-helper';
+import NotSetPlaceholder from '~/mixins/verrazzano/not-set-placeholder';
+
 import { clone, get, isEmpty, set } from '@/utils/object';
 import { mapGetters } from 'vuex';
 
-import CreateEditView from '~/mixins/create-edit-view';
-import NotSetPlaceholder from '~/mixins/verrazzano/not-set-placeholder';
-
 export default {
-  mixins:   [CreateEditView, NotSetPlaceholder],
+  mixins:   [CreateEditView, NotSetPlaceholder, NavigationHelper],
   computed: {
     ...mapGetters({ t: 'i18n/t' }),
     dnsPolicyOptions() {

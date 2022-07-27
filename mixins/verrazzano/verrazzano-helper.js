@@ -1,9 +1,8 @@
 // Added by Verrazzano
 import BaseVerrazzanoHelper from '~/mixins/verrazzano/base-verrazzano-helper';
-import NavigationHelper from '~/mixins/verrazzano/navigation-helper';
 
 export default {
-  mixins:   [BaseVerrazzanoHelper, NavigationHelper],
+  mixins:   [BaseVerrazzanoHelper],
   computed: {
     workloadTemplateSpec: {
       get() {
