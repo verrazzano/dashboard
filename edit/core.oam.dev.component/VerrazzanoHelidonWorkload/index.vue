@@ -395,7 +395,7 @@ export default {
               />
             </div>
             <div col-span="6">
-              <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.readinessGates') }}</h3>
+              <h3>{{ t('verrazzano.common.titles.readinessGates') }}</h3>
               <ReadinessGates
                 :value="getListField('spec.workload.spec.deploymentTemplate.podSpec.readinessGates')"
                 :mode="mode"
@@ -413,13 +413,13 @@ export default {
               </UnitInput>
             </div>
             <div class="col span-6">
-              <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.tolerations') }}</h3>
+              <h3>{{ t('verrazzano.common.titles.tolerations') }}</h3>
               <Tolerations v-model="podTemplateSpec" :mode="mode" />
             </div>
 
             <div class="spacer" />
             <div>
-              <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.volumes') }}</h3>
+              <h3>{{ t('verrazzano.common.titles.volumes') }}</h3>
               <Volumes
                 v-model="podTemplateSpec"
                 :mode="mode"
@@ -439,7 +439,7 @@ export default {
               />
             </div>
           </Tab>
-          <Tab :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.scheduling')" name="scheduling">
+          <Tab :label="t('verrazzano.common.titles.scheduling')" name="scheduling">
             <PodScheduler
               v-model="value"
               :mode="mode"
@@ -450,7 +450,7 @@ export default {
               <PodSecurity :value="getField('spec.workload.spec.deploymentTemplate.podSpec')" :mode="mode" />
             </div>
             <div>
-              <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.podSecurityContext') }}</h3>
+              <h3>{{ t('verrazzano.common.titles.podSecurityContext') }}</h3>
               <PodSecurityContext
                 :value="getField('spec.workload.spec.deploymentTemplate.podSpec.securityContext')"
                 :mode="mode"
