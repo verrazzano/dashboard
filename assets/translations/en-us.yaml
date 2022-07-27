@@ -7472,6 +7472,12 @@ verrazzano:
   ### verrazzano.weblogic ###
   ###########################
   weblogic:
+    buttons:
+      addAuxiliaryImage: Add Auxiliary Image
+      addAuxiliaryImageVolume: Add Auxiliary Image Volume
+      addChannel: Add Channel
+      addCluster: Add Cluster
+      addManagedServer: Add Managed Server
     fields:
       introspectorJobActiveDeadlineSeconds: Introspector Job Active Deadline Seconds
       overrideDistributionStrategy: Overrides Distribution Strategy
@@ -8048,12 +8054,6 @@ verrazzano:
 
   VerrazzanoWebLogicWorkload:
     config:
-      buttons:
-        addAuxiliaryImage: Add Auxiliary Image
-        addChannel: Add Channel
-        addCluster: Add Cluster
-        addConfigurationSetting: Add Configuration Setting
-        addManagedServer: Add Managed Server
       fields:
         adminChannelPortForwardingEnabled: Enable Admin Channel Port Forwarding
         adminServer:

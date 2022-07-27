@@ -96,7 +96,7 @@ export default {
           :value="getWorkloadSpecListField('auxiliaryImageVolumes')"
           :default-add-value="{ }"
           :mode="mode"
-          :add-label="t('verrazzano.VerrazzanoWebLogicWorkload.config.buttons.addAuxiliaryImage')"
+          :add-label="t('verrazzano.weblogic.buttons.addAuxiliaryImageVolume')"
           @input="setWorkloadSpecFieldIfNotEmpty('auxiliaryImageVolumes', $event)"
         >
           <template #remove-button="removeProps">
@@ -164,7 +164,7 @@ export default {
           :value="getWorkloadSpecListField('clusters')"
           :default-add-value="{ }"
           :mode="mode"
-          :add-label="t('verrazzano.VerrazzanoWebLogicWorkload.config.buttons.addCluster')"
+          :add-label="t('verrazzano.weblogic.buttons.addCluster')"
           @input="setWorkloadSpecFieldIfNotEmpty('clusters', $event)"
         >
           <template #remove-button="removeProps">
@@ -217,7 +217,7 @@ export default {
           :value="getWorkloadSpecListField('managedServers')"
           :default-add-value="{ }"
           :mode="mode"
-          :add-label="t('verrazzano.VerrazzanoWebLogicWorkload.config.buttons.addManagedServer')"
+          :add-label="t('verrazzano.weblogic.buttons.addManagedServer')"
           @input="setWorkloadSpecFieldIfNotEmpty('managedServers', $event)"
         >
           <template #remove-button="removeProps">
