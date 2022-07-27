@@ -23,7 +23,7 @@ import { SERVICE_ACCOUNT } from '@/config/types';
 import { allHash } from '@/utils/promise';
 
 export default {
-  name:       'ServerPodTabs',
+  name:       'ServerPodTab',
   components: {
     AuxiliaryImages,
     ContainerProbe,
@@ -38,7 +38,6 @@ export default {
     PodScheduler,
     PodSecurityContext,
     ReadinessGates,
-    // ServerPod,
     ServerShutdown,
     Tolerations,
     TreeTab,
@@ -163,7 +162,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.scheduling') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.scheduling') }}</h3>
       <PodScheduler
         v-model="value"
         :mode="mode"
@@ -171,7 +170,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.common.titles.serverPod.hostAliases') }}</h3>
+      <h3>{{ t('verrazzano.weblogic.titles.serverPod.hostAliases') }}</h3>
       <HostAliases
         :value="getListField('hostAliases')"
         :mode="mode"
@@ -180,7 +179,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.livenessProbe') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.livenessProbe') }}</h3>
       <ContainerProbe
         :value="getField('livenessProbe')"
         :mode="mode"
@@ -190,7 +189,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.readinessProbe') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.readinessProbe') }}</h3>
       <ContainerProbe
         :value="getField('readinessProbe')"
         :mode="mode"
@@ -201,7 +200,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.readinessGates') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.readinessGates') }}</h3>
       <ReadinessGates
         :value="getListField('readinessGates')"
         :mode="mode"
@@ -210,7 +209,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.resources') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.resources') }}</h3>
       <ContainerResources
         :value="getField('resources')"
         :mode="mode"
@@ -219,7 +218,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.shutdown') }}</h3>
+      <h3>{{ t('verrazzano.weblogic.titles.serverPod.shutdown') }}</h3>
       <ServerShutdown
         :value="getField('shutdown')"
         :mode="mode"
@@ -228,7 +227,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.tolerations') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.tolerations') }}</h3>
       <Tolerations
         v-model="value"
         :mode="mode"
@@ -236,7 +235,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.volumes') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.volumes') }}</h3>
       <Volumes
         v-model="value"
         :mode="mode"
@@ -245,7 +244,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.volumeMounts') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.volumeMounts') }}</h3>
       <VolumeMounts
         v-model="value"
         :mode="mode"
@@ -253,7 +252,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.podSecurityContext') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.podSecurityContext') }}</h3>
       <PodSecurityContext
         :value="getField('podSecurityContext')"
         :mode="mode"
@@ -262,7 +261,7 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverPod.containerSecurityContext') }}</h3>
+      <h3>{{ t('verrazzano.common.titles.containerSecurityContext') }}</h3>
       <ContainerSecurityContext
         :value="getField('containerSecurityContext')"
         :mode="mode"

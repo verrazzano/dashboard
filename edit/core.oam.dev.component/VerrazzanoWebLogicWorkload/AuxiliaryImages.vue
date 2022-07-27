@@ -78,7 +78,7 @@ export default {
       v-model="value[rootFieldName]"
       :mode="mode"
       :default-add-value="{ }"
-      :add-label="t('verrazzano.VerrazzanoWebLogicWorkload.config.buttons.addAuxiliaryImage')"
+      :add-label="t('verrazzano.weblogic.buttons.addAuxiliaryImage')"
       @add="addImage()"
     >
       <template #remove-button="removeProps">

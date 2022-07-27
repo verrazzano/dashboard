@@ -34,7 +34,7 @@ export default {
         v-model="value.channels"
         :mode="mode"
         :default-add-value="{ }"
-        :add-label="t('verrazzano.VerrazzanoWebLogicWorkload.config.buttons.addChannel')"
+        :add-label="t('verrazzano.weblogic.buttons.addChannel')"
       >
         <template #remove-button="removeProps">
           <button
