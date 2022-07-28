@@ -7132,6 +7132,10 @@ verrazzano:
   ### verrazzano.common ###
   #########################
   common:
+
+    #################################
+    ### verrazzano.common.buttons ###
+    #################################
     buttons:
       addAnnotation: Add Annotation
       addArgument: Add Argument
@@ -7152,8 +7156,15 @@ verrazzano:
       addNodeSelectorTerm: Add Node Selector Term
       addOwnerReference: Add Owner Reference
       addPodDNSResolverOption: Add Pod DNS Resolver Option
+      addPort: Add Port
       addSecretItem: Add Secret Item
       addTopologySpreadConstraints: Add Topology Spread Constraint
+      addVolumeDevice: Add Volume Device
+      addVolumeMount: Add Volume Mount
+
+    ################################
+    ### verrazzano.common.fields ###
+    ################################
     fields:
       accessModes: Access Modes
       clusterIP: Cluster IP
@@ -7169,6 +7180,7 @@ verrazzano:
         imagePullPolicy: Image Pull Policy
         imagePullSecret: Image Pull Secret
         lifecycle:
+          actionType: Lifecycle Handler Action Type
           command: Command
         name: Name
         ports:
@@ -7184,6 +7196,7 @@ verrazzano:
         tty: Allocate TTY
         workingDir: Working Directory
       containerProbe:
+        actionType: Probe Action Type
         command: Command
         failureThreshold: Failure Threshold
         initialDelaySeconds: Initial Delay Seconds
@@ -7222,6 +7235,7 @@ verrazzano:
       mountPropagationMode: Mount Propagation Mode
       name: Name
       namespace: Namespace
+      newContainerName: New Container Name
       nodeSelectorRequirementType: Node Selector Requirement Type
       ownerReference:
         apiVersion: Referent API Version
@@ -7266,17 +7280,44 @@ verrazzano:
       tcpSocketPort: TCP Port
       topologyKey: Topology Key
       value: Value
+      volumeDevice:
+        devicePath: Container Mount Path
+        name: Persistent Volume Claim Name
       volumeMode: Volume Mode
+      volumeMount:
+        mountPath: Mount Path
+        mountPropagation: Mount Propagation
+        name: Name
+        readOnly: Mount Read-Only
+        subPath: Subpath
+        subPathExpr: Subpath Expression
       volumeName: Volume Name
       whenUnsatisfiable: When Unsatisfiable
       workingDir: Working Directory
       workloadConfigMapName: Workload ConfigMap Name
+
+    ##############################
+    ### verrazzano.common.tabs ###
+    ##############################
     tabs:
       containers: Containers
+      ephemeralContainers: Ephemeral Containers
+      executionEnvironment: Execution Environment
       general: General
       initContainers: Init Containers
+      lifecycleHandler:
+        postStart: Post Start
+        preStop: Pre Stop
+      lifecycleHandlers: Lifecycle Handlers
+      ports: Ports
+      resources: Resources
+      volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
       volumes: Volumes
+
+    ################################
+    ### verrazzano.common.titles ###
+    ################################
     titles:
       annotations: Annotations
       configFiles: Config Files
@@ -7328,12 +7369,21 @@ verrazzano:
       volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
       volumes: Volumes
+
+    ###############################
+    ### verrazzano.common.types ###
+    ###############################
     types:
       accessModes:
         roMany: Read-Only Many
         rwMany: Read-Write Many
         rwOnce: Read-Write Once
         rwOncePod: Read-Write Once Pod
+      containerProbeAction:
+        exec: Execute Command
+        grpc: gRPC Request
+        httpGet: HTTP Get Request
+        tcpSocket: TCP Socket
       dnsPolicy:
         clusterFirst: Cluster First
         clusterFirstWithHostNet: Cluster First with Host Net
@@ -7369,6 +7419,10 @@ verrazzano:
         exec: Command Execution
         httpGet: HTTP Get Request
         tcpSocket: TCP Socket Probe
+      portProtocol:
+        sctp: SCTP
+        tcp: TCP
+        udp: UDP
       restartPolicy:
         always: Always
         never: Never
@@ -7489,7 +7543,6 @@ verrazzano:
       auxiliaryImageVolumes: Auxiliary Image Volumes
       clusters: Clusters
       configuration: Configuration
-      containers: Containers
       envVariables: Environment Variables
       fluentd: Fluentd Specification
       general: General
@@ -7629,8 +7682,6 @@ verrazzano:
       addToleration: Add Toleration
       addVolume: Add Volume
       addVolumeAttribute: Add Volume Attribute
-      addVolumeDevice: Add Volume Device
-      addVolumeMount: Add Volume Mount
       addVolumeProjectionSource: Add Volume Projection Source
       addWwid: Add World Wide Identifier
     fields:
@@ -7691,16 +7742,6 @@ verrazzano:
         apiGroup: API Group
         kind: Resource Kind
         name: Resource Name
-      volumeDevice:
-        devicePath: Container Mount Path
-        name: Persistent Volume Claim Name
-      volumeMount:
-        mountPath: Mount Path
-        mountPropagation: Mount Propagation
-        name: Name
-        readOnly: Mount Read-Only
-        subPath: Subpath
-        subPathExpr: Subpath Expression
       volumes:
         awsElasticBlockStore:
           fsType: Filesystem Type
@@ -7964,10 +8005,6 @@ verrazzano:
           never: Never
           ifNeeded: If Needed
           always: Always
-        mountPropagation:
-          bidirectional: Bidirectional
-          hostToContainer: Host to Container
-          none: None
         procMount:
           defaultProcMount: Default Proc Mount
           unmaskedProcMount: Unmasked Proc Mount
@@ -8177,10 +8214,6 @@ verrazzano:
           onNonDynamicChanges:
             commitUpdateOnly: Commit Update Only
             commitUpdateAndRoll: Commit Update and Roll
-          restartPolicy:
-            always: Always
-            never: Never
-            onFailure: On Failure
           shutdown:
             graceful: Graceful
             forced: Forced

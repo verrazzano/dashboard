@@ -30,6 +30,10 @@ export default {
       ];
     },
   },
+  created() {
+    // eslint-disable-next-line no-console
+    console.log('AAAAAAA ContainerPort for port: ', JSON.stringify(this.value));
+  }
 };
 </script>
 

@@ -56,7 +56,7 @@ export default {
         { value: 'Never', label: this.t('verrazzano.common.types.preemptionPolicy.never') },
       ];
     },
-    restartPolicyOption() {
+    restartPolicyOptions() {
       return [
         { value: 'OnFailure', label: this.t('verrazzano.common.types.restartPolicy.onFailure') },
         { value: 'Always', label: this.t('verrazzano.common.types.restartPolicy.always') },

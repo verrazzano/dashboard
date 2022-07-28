@@ -31,7 +31,7 @@ export default {
       v-model="value.volumeMounts"
       :mode="mode"
       :default-add-value="{ }"
-      :add-label="t('verrazzano.config.buttons.addVolumeMount')"
+      :add-label="t('verrazzano.common.buttons.addVolumeMount')"
     >
       <template #remove-button="removeProps">
         <button

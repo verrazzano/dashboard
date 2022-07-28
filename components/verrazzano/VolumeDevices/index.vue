@@ -31,7 +31,7 @@ export default {
       v-model="value.volumeDevices"
       :mode="mode"
       :default-add-value="{ }"
-      :add-label="t('verrazzano.config.buttons.addVolumeDevice')"
+      :add-label="t('verrazzano.common.buttons.addVolumeDevice')"
     >
       <template #remove-button="removeProps">
         <button
