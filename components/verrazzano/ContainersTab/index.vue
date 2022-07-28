@@ -52,9 +52,6 @@ export default {
     },
   },
   data() {
-    // eslint-disable-next-line no-console
-    console.log(`XXXXXX ContainersTab data() for ${ this.rootFieldName } received value: `, JSON.stringify(this.value, null, 2));
-
     const containers = (this.value[this.rootFieldName] || []).map((container) => {
       const newContainer = this.clone(container);
 
@@ -62,9 +59,6 @@ export default {
 
       return newContainer;
     });
-
-    // eslint-disable-next-line no-console
-    console.log(`XXXXXX ContainersTab data() for ${ this.rootFieldName } created containers: `, JSON.stringify(containers, null, 2));
 
     return {
       treeTabName:  this.tabName || 'containers',
@@ -86,8 +80,6 @@ export default {
         containers.push(newContainer);
       });
 
-      // eslint-disable-next-line no-console
-      console.log(`XXXXXX ContainersTab update() for ${ this.rootFieldName } setting containers: `, JSON.stringify(containers, null, 2));
       this.setFieldIfNotEmpty(this.rootFieldName, containers);
     },
     addContainer() {
@@ -103,13 +95,11 @@ export default {
 
       this.queueUpdate();
     },
-    updateContainer(neu) {
-      const index = this.containers.findIndex(container => container._id === neu._id);
-
-      console.log(`XXXXXX ContainersTab updateContainer() found index ${ index }`);
+    deleteContainer(containerToDelete) {
+      const index = this.containers.findIndex(container => container._id === containerToDelete._id);
 
       if (index !== -1) {
-        this.containers[index] = neu;
+        this.containers.splice(index, 1);
         this.queueUpdate();
       }
     },
@@ -157,14 +147,15 @@ export default {
     </template>
     <template #nestedTabs>
       <ContainerTab
-        v-for="(container, idx) in containers"
+        v-for="container in containers"
         :key="container._id"
-        v-model="containers[idx]"
+        :value="container"
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-label="container.name"
         :tab-name="containerKey(container)"
-        @input="queueUpdate()"
+        @input="queueUpdate"
+        @delete="deleteContainer($event)"
       />
     </template>
   </TreeTab>

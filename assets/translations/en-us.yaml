@@ -7161,6 +7161,7 @@ verrazzano:
       addTopologySpreadConstraints: Add Topology Spread Constraint
       addVolumeDevice: Add Volume Device
       addVolumeMount: Add Volume Mount
+      deleteContainer: Delete Container
 
     ################################
     ### verrazzano.common.fields ###
@@ -7321,6 +7322,8 @@ verrazzano:
     titles:
       annotations: Annotations
       configFiles: Config Files
+      # TODO - Rename this to container once the other titles under the container element are deleted...
+      containerTitle: Container
       container:
         args: Container Arguments
         cmd: Container Command

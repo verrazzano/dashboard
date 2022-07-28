@@ -2,7 +2,6 @@
 // Added by Verrazzano
 import AuxiliaryImages from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImages';
 import ContainerResources from '@/components/verrazzano/ContainerResources';
-import Containers from '@/components/verrazzano/Containers';
 import ContainersTab from '@/components/verrazzano/ContainersTab';
 import ContainerSecurityContext from '@/components/verrazzano/ContainerSecurityContext';
 import EnvironmentVariables from '@/components/verrazzano/EnvironmentVariables';
@@ -29,7 +28,6 @@ export default {
   components: {
     AuxiliaryImages,
     ContainerResources,
-    Containers,
     ContainersTab,
     ContainerSecurityContext,
     EnvironmentVariables,
@@ -269,34 +267,26 @@ export default {
         />
       </TreeTab>
 
-      <!--
-      <TreeTab :name="createTabKey(navPrefix, 'containers')" :label="t('verrazzano.common.tabs.containers')">
-        <Containers
-          v-model="value"
-          :mode="mode"
-          :namespaced-object="namespacedObject"
-        />
-      </TreeTab>
-      -->
-
       <ContainersTab
-        v-model="value"
+        :value="value"
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-name="createTabKey(navPrefix, 'containers')"
         :tab-label="t('verrazzano.common.tabs.containers')"
+        @input="$emit('input', value)"
       />
-      <!--
+
       <ContainersTab
-        v-model="value"
+        :value="value"
         :mode="mode"
         :namespaced-object="namespacedObject"
         :add-button-label="t('verrazzano.common.buttons.addInitContainer')"
         root-field-name="initContainers"
         :tab-name="createTabKey(navPrefix, 'initContainers')"
         :tab-label="t('verrazzano.common.tabs.initContainers')"
+        @input="$emit('input', value)"
       />
-      -->
+
       <TreeTab
         :label="t('verrazzano.weblogic.tabs.envVariables')"
         :name="createTabKey(navPrefix, 'envVariables')"

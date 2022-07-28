@@ -90,7 +90,6 @@ export default {
           :mode="mode"
           :value-label="t('verrazzano.config.fields.container.lifecycle.command')"
           :add-label="t('verrazzano.config.buttons.addExecCommand')"
-          initial-empty-row
           @input="setFieldIfNotEmpty('exec.command', $event)"
         />
       </div>

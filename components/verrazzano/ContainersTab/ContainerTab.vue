@@ -56,6 +56,15 @@ export default {
       type:     String,
       required: true
     },
+    title: {
+      type:    String,
+      default: ''
+    }
+  },
+  data() {
+    const pageTitle = this.title;
+
+    return { pageTitle };
   },
   computed: {
     terminationMessagePolicyOptions() {
@@ -65,16 +74,37 @@ export default {
       ];
     }
   },
-  created() {
-    // eslint-disable-next-line no-console
-    console.log('YYYYYYY ContainerTab got container: ', JSON.stringify(this.value, null, 2));
+  methods: {
+    deleteContainer() {
+      this.$emit('delete', this.value);
+    }
   },
+  created() {
+    if (!this.pageTitle) {
+      // TODO - Once the transition to TreeTab is complete and the old components are removed, rename this key.
+      this.pageTitle = this.t('verrazzano.common.titles.containerTitle');
+    }
+  }
 };
 </script>
 
 <template>
-  <TreeTab :name="tabName" :label="tabLabel">
+  <TreeTab :name="tabName" :label="tabLabel" :title="pageTitle">
     <template #default>
+      <div class="row">
+        <div class="col span-8" />
+        <div v-if="!isView" class="col span-4">
+          <button
+            type="button"
+            class="btn role-tertiary add"
+            data-testid="add-item"
+            @click="deleteContainer()"
+          >
+            {{ t('verrazzano.common.buttons.deleteContainer') }}
+          </button>
+        </div>
+      </div>
+      <div class="spacer" />
       <div class="row">
         <div class="col span-3">
           <LabeledInput
@@ -198,13 +228,19 @@ export default {
         <div>
           <h3>{{ t('verrazzano.common.titles.envVars') }}</h3>
           <EnvironmentVariables
-            v-model="value"
+            :value="value"
             :mode="mode"
             :namespaced-object="namespacedObject"
+            @input="$emit('input', $event)"
           />
         </div>
       </TreeTab>
-      <ContainerPortsTab v-model="value" :mode="mode" :tab-name="createTabKey(tabName, 'ports')" />
+      <ContainerPortsTab
+        :value="value"
+        :mode="mode"
+        :tab-name="createTabKey(tabName, 'ports')"
+        @input="$emit('input', $event)"
+      />
       <TreeTab :name="createTabKey(tabName, 'resources')" :label="t('verrazzano.common.tabs.resources')">
         <ContainerResources
           :value="getField('resources')"
@@ -241,10 +277,18 @@ export default {
         @input="setFieldIfNotEmpty('lifecycle', $event)"
       />
       <TreeTab :name="createTabKey(tabName, 'volumeMounts')" :label="t('verrazzano.common.tabs.volumeMounts')">
-        <VolumeMounts v-model="value" :mode="mode" />
+        <VolumeMounts
+          :value="value"
+          :mode="mode"
+          @input="$emit('input', $event)"
+        />
       </TreeTab>
       <TreeTab :name="createTabKey(tabName, 'volumeDevices')" :label="t('verrazzano.common.tabs.volumeDevices')">
-        <VolumeDevices v-model="value" :mode="mode" />
+        <VolumeDevices
+          :value="value"
+          :mode="mode"
+          @input="$emit('input', $event)"
+        />
       </TreeTab>
     </template>
   </TreeTab>

@@ -30,10 +30,6 @@ export default {
       ];
     },
   },
-  created() {
-    // eslint-disable-next-line no-console
-    console.log('AAAAAAA ContainerPort for port: ', JSON.stringify(this.value));
-  }
 };
 </script>
 
@@ -48,7 +44,7 @@ export default {
           option-key="value"
           option-label="label"
           :label="t('verrazzano.common.fields.container.ports.protocol')"
-          @input="setField('protocol', $event)"
+          @input="setFieldIfNotEmpty('protocol', $event)"
         />
       </div>
       <div class="col span-2">
@@ -68,7 +64,7 @@ export default {
           :value="getField('name')"
           :mode="mode"
           :label="t('verrazzano.common.fields.container.ports.name')"
-          @input="setField('name', $event)"
+          @input="setFieldIfNotEmpty('name', $event)"
         />
       </div>
       <div class="col span-3">
@@ -76,7 +72,7 @@ export default {
           :value="getField('hostIP')"
           :mode="mode"
           :label="t('verrazzano.common.fields.container.ports.hostIP')"
-          @input="setField('hostIP', $event)"
+          @input="setFieldIfNotEmpty('hostIP', $event)"
         />
       </div>
       <div class="col span-2">
