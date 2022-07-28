@@ -26,9 +26,9 @@ export default {
   computed: {
     mountPropagationOptions() {
       return [
-        { value: 'None', label: this.t('verrazzano.config.values.types.mountPropagation.none') },
-        { value: 'HostToContainer', label: this.t('verrazzano.config.values.types.mountPropagation.hostToContainer') },
-        { value: 'Bidirectional', label: this.t('verrazzano.config.values.types.mountPropagation.bidirectional') },
+        { value: 'None', label: this.t('verrazzano.common.types.mountPropagationMode.none') },
+        { value: 'HostToContainer', label: this.t('verrazzano.common.types.mountPropagationMode.hostToContainer') },
+        { value: 'Bidirectional', label: this.t('verrazzano.common.types.mountPropagationMode.bidirectional') },
       ];
     }
   }
@@ -43,7 +43,7 @@ export default {
           :value="getField('name')"
           :mode="mode"
           required
-          :label="t('verrazzano.config.fields.volumeMount.name')"
+          :label="t('verrazzano.common.fields.volumeMount.name')"
           @input="setField('name', $event)"
         />
       </div>
@@ -54,7 +54,7 @@ export default {
           :options="mountPropagationOptions"
           option-key="value"
           option-label="label"
-          :label="t('verrazzano.config.fields.volumeMount.mountPropagation')"
+          :label="t('verrazzano.common.fields.volumeMount.mountPropagation')"
           @input="setField('mountPropagation', $event)"
         />
       </div>
@@ -62,7 +62,7 @@ export default {
         <Checkbox
           :value="getField('readOnly')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.volumeMount.readOnly')"
+          :label="t('verrazzano.common.fields.volumeMount.readOnly')"
           @input="setField('readOnly', $event)"
         />
       </div>
@@ -73,7 +73,7 @@ export default {
         <LabeledInput
           :value="getField('mountPath')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.volumeMount.mountPath')"
+          :label="t('verrazzano.common.fields.volumeMount.mountPath')"
           @input="setField('mountPath', $event)"
         />
       </div>
@@ -81,7 +81,7 @@ export default {
         <LabeledInput
           :value="getField('subPath')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.volumeMount.subPath')"
+          :label="t('verrazzano.common.fields.volumeMount.subPath')"
           @input="setField('subPath', $event)"
         />
       </div>
@@ -89,7 +89,7 @@ export default {
         <LabeledInput
           :value="getField('subPathExpr')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.volumeMount.subPathExpr')"
+          :label="t('verrazzano.common.fields.volumeMount.subPathExpr')"
           @input="setField('subPathExpr', $event)"
         />
       </div>

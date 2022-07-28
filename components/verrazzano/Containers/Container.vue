@@ -238,6 +238,7 @@ export default {
       <ContainerProbe
         :value="getField('readinessProbe')"
         :mode="mode"
+        is-readiness-probe
         @input="setFieldIfNotEmpty('readinessProbe', $event)"
       />
     </div>
