@@ -3,6 +3,7 @@
 import AdminServer from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServer';
 import ArrayListGrouped from '@/components/form/ArrayListGrouped';
 import AuxiliaryImageVolume from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImageVolume';
+import ClustersTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab';
 import ConfigurationData from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ConfigurationData';
 import FluentdSpecification from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/FluentdSpecification';
 import WebLogicGeneralData from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/WebLogicGeneralData';
@@ -12,7 +13,6 @@ import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import ServerPodTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
 import ServerService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerService';
 import TreeTabbed from '@/components/verrazzano/TreeTabbed';
-import WebLogicCluster from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/WebLogicCluster';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
 const WKO_DOMAIN_VERSION = 'domain-v8';
@@ -23,6 +23,7 @@ export default {
     AdminServer,
     ArrayListGrouped,
     AuxiliaryImageVolume,
+    ClustersTab,
     ConfigurationData,
     FluentdSpecification,
     ManagedServer,
@@ -31,7 +32,6 @@ export default {
     ServerService,
     TreeTab,
     TreeTabbed,
-    WebLogicCluster,
     WebLogicGeneralData,
   },
   mixins: [WeblogicWorkloadHelper],
@@ -159,33 +159,11 @@ export default {
        |                                          Clusters Tab                                                |
        -------------------------------------------------------------------------------------------------------->
 
-      <TreeTab :label="t('verrazzano.weblogic.tabs.clusters')" name="clusters">
-        <ArrayListGrouped
-          :value="getWorkloadSpecListField('clusters')"
-          :default-add-value="{ }"
-          :mode="mode"
-          :add-label="t('verrazzano.weblogic.buttons.addCluster')"
-          @input="setWorkloadSpecFieldIfNotEmpty('clusters', $event)"
-        >
-          <template #remove-button="removeProps">
-            <button
-              type="button"
-              class="btn role-link close btn-sm"
-              @click="removeProps.remove"
-            >
-              <i class="icon icon-2x icon-x" />
-            </button>
-          </template>
-          <template #default="props">
-            <WebLogicCluster
-              v-model="props.row.value"
-              :mode="mode"
-              :namespaced-object="value"
-            />
-          </template>
-        </ArrayListGrouped>
-      </TreeTab>
-
+      <ClustersTab
+        :value="workloadTemplateSpec"
+        :mode="mode"
+        :namespaced-object="value"
+      />
       <!-------------------------------------------------------------------------------------------------------
        |                                        Admin Server Tab                                              |
        -------------------------------------------------------------------------------------------------------->
