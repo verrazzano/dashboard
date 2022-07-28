@@ -7478,15 +7478,28 @@ verrazzano:
       addChannel: Add Channel
       addCluster: Add Cluster
       addManagedServer: Add Managed Server
+      deleteCluster: Delete Cluster
     fields:
+      clusters:
+        allowReplicasBelowMinDynClusterSize: Allow Replicas Below Minimum Cluster Size
+        clusterName: Cluster Name
+        maxConcurrentShutdown: Maximum Concurrent Shutdown
+        maxConcurrentStartup: Maximum Concurrent Startup
+        maxUnavailable: Maximum Unavailable
+        replicas: Replicas
+        restartVersion: Restart Version
+        serverStartState: Server Start State
+        sessionAffinity: Session Affinity
       introspectorJobActiveDeadlineSeconds: Introspector Job Active Deadline Seconds
       overrideDistributionStrategy: Overrides Distribution Strategy
       overridesConfigMap: Overrides Config Map Name
+      serverStartPolicy: Server Start Policy
     tabs:
       adminServer: Admin Server
       auxiliaryImage: Auxiliary Image
       auxiliaryImages: Auxiliary Images
       auxiliaryImageVolumes: Auxiliary Image Volumes
+      cluster: Cluster
       clusters: Clusters
       configuration: Configuration
       containers: Containers
@@ -7499,6 +7512,8 @@ verrazzano:
       serverPod: Server Pod
       serverService: Server Service
     titles:
+      clusters:
+        clusterService: Cluster Service
       modelConfiguration: WebLogic Deploy Tooling Model-Related Settings
       opss: OPSS-Related Settings
       serverPod:
@@ -8068,14 +8083,6 @@ verrazzano:
           mountPath: Mount Path
           medium: Medium
           sizeLimit: Volume Size Limit
-        clusters:
-          allowReplicasBelowMinDynClusterSize: Allow Replicas Below Minimum Cluster Size
-          clusterName: Cluster Name
-          maxConcurrentShutdown: Maximum Concurrent Shutdown
-          maxConcurrentStartup: Maximum Concurrent Startup
-          maxUnavailable: Maximum Unavailable
-          replicas: Replicas
-          sessionAffinity: Session Affinity
         configuration:
           model:
             configMap: WDT Model Config Map Name
@@ -8153,7 +8160,6 @@ verrazzano:
         channels: Channels
         advanced: Advanced Settings
         auxiliaryImages: Auxiliary Images
-        clusterService: Cluster Service
         domainLifecycleSettings: Domain Lifecycle Configuration
         domainLogSettings: Domain Logging Configuration
         domainSettings: Domain-Related Settings

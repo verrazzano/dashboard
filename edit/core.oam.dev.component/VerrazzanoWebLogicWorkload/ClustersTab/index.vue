@@ -1,7 +1,7 @@
 <script>
 // Added by Verrazzano
 import Checkbox from '@/components/form/Checkbox';
-import ClusterService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/WebLogicCluster/ClusterService';
+import ClusterService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab/ClusterService';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import ServerPodTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
@@ -11,7 +11,7 @@ import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper
 import { _VIEW } from '@/config/query-params';
 
 export default {
-  name:       'WebLogicCluster',
+  name:       'ClustersTab',
   components: {
     Checkbox,
     ClusterService,
@@ -94,9 +94,10 @@ export default {
     <template #nestedTabs>
       <TreeTab
         v-for="cluster in value.clusters"
-        :key="createTabKey(navPrefix, cluster.clusterName)"
+        :key="createTabKey(navPrefix, componentKey(cluster))"
         :label="cluster.clusterName"
-        :name="createTabKey(navPrefix, cluster.clusterName)"
+        :name="createTabKey(navPrefix, componentKey(cluster))"
+        :title="t('verrazzano.weblogic.tabs.cluster')"
       >
         <template #default>
           <div class="row">
@@ -105,7 +106,7 @@ export default {
                 v-model="cluster.clusterName"
                 :mode="mode"
                 required
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.clusters.clusterName')"
+                :label="t('verrazzano.weblogic.fields.clusters.clusterName')"
               />
             </div>
             <div class="col span-4">
@@ -119,32 +120,33 @@ export default {
             </div>
             <div class="col span-4">
               <LabeledSelect
-                v-model="cluster.serverStartPolicy"
+                v-model="cluster['serverStartPolicy']"
                 :mode="mode"
                 :options="serverStartPolicyOptions"
                 option-key="value"
                 option-label="label"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverStartPolicy')"
+                :label="t('verrazzano.weblogic.fields.serverStartPolicy')"
               />
             </div>
           </div>
+          <div class="spacer-small" />
           <div class="row">
             <div class="col span-4">
               <LabeledInput
-                v-model="cluster.maxConcurrentStartup"
+                v-model="cluster['maxConcurrentStartup']"
                 :mode="mode"
                 type="Number"
                 min="0"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.clusters.maxConcurrentStartup')"
+                :label="t('verrazzano.weblogic.fields.clusters.maxConcurrentStartup')"
               />
             </div>
             <div class="col span-4">
               <LabeledInput
-                v-model="cluster.maxConcurrentShutdown"
+                v-model="cluster['maxConcurrentShutdown']"
                 :mode="mode"
                 type="Number"
                 min="0"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.clusters.maxConcurrentShutdown')"
+                :label="t('verrazzano.weblogic.fields.clusters.maxConcurrentShutdown')"
               />
             </div>
             <div class="col span-4">
@@ -153,7 +155,7 @@ export default {
                 :mode="mode"
                 type="Number"
                 min="0"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.clusters.maxUnavailable')"
+                :label="t('verrazzano.weblogic.fields.clusters.maxUnavailable')"
               />
             </div>
           </div>
@@ -161,57 +163,66 @@ export default {
           <div class="row">
             <div class="col span-4">
               <LabeledInput
-                v-model="cluster.restartVersion"
+                v-model="cluster['restartVersion']"
                 :mode="mode"
                 type="Number"
                 min="0"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.restartVersion')"
+                :label="t('verrazzano.weblogic.fields.clusters.restartVersion')"
               />
             </div>
             <div class="col span-4">
               <LabeledSelect
-                v-model="cluster.serverStartState"
+                v-model="cluster['serverStartState']"
                 :mode="mode"
                 :options="serverStartStateOptions"
                 option-key="value"
                 option-label="label"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverStartState')"
+                :label="t('verrazzano.weblogic.fields.clusters.serverStartState')"
               />
             </div>
             <div class="col span-1" />
             <div class="col span-3">
               <div class="spacer-small" />
               <Checkbox
-                v-model="cluster.allowReplicasBelowMinDynClusterSize"
+                v-model="cluster['allowReplicasBelowMinDynClusterSize']"
                 :mode="mode"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.clusters.allowReplicasBelowMinDynClusterSize')"
+                :label="t('verrazzano.weblogic.fields.clusters.allowReplicasBelowMinDynClusterSize')"
               />
             </div>
           </div>
           <div class="spacer-small" />
           <div>
-            <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.clusterService') }}</h3>
+            <h3>{{ t('verrazzano.weblogic.titles.clusters.clusterService') }}</h3>
             <ClusterService
-              v-model="cluster.clusterService"
+              v-model="cluster['clusterService']"
               :mode="mode"
             />
           </div>
           <div class="spacer-small" />
           <div>
-            <h3>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.titles.serverService') }}</h3>
+            <h3>{{ t('verrazzano.weblogic.tabs.serverService') }}</h3>
             <ServerService
-              v-model="cluster.serverService"
+              v-model="cluster['serverService']"
               :mode="mode"
             />
           </div>
           <div class="spacer-small" />
+          <button
+            type="button"
+            class="btn role-tertiary add"
+            data-testid="add-item"
+            :disabled="isView"
+            @click="deleteCluster(cluster)"
+          >
+            {{ t('verrazzano.weblogic.buttons.deleteCluster') }}
+          </button>
         </template>
         <template #nestedTabs>
           <ServerPodTab
-            v-model="cluster.serverPod"
+            v-model="cluster['serverPod']"
             :mode="mode"
             :namespaced-object="value"
-            :nav-prefix="'cluster_' + cluster.clusterName"
+            :nav-prefix="createTabKey(navPrefix, componentKey(cluster))"
           />
         </template>
       </TreeTab>
