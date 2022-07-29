@@ -9,6 +9,10 @@ export default {
   components: { LabeledInput },
   mixins:     [VerrazzanoHelper],
   props:      {
+    value: {
+      type:    Object,
+      default: () => ({})
+    },
     mode: {
       type:     String,
       required: true,
