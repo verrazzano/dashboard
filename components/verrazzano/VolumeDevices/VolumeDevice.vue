@@ -27,7 +27,7 @@ export default {
         :value="getField('name')"
         :mode="mode"
         required
-        :label="t('verrazzano.config.fields.volumeDevice.name')"
+        :label="t('verrazzano.common.fields.volumeDevice.name')"
         @input="setField('name', $event)"
       />
     </div>
@@ -36,7 +36,7 @@ export default {
         :value="getField('devicePath')"
         :mode="mode"
         required
-        :label="t('verrazzano.config.fields.volumeDevice.devicePath')"
+        :label="t('verrazzano.common.fields.volumeDevice.devicePath')"
         @input="setField('devicePath', $event)"
       />
     </div>

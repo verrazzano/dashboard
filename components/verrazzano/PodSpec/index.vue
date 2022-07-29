@@ -229,7 +229,7 @@ export default {
         <LabeledSelect
           :value="getField('restartPolicy')"
           :mode="mode"
-          :options="restartPolicyOption"
+          :options="restartPolicyOptions"
           option-key="value"
           option-label="label"
           :placeholder="getNotSetPlaceholder(value, 'restartPolicy')"
