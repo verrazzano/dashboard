@@ -149,7 +149,8 @@ export default {
 }
 
 .top-header .btn.close {
+  margin-left: 1em;
   margin-top: -2px;
-  padding: 0 0 0 1em;
+  padding: 0;
 }
 </style>
