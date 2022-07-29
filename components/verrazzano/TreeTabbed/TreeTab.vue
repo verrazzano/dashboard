@@ -129,7 +129,7 @@ export default {
         {{ titleDisplay }}
         <i v-if="tooltip" v-tooltip="tooltip" class="icon icon-info icon-lg" />
       </h2>
-      <slot name="besideHeader" />
+      <slot name="beside-header" />
     </div>
     <div v-show="active">
       <slot v-show="active" v-bind="{active}" />

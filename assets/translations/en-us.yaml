@@ -7271,6 +7271,9 @@ verrazzano:
       whenUnsatisfiable: When Unsatisfiable
       workingDir: Working Directory
       workloadConfigMapName: Workload ConfigMap Name
+    messages:
+      enterName: Enter an new name
+      nameInUse: The name {name} already exists
     tabs:
       containers: Containers
       general: General
@@ -7486,14 +7489,18 @@ verrazzano:
         maxConcurrentShutdown: Maximum Concurrent Shutdown
         maxConcurrentStartup: Maximum Concurrent Startup
         maxUnavailable: Maximum Unavailable
+        newClusterName: New Cluster Name
         replicas: Replicas
-        restartVersion: Restart Version
-        serverStartState: Server Start State
         sessionAffinity: Session Affinity
       introspectorJobActiveDeadlineSeconds: Introspector Job Active Deadline Seconds
+      managedServers:
+        newServerName: New Server Name
+        serverName: Server Name
       overrideDistributionStrategy: Overrides Distribution Strategy
       overridesConfigMap: Overrides Config Map Name
+      restartVersion: Restart Version
       serverStartPolicy: Server Start Policy
+      serverStartState: Server Start State
     tabs:
       adminServer: Admin Server
       auxiliaryImage: Auxiliary Image
@@ -7507,6 +7514,7 @@ verrazzano:
       fluentd: Fluentd Specification
       general: General
       initContainers: Init Containers
+      managedServer: Managed Server
       managedServers: Managed Servers
       monitoringExporter: Monitoring Exporter
       serverPod: Server Pod

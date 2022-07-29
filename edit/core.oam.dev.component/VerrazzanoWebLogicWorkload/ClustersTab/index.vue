@@ -1,5 +1,6 @@
 <script>
 // Added by Verrazzano
+import AddNamedElement from '@/components/verrazzano/AddNamedElement';
 import Checkbox from '@/components/form/Checkbox';
 import ClusterService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab/ClusterService';
 import LabeledInput from '@/components/form/LabeledInput';
@@ -13,6 +14,7 @@ import { _VIEW } from '@/config/query-params';
 export default {
   name:       'ClustersTab',
   components: {
+    AddNamedElement,
     Checkbox,
     ClusterService,
     LabeledInput,
@@ -42,21 +44,14 @@ export default {
     }
   },
 
-  data() {
-    return { newName: undefined };
-  },
-
   methods: {
-    addCluster() {
-      const unusedName = this.getNextName(this.value['clusters'], 'clusterName', 'new');
-      const newName = this.newName ? this.newName : unusedName;
-
+    addCluster(newName) {
       this.addConfigNode(this.value, 'clusters', { clusterName: newName });
     },
     deleteCluster(cluster) {
       this.deleteConfigNode(this.value, 'clusters', cluster);
     },
-    componentKey(cluster) {
+    clusterKey(cluster) {
       return this.createTabKey('cluster', cluster.clusterName);
     }
   },
@@ -75,28 +70,22 @@ export default {
     :name="createTabKey(navPrefix, 'clusters')"
   >
     <template #default>
-      <LabeledInput
-        v-model="newName"
+      <AddNamedElement
+        :add-label="t('verrazzano.weblogic.buttons.addCluster')"
+        config-key="clusterName"
+        :config-node="value['clusters']"
         :mode="mode"
-        label="New Cluster Name"
+        :name-label="t('verrazzano.weblogic.fields.clusters.newClusterName')"
+        name-prefix="cluster"
+        @input="addCluster($event)"
       />
-      <br />
-      <button
-        type="button"
-        class="btn role-tertiary add"
-        data-testid="add-item"
-        :disabled="isView"
-        @click="addCluster()"
-      >
-        {{ t('verrazzano.weblogic.buttons.addCluster') }}
-      </button>
     </template>
     <template #nestedTabs>
       <TreeTab
         v-for="cluster in value.clusters"
-        :key="createTabKey(navPrefix, componentKey(cluster))"
+        :key="createTabKey(navPrefix, clusterKey(cluster))"
         :label="cluster.clusterName"
-        :name="createTabKey(navPrefix, componentKey(cluster))"
+        :name="createTabKey(navPrefix, clusterKey(cluster))"
         :title="t('verrazzano.weblogic.tabs.cluster')"
       >
         <template #default>
@@ -104,7 +93,7 @@ export default {
             <div class="col span-4">
               <LabeledInput
                 v-model="cluster.clusterName"
-                :mode="mode"
+                :disabled="true"
                 required
                 :label="t('verrazzano.weblogic.fields.clusters.clusterName')"
               />
@@ -167,7 +156,7 @@ export default {
                 :mode="mode"
                 type="Number"
                 min="0"
-                :label="t('verrazzano.weblogic.fields.clusters.restartVersion')"
+                :label="t('verrazzano.weblogic.fields.restartVersion')"
               />
             </div>
             <div class="col span-4">
@@ -177,7 +166,7 @@ export default {
                 :options="serverStartStateOptions"
                 option-key="value"
                 option-label="label"
-                :label="t('verrazzano.weblogic.fields.clusters.serverStartState')"
+                :label="t('verrazzano.weblogic.fields.serverStartState')"
               />
             </div>
             <div class="col span-1" />
@@ -207,7 +196,7 @@ export default {
             />
           </div>
         </template>
-        <template #besideHeader>
+        <template #beside-header>
           <button
             v-if="!isView"
             v-tooltip="t('verrazzano.weblogic.buttons.deleteCluster')"
@@ -223,7 +212,7 @@ export default {
             v-model="cluster['serverPod']"
             :mode="mode"
             :namespaced-object="value"
-            :nav-prefix="createTabKey(navPrefix, componentKey(cluster))"
+            :nav-prefix="createTabKey(navPrefix, clusterKey(cluster))"
           />
         </template>
       </TreeTab>

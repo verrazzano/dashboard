@@ -7,7 +7,7 @@ import ClustersTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkloa
 import ConfigurationData from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ConfigurationData';
 import FluentdSpecification from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/FluentdSpecification';
 import WebLogicGeneralData from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/WebLogicGeneralData';
-import ManagedServer from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ManagedServer';
+import ManagedServersTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ManagedServersTab';
 import MonitoringExporter from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/MonitoringExporter';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import ServerPodTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
@@ -26,7 +26,7 @@ export default {
     ClustersTab,
     ConfigurationData,
     FluentdSpecification,
-    ManagedServer,
+    ManagedServersTab,
     MonitoringExporter,
     ServerPodTab,
     ServerService,
@@ -164,6 +164,7 @@ export default {
         :mode="mode"
         :namespaced-object="value"
       />
+
       <!-------------------------------------------------------------------------------------------------------
        |                                        Admin Server Tab                                              |
        -------------------------------------------------------------------------------------------------------->
@@ -190,32 +191,11 @@ export default {
        |                                      Managed Servers Tab                                             |
        -------------------------------------------------------------------------------------------------------->
 
-      <TreeTab :label="t('verrazzano.weblogic.tabs.managedServers')" name="managedServers">
-        <ArrayListGrouped
-          :value="getWorkloadSpecListField('managedServers')"
-          :default-add-value="{ }"
-          :mode="mode"
-          :add-label="t('verrazzano.weblogic.buttons.addManagedServer')"
-          @input="setWorkloadSpecFieldIfNotEmpty('managedServers', $event)"
-        >
-          <template #remove-button="removeProps">
-            <button
-              type="button"
-              class="btn role-link close btn-sm"
-              @click="removeProps.remove"
-            >
-              <i class="icon icon-2x icon-x" />
-            </button>
-          </template>
-          <template #default="props">
-            <ManagedServer
-              v-model="props.row.value"
-              :mode="mode"
-              :namespaced-object="value"
-            />
-          </template>
-        </ArrayListGrouped>
-      </TreeTab>
+      <ManagedServersTab
+        :value="workloadTemplateSpec"
+        :mode="mode"
+        :namespaced-object="value"
+      />
 
       <!-------------------------------------------------------------------------------------------------------
        |                                          Fluentd Tab                                                 |
