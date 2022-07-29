@@ -115,7 +115,7 @@ export default {
                 :mode="mode"
                 type="Number"
                 min="0"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.clusters.replicas')"
+                :label="t('verrazzano.weblogic.fields.clusters.replicas')"
               />
             </div>
             <div class="col span-4">
@@ -206,15 +206,16 @@ export default {
               :mode="mode"
             />
           </div>
-          <div class="spacer-small" />
+        </template>
+        <template #besideHeader>
           <button
+            v-if="!isView"
+            v-tooltip="t('verrazzano.weblogic.buttons.deleteCluster')"
             type="button"
-            class="btn role-tertiary add"
-            data-testid="add-item"
-            :disabled="isView"
+            class="btn role-link close btn-sm"
             @click="deleteCluster(cluster)"
           >
-            {{ t('verrazzano.weblogic.buttons.deleteCluster') }}
+            <i class="icon icon-2x icon-x" />
           </button>
         </template>
         <template #nestedTabs>
