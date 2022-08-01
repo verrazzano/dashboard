@@ -174,7 +174,7 @@ export default {
         <ClusterService
           :value="getField('clusterService')"
           :mode="mode"
-          @input="$emit('input', $event)"
+          @input="setFieldIfNotEmpty('clusterService', $event)"
         />
       </div>
       <div class="spacer-small" />
@@ -183,7 +183,7 @@ export default {
         <ServerService
           :value="getField('serverService')"
           :mode="mode"
-          @input="$emit('input', $event)"
+          @input="setFieldIfNotEmpty('serverService', $event)"
         />
       </div>
     </template>
@@ -200,7 +200,7 @@ export default {
         :mode="mode"
         :namespaced-object="value"
         :nav-prefix="createTabKey(navPrefix, clusterKey(value))"
-        @input="$emit('input', $event)"
+        @input="setFieldIfNotEmpty('serverPod', $event)"
       />
     </template>
   </TreeTab>

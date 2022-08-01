@@ -103,7 +103,7 @@ export default {
         <ServerService
           :value="getField('serverService')"
           :mode="mode"
-          @input="$emit('input', $event)"
+          @input="setFieldIfNotEmpty('serverService', $event)"
         />
       </div>
       <div class="spacer-small" />
@@ -121,7 +121,7 @@ export default {
         :mode="mode"
         :namespaced-object="namespacedObject"
         :nav-prefix="createTabKey(navPrefix, serverKey(value))"
-        @input="$emit('input', $event)"
+        @input="setFieldIfNotEmpty('serverPod', $event)"
       />
     </template>
   </TreeTab>
