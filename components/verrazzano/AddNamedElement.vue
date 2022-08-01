@@ -98,12 +98,16 @@ export default {
 
 <template>
   <div>
-    <LabeledInput
-      v-model="newName"
-      :mode="mode"
-      :label="nameLabel"
-      required
-    />
+    <div class="row">
+      <div class="col span-6">
+        <LabeledInput
+          v-model="newName"
+          :mode="mode"
+          :label="nameLabel"
+          required
+        />
+      </div>
+    </div>
     <div v-if="!isView && errorMessage">
       <br />
       <span class="named-error">{{ errorMessage }}</span>
