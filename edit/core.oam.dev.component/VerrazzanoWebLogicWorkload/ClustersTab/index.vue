@@ -57,10 +57,9 @@ export default {
     <template #default>
       <AddNamedElement
         :value="children"
-        :add-label="t('verrazzano.weblogic.buttons.addCluster')"
+        :element-name="t('verrazzano.weblogic.tabs.cluster')"
         config-key="clusterName"
         :mode="mode"
-        :name-label="t('verrazzano.weblogic.fields.clusters.newClusterName')"
         name-prefix="cluster"
         @input="addChild({ clusterName: $event })"
       />

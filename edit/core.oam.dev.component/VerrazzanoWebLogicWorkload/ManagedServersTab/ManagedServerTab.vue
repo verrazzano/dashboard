@@ -111,7 +111,7 @@ export default {
     <template #beside-header>
       <TabDeleteButton
         :mode="mode"
-        :label="t('verrazzano.weblogic.buttons.deleteManagedServer')"
+        :element-name="t('verrazzano.weblogic.tabs.managedServer')"
         @click="$emit('delete', value)"
       />
     </template>

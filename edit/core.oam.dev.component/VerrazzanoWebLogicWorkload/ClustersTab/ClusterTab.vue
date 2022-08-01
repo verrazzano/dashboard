@@ -190,7 +190,7 @@ export default {
     <template #beside-header>
       <TabDeleteButton
         :mode="mode"
-        :label="t('verrazzano.weblogic.buttons.deleteCluster')"
+        :element-name="t('verrazzano.weblogic.tabs.cluster')"
         @click="$emit('delete', value)"
       />
     </template>

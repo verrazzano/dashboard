@@ -7116,6 +7116,7 @@ verrazzano:
       addContainer: Add Container
       addDNSNameserver: Add DNS Name Server
       addDNSSearchDomain: Add DNS Search Domain
+      addElement: Add { element }
       addEnvVar: Add Environment Variable
       addExternalIP: Add External IP
       addHost: Add Host
@@ -7138,6 +7139,7 @@ verrazzano:
       addVolumeMount: Add Volume Mount
       deleteComponent: Delete Component
       deleteContainer: Delete Container
+      deleteElement: Delete { element }
       deleteIngressRule: Delete Ingress Rule
       deleteTrait: Delete Trait
 
@@ -7227,6 +7229,7 @@ verrazzano:
       namespace: Namespace
       newComponentName: New Component Name
       newContainerName: New Container Name
+      newElementName: New { element } Name
       newTraitType: New Trait Type
       nodeSelectorRequirementType: Node Selector Requirement Type
       ownerReference:
@@ -7579,10 +7582,6 @@ verrazzano:
       addAuxiliaryImage: Add Auxiliary Image
       addAuxiliaryImageVolume: Add Auxiliary Image Volume
       addChannel: Add Channel
-      addCluster: Add Cluster
-      addManagedServer: Add Managed Server
-      deleteCluster: Delete Cluster
-      deleteManagedServer: Delete Managed Server
 
     ##################################
     ### verrazzano.weblogic.fields ###
@@ -7594,12 +7593,10 @@ verrazzano:
         maxConcurrentShutdown: Maximum Concurrent Shutdown
         maxConcurrentStartup: Maximum Concurrent Startup
         maxUnavailable: Maximum Unavailable
-        newClusterName: New Cluster Name
         replicas: Replicas
         sessionAffinity: Session Affinity
       introspectorJobActiveDeadlineSeconds: Introspector Job Active Deadline Seconds
       managedServers:
-        newServerName: New Server Name
         serverName: Server Name
       overrideDistributionStrategy: Overrides Distribution Strategy
       overridesConfigMap: Overrides Config Map Name

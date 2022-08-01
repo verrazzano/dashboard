@@ -17,15 +17,11 @@ export default {
       type:     String,
       required: true,
     },
-    addLabel: {
+    elementName: {
       type:     String,
       required: true,
     },
     configKey: {
-      type:     String,
-      required: true,
-    },
-    nameLabel: {
       type:     String,
       required: true,
     },
@@ -103,7 +99,7 @@ export default {
         <LabeledInput
           v-model="newName"
           :mode="mode"
-          :label="nameLabel"
+          :label="t('verrazzano.common.fields.newElementName', { element: elementName })"
           required
         />
       </div>
@@ -120,7 +116,7 @@ export default {
       :disabled="isView || errorMessage"
       @click="returnName()"
     >
-      {{ addLabel }}
+      {{ t('verrazzano.common.buttons.addElement', { element: elementName }) }}
     </button>
   </div>
 </template>

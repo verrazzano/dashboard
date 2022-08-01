@@ -46,10 +46,9 @@ export default {
     <template #default>
       <AddNamedElement
         :value="children"
-        :add-label="t('verrazzano.weblogic.buttons.addManagedServer')"
+        :element-name="t('verrazzano.weblogic.tabs.managedServer')"
         config-key="serverName"
         :mode="mode"
-        :name-label="t('verrazzano.weblogic.fields.managedServers.newServerName')"
         name-prefix="server"
         @input="addChild({ serverName: $event })"
       />

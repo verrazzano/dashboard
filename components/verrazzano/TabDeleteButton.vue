@@ -15,7 +15,7 @@ export default {
       type:     String,
       required: true,
     },
-    label: {
+    elementName: {
       type:     String,
       required: true,
     },
@@ -32,7 +32,7 @@ export default {
 <template>
   <button
     v-if="!isView"
-    v-tooltip="label"
+    v-tooltip="t('verrazzano.common.buttons.deleteElement', { element: elementName })"
     type="button"
     class="btn role-link close btn-sm"
     @click="$emit('click', $event)"
