@@ -3,10 +3,12 @@
 import AddNamedElement from '@/components/verrazzano/AddNamedElement';
 import Checkbox from '@/components/form/Checkbox';
 import ClusterService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab/ClusterService';
+import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import ServerPodTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
 import ServerService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerService';
+import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 import { _VIEW } from '@/config/query-params';
@@ -21,9 +23,10 @@ export default {
     LabeledSelect,
     ServerPodTab,
     ServerService,
+    TabDeleteButton,
     TreeTab
   },
-  mixins: [WeblogicWorkloadHelper],
+  mixins: [WeblogicWorkloadHelper, DynamicListHelper],
   props:  {
     // the parent node of clusters
     value: {
@@ -45,11 +48,8 @@ export default {
   },
 
   methods: {
-    addCluster(newName) {
-      this.addConfigNode(this.value, 'clusters', { clusterName: newName });
-    },
-    deleteCluster(cluster) {
-      this.deleteConfigNode(this.value, 'clusters', cluster);
+    getRootFieldName() {
+      return 'clusters';
     },
     clusterKey(cluster) {
       return this.createTabKey('cluster', cluster.clusterName);
@@ -71,18 +71,18 @@ export default {
   >
     <template #default>
       <AddNamedElement
+        :value="children"
         :add-label="t('verrazzano.weblogic.buttons.addCluster')"
         config-key="clusterName"
-        :config-node="value['clusters']"
         :mode="mode"
         :name-label="t('verrazzano.weblogic.fields.clusters.newClusterName')"
         name-prefix="cluster"
-        @input="addCluster($event)"
+        @input="addChild({ clusterName: $event })"
       />
     </template>
     <template #nestedTabs>
       <TreeTab
-        v-for="cluster in value.clusters"
+        v-for="cluster in children"
         :key="createTabKey(navPrefix, clusterKey(cluster))"
         :label="cluster.clusterName"
         :name="createTabKey(navPrefix, clusterKey(cluster))"
@@ -197,15 +197,11 @@ export default {
           </div>
         </template>
         <template #beside-header>
-          <button
-            v-if="!isView"
-            v-tooltip="t('verrazzano.weblogic.buttons.deleteCluster')"
-            type="button"
-            class="btn role-link close btn-sm"
-            @click="deleteCluster(cluster)"
-          >
-            <i class="icon icon-2x icon-x" />
-          </button>
+          <TabDeleteButton
+            :mode="mode"
+            :label="t('verrazzano.weblogic.buttons.deleteCluster')"
+            @click="deleteChild(cluster)"
+          />
         </template>
         <template #nestedTabs>
           <ServerPodTab

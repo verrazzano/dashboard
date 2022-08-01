@@ -10,8 +10,8 @@ export default {
   mixins:     [VerrazzanoHelper],
   props:      {
     value: {
-      type:    Object,
-      default: () => ({})
+      type:    Array,
+      default: () => ([])
     },
     mode: {
       type:     String,
@@ -19,10 +19,6 @@ export default {
     },
     addLabel: {
       type:     String,
-      required: true,
-    },
-    configNode: {
-      type:     Array,
       required: true,
     },
     configKey: {
@@ -50,7 +46,7 @@ export default {
     getUnusedName() {
       const namePrefix = this.namePrefix ? this.namePrefix : 'new';
 
-      return this.getNextName(this.configNode, this.configKey, namePrefix);
+      return this.getNextName(this.value, this.configKey, namePrefix);
     },
 
     checkName() {
@@ -62,8 +58,8 @@ export default {
         return false;
       }
 
-      if (typeof this.configNode !== 'undefined') {
-        if (!this.configNode.every(node => this.newName !== node[this.configKey])) {
+      if (typeof this.value !== 'undefined') {
+        if (!this.value.every(node => this.newName !== node[this.configKey])) {
           this.errorMessage = this.t('verrazzano.common.messages.nameInUse', { name: this.newName });
 
           return false;

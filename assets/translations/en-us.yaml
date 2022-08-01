@@ -7539,6 +7539,7 @@ verrazzano:
       addCluster: Add Cluster
       addManagedServer: Add Managed Server
       deleteCluster: Delete Cluster
+      deleteManagedServer: Delete Managed Server
     fields:
       clusters:
         allowReplicasBelowMinDynClusterSize: Allow Replicas Below Minimum Cluster Size

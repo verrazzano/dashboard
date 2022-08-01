@@ -1,10 +1,12 @@
 <script>
 // Added by Verrazzano
 import AddNamedElement from '@/components/verrazzano/AddNamedElement';
+import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import ServerPodTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
 import ServerService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerService';
+import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
@@ -16,9 +18,10 @@ export default {
     LabeledSelect,
     ServerPodTab,
     ServerService,
+    TabDeleteButton,
     TreeTab,
   },
-  mixins: [WeblogicWorkloadHelper],
+  mixins: [WeblogicWorkloadHelper, DynamicListHelper],
   props:  {
     value: {
       type:    Object,
@@ -39,14 +42,11 @@ export default {
   },
 
   methods: {
-    addServer(newName) {
-      this.addConfigNode(this.value, 'managedServers', { serverName: newName });
-    },
-    deleteServer(server) {
-      this.deleteConfigNode(this.value, 'managedServers', server);
+    getRootFieldName() {
+      return 'managedServers';
     },
     serverKey(server) {
-      return this.createTabKey('managedServer', server.serverName);
+      return this.createTabKey('managedServer', server['serverName']);
     }
   },
 };
@@ -56,21 +56,21 @@ export default {
   <TreeTab :label="t('verrazzano.weblogic.tabs.managedServers')" name="managedServers">
     <template #default>
       <AddNamedElement
+        :value="children"
         :add-label="t('verrazzano.weblogic.buttons.addManagedServer')"
         config-key="serverName"
-        :config-node="value['managedServers']"
         :mode="mode"
         :name-label="t('verrazzano.weblogic.fields.managedServers.newServerName')"
         name-prefix="server"
-        @input="addServer($event)"
+        @input="addChild({ serverName: $event })"
       />
     </template>
 
     <template #nestedTabs>
       <TreeTab
-        v-for="server in value.managedServers"
+        v-for="server in children"
         :key="createTabKey(navPrefix, serverKey(server))"
-        :label="server.serverName"
+        :label="server['serverName']"
         :name="createTabKey(navPrefix, serverKey(server))"
         :title="t('verrazzano.weblogic.tabs.managedServer')"
       >
@@ -122,13 +122,11 @@ export default {
           <div class="spacer-small" />
         </template>
         <template #beside-header>
-          <button
-            type="button"
-            class="btn role-link close btn-sm"
-            @click="deleteServer(server)"
-          >
-            <i class="icon icon-2x icon-x" />
-          </button>
+          <TabDeleteButton
+            :mode="mode"
+            :label="t('verrazzano.weblogic.buttons.deleteManagedServer')"
+            @click="deleteChild(server)"
+          />
         </template>
         <template #nestedTabs>
           <ServerPodTab
