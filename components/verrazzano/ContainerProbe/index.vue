@@ -42,13 +42,13 @@ export default {
     } = this.value;
     let type;
 
-    if (!this.isEmpty(exec)) {
+    if (!this.isEmptyValue(exec)) {
       type = 'exec';
-    } else if (!this.isEmpty(grpc)) {
+    } else if (!this.isEmptyValue(grpc)) {
       type = 'grpc';
-    } else if (!this.isEmpty(httpGet)) {
+    } else if (!this.isEmptyValue(httpGet)) {
       type = 'httpGet';
-    } else if (!this.isEmpty(tcpSocket)) {
+    } else if (!this.isEmptyValue(tcpSocket)) {
       type = 'tcpSocket';
     } else {
       type = 'exec';
