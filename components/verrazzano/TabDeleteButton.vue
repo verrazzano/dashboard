@@ -35,6 +35,7 @@ export default {
     v-tooltip="label"
     type="button"
     class="btn role-link close btn-sm"
+    @click="$emit('click', $event)"
   >
     <i class="icon icon-2x icon-x" />
   </button>
