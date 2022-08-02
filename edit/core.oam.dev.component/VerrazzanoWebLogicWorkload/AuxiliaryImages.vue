@@ -2,8 +2,7 @@
 // Added by Verrazzano
 import AuxiliaryImage from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImage';
 import ArrayListGrouped from '@/components/form/ArrayListGrouped';
-import { randomStr } from '@/utils/string';
-import debounce from 'lodash/debounce';
+import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
 import { _VIEW } from '@/config/query-params';
 
@@ -13,7 +12,7 @@ export default {
     ArrayListGrouped,
     AuxiliaryImage
   },
-  mixins: [VerrazzanoHelper],
+  mixins: [VerrazzanoHelper, DynamicListHelper],
   props:  {
     value: {
       // parent object (e.g., pod spec)
@@ -33,38 +32,10 @@ export default {
       required: true
     }
   },
-  data() {
-    const images = (this.value[this.rootFieldName] || []).map((image) => {
-      const newImage = this.clone(image);
 
-      newImage._id = randomStr(4);
-
-      return newImage;
-    });
-
-    return { images };
-  },
   methods: {
-    update() {
-      const images = [];
-
-      this.images.forEach((image) => {
-        const newImage = this.clone(image);
-
-        delete newImage._id;
-
-        images.push(newImage);
-      });
-
-      this.setFieldIfNotEmpty(this.rootFieldName, images);
-    },
-    addImage() {
-      this.images.push({ _id: randomStr(4) });
-    },
-    removeImage(index) {
-      this.images.splice(index, 1);
-
-      this.queueUpdate();
+    getRootFieldName() {
+      return this.rootFieldName;
     }
   },
 
@@ -74,29 +45,24 @@ export default {
       return this.mode === _VIEW;
     },
   },
-
-  created() {
-    this.queueUpdate = debounce(this.update, 500);
-  }
 };
 </script>
 
 <template>
   <div>
     <ArrayListGrouped
-      v-model="value[rootFieldName]"
+      v-model="children"
       :mode="mode"
       :default-add-value="{ }"
       :add-label="t('verrazzano.weblogic.buttons.addAuxiliaryImage')"
-      @add="addImage()"
-      @input="$emit('input', value)"
+      @add="addChild({})"
     >
       <template #remove-button="removeProps">
         <button
           v-if="showListRemoveButton(rootFieldName)"
           type="button"
           class="btn role-link close btn-sm"
-          @click="removeImage(removeProps.i)"
+          @click="deleteChild(children[removeProps.i])"
         >
           <i class="icon icon-2x icon-x" />
         </button>
@@ -104,9 +70,10 @@ export default {
       </template>
       <template #default="props">
         <AuxiliaryImage
-          v-model="props.row.value"
+          :value="props.row.value"
           :mode="mode"
           :namespaced-object="namespacedObject"
+          @input="queueUpdate"
         />
       </template>
     </ArrayListGrouped>

@@ -3,6 +3,7 @@
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import NotSetPlaceholder from '@/mixins/verrazzano/not-set-placeholder';
+import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
 
 export default {
   name:       'AuxiliaryImage',
@@ -10,7 +11,7 @@ export default {
     LabeledInput,
     LabeledSelect
   },
-  mixins: [NotSetPlaceholder],
+  mixins: [NotSetPlaceholder, VerrazzanoHelper],
   props:  {
     value: {
       type:    Object,
@@ -47,20 +48,22 @@ export default {
     <div class="row">
       <div class="col span-9">
         <LabeledInput
-          v-model="value.image"
+          :value="getField('image')"
           :mode="mode"
           :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImage')"
           :placeholder="getNotSetPlaceholder(value, 'image')"
+          @input="setField('image', $event)"
         />
       </div>
       <div class="col span-3">
         <LabeledSelect
-          v-model="value.imagePullPolicy"
+          :value="getField('imagePullPolicy')"
           :mode="mode"
           :label="t('verrazzano.components.config.fields.imagePullPolicy')"
           :options="imagePullPolicyOptions"
           option-key="value"
           :placeholder="getNotSetPlaceholder(value, 'imagePullPolicy')"
+          @input="setField('imagePullPolicy', $event)"
         />
       </div>
     </div>
@@ -68,18 +71,20 @@ export default {
     <div class="row">
       <div class="col span-3">
         <LabeledInput
-          v-model="value.volume"
+          :value="getField('volume')"
           :mode="mode"
           :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImageVolumeReference')"
           :placeholder="getNotSetPlaceholder(value, 'volume')"
+          @input="setField('volume', $event)"
         />
       </div>
       <div class="col span-9">
         <LabeledInput
-          v-model="value.command"
+          :value="getField('command')"
           :mode="mode"
           :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImageCommand')"
           :placeholder="getNotSetPlaceholder(value, 'command')"
+          @input="setFieldIfNotEmpty('command', $event)"
         />
       </div>
     </div>
