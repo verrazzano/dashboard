@@ -39,9 +39,11 @@ export default {
 
   methods: {
     getUnusedName() {
-      const namePrefix = this.namePrefix ? this.namePrefix : 'new';
+      if (this.namePrefix) {
+        return this.getNextName(this.value, this.configKey, this.namePrefix);
+      }
 
-      return this.getNextName(this.value, this.configKey, namePrefix);
+      return undefined;
     },
 
     checkName() {
