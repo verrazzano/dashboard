@@ -4,7 +4,6 @@ import AuxiliaryImage from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWork
 import ArrayListGrouped from '@/components/form/ArrayListGrouped';
 import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
-import { _VIEW } from '@/config/query-params';
 
 export default {
   name:       'AuxiliaryImages',
@@ -37,13 +36,6 @@ export default {
     getRootFieldName() {
       return this.rootFieldName;
     }
-  },
-
-  computed: {
-    isView() {
-      // used by showEmptyListMessage
-      return this.mode === _VIEW;
-    },
   },
 };
 </script>
