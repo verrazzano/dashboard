@@ -1,6 +1,5 @@
 <script>
 // Added by Verrazzano
-import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import ServerPodTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
@@ -19,7 +18,7 @@ export default {
     TabDeleteButton,
     TreeTab,
   },
-  mixins: [WeblogicWorkloadHelper, DynamicListHelper],
+  mixins: [WeblogicWorkloadHelper],
   props:  {
     value: {
       type:    Object,
@@ -40,9 +39,6 @@ export default {
   },
 
   methods: {
-    getRootFieldName() {
-      return 'managedServers';
-    },
     serverKey(server) {
       return this.createTabKey('managedServer', server['serverName']);
     }

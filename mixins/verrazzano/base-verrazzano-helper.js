@@ -227,7 +227,7 @@ export default {
       return !this.isView && Array.isArray(this.getListField(fieldName)) && this.getListField(fieldName).length > 0;
     },
     showEmptyListMessage(fieldName) {
-      return this.isView && Array.isArray(this.getListField(fieldName)) && this.getListField(fieldName).length.length === 0;
+      return this.isView && Array.isArray(this.getListField(fieldName)) && this.getListField(fieldName).length === 0;
     },
     didNamedObjectReallyChange(neu, old) {
       const neuIsEmpty = this.isEmpty(neu);

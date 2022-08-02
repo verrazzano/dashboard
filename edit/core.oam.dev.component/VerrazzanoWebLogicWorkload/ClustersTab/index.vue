@@ -5,7 +5,6 @@ import ClusterTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload
 import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
-import { _VIEW } from '@/config/query-params';
 
 export default {
   name:       'ClustersTab',
@@ -39,12 +38,6 @@ export default {
     getRootFieldName() {
       return 'clusters';
     }
-  },
-
-  computed: {
-    isView() {
-      return this.mode === _VIEW;
-    },
   },
 };
 </script>

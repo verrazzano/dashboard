@@ -5,12 +5,8 @@ import { _VIEW } from '@/config/query-params';
 // this button fits next to the header at the top of TreeTabbed content
 
 export default {
-  name:       'TabDeleteButton',
-  props:      {
-    value: {
-      type:    Array,
-      default: () => ([])
-    },
+  name:  'TabDeleteButton',
+  props: {
     mode: {
       type:     String,
       required: true,

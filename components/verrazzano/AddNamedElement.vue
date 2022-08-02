@@ -2,7 +2,6 @@
 // Added by Verrazzano
 import LabeledInput from '@/components/form/LabeledInput';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
-import { _VIEW } from '@/config/query-params';
 
 export default {
   name:       'AddNamedElement',
@@ -76,12 +75,6 @@ export default {
 
   mounted() {
     this.newName = this.getUnusedName();
-  },
-
-  computed: {
-    isView() {
-      return this.mode === _VIEW;
-    },
   },
 
   watch: {
