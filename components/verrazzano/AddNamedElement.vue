@@ -16,15 +16,24 @@ export default {
       type:     String,
       required: true,
     },
-    elementName: {
+    addType: {
+      // the type of element to be added.
+      // used for the button name and text label.
       type:     String,
       required: true,
     },
-    configKey: {
+    fieldLabel: {
+      // override the label for the text field
+      type:    String,
+      default: undefined,
+    },
+    keyFieldName: {
+      // the key in the new object to set
       type:     String,
       required: true,
     },
     namePrefix: {
+      // if specified, used to generate the next available name
       type:    String,
       default: undefined,
     }
@@ -40,7 +49,7 @@ export default {
   methods: {
     getUnusedName() {
       if (this.namePrefix) {
-        return this.getNextName(this.value, this.configKey, this.namePrefix);
+        return this.getNextName(this.value, this.keyFieldName, this.namePrefix);
       }
 
       return undefined;
@@ -56,7 +65,7 @@ export default {
       }
 
       if (typeof this.value !== 'undefined') {
-        if (!this.value.every(node => this.newName !== node[this.configKey])) {
+        if (!this.value.every(node => this.newName !== node[this.keyFieldName])) {
           this.errorMessage = this.t('verrazzano.common.messages.nameInUse', { name: this.newName });
 
           return false;
@@ -64,6 +73,14 @@ export default {
       }
 
       return true;
+    },
+
+    getFieldLabel() {
+      if (this.fieldLabel) {
+        return this.fieldLabel;
+      }
+
+      return this.t('verrazzano.common.fields.newElementName', { type: this.addType });
     },
 
     returnName() {
@@ -94,7 +111,7 @@ export default {
         <LabeledInput
           v-model="newName"
           :mode="mode"
-          :label="t('verrazzano.common.fields.newElementName', { element: elementName })"
+          :label="getFieldLabel()"
           required
         />
       </div>
@@ -111,7 +128,7 @@ export default {
       :disabled="isView || errorMessage"
       @click="returnName()"
     >
-      {{ t('verrazzano.common.buttons.addElement', { element: elementName }) }}
+      {{ t('verrazzano.common.buttons.addElement', { type: addType }) }}
     </button>
   </div>
 </template>
