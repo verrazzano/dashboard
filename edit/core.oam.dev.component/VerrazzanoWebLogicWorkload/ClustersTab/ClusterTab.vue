@@ -9,7 +9,6 @@ import ServerService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkl
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
-import { _VIEW } from '@/config/query-params';
 
 export default {
   name:       'ClusterTab',
@@ -47,12 +46,6 @@ export default {
   methods: {
     clusterKey(cluster) {
       return this.createTabKey('cluster', cluster.clusterName);
-    },
-  },
-
-  computed: {
-    isView() {
-      return this.mode === _VIEW;
     },
   },
 };
