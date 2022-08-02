@@ -1,13 +1,12 @@
 <script>
 // Added by Verrazzano
-import CreateEditView from '@/mixins/create-edit-view';
+import { _VIEW } from '@/config/query-params';
 
 // this button fits next to the header at the top of TreeTabbed content
 
 export default {
-  name:   'TabDeleteButton',
-  mixins: [CreateEditView],
-  props:  {
+  name:  'TabDeleteButton',
+  props: {
     mode: {
       type:     String,
       required: true,
@@ -15,6 +14,12 @@ export default {
     elementName: {
       type:     String,
       required: true,
+    },
+  },
+
+  computed: {
+    isView() {
+      return this.mode === _VIEW;
     },
   },
 };
