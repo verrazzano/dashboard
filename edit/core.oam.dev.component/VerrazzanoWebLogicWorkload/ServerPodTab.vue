@@ -104,7 +104,7 @@ export default {
       <div class="col span-3">
         <LabeledSelect
           :value="getField('serviceAccountName')"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.serviceAccountName')"
+          :label="t('verrazzano.common.fields.podSpec.serviceAccountName')"
           :placeholder="getNotSetPlaceholder(value, 'serviceAccountName')"
           :options="serviceAccounts"
           :mode="mode"
@@ -121,7 +121,7 @@ export default {
           option-key="value"
           option-label="label"
           :placeholder="getNotSetPlaceholder(value, 'restartPolicy')"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.restartPolicy')"
+          :label="t('verrazzano.common.fields.podSpec.restartPolicy')"
           @input="setField('restartPolicy', $event)"
         />
       </div>
@@ -129,7 +129,7 @@ export default {
         <LabeledInput
           :value="getField('priorityClassName')"
           :mode="mode"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.priorityClassName')"
+          :label="t('verrazzano.common.fields.podSpec.priorityClassName')"
           :placeholder="getNotSetPlaceholder(value, 'priorityClassName')"
           @input="setField('priorityClassName', $event)"
         />
@@ -138,7 +138,7 @@ export default {
         <LabeledInput
           :value="getField('runtimeClassName')"
           :mode="mode"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.runtimeClassName')"
+          :label="t('verrazzano.common.fields.podSpec.runtimeClassName')"
           :placeholder="getNotSetPlaceholder(value, 'runtimeClassName')"
           @input="setField('runtimeClassName', $event)"
         />
@@ -261,9 +261,10 @@ export default {
         :name="createTabKey(navPrefix, 'auxiliaryImages')"
       >
         <AuxiliaryImages
-          v-model="value"
+          :value="value"
           :mode="mode"
           :namespaced-object="namespacedObject"
+          @input="$emit('input', value)"
         />
       </TreeTab>
 
@@ -292,10 +293,11 @@ export default {
         :name="createTabKey(navPrefix, 'envVariables')"
       >
         <EnvironmentVariables
-          v-model="value"
+          :value="value"
           :mode="mode"
-          :namespaced-object="value"
+          :namespaced-object="namespacedObject"
           :enable-env-from-options="false"
+          @input="$emit('input', value)"
         />
       </TreeTab>
     </template>

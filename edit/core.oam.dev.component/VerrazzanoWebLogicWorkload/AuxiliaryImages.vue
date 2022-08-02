@@ -5,6 +5,7 @@ import ArrayListGrouped from '@/components/form/ArrayListGrouped';
 import { randomStr } from '@/utils/string';
 import debounce from 'lodash/debounce';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
+import { _VIEW } from '@/config/query-params';
 
 export default {
   name:       'AuxiliaryImages',
@@ -66,6 +67,14 @@ export default {
       this.queueUpdate();
     }
   },
+
+  computed: {
+    isView() {
+      // used by showEmptyListMessage
+      return this.mode === _VIEW;
+    },
+  },
+
   created() {
     this.queueUpdate = debounce(this.update, 500);
   }
@@ -80,6 +89,7 @@ export default {
       :default-add-value="{ }"
       :add-label="t('verrazzano.weblogic.buttons.addAuxiliaryImage')"
       @add="addImage()"
+      @input="$emit('input', value)"
     >
       <template #remove-button="removeProps">
         <button
@@ -100,8 +110,8 @@ export default {
         />
       </template>
     </ArrayListGrouped>
-    <div v-if="showEmptyListMessage('auxiliaryImages')">
-      {{ t('verrazzano.VerrazzanoWebLogicWorkload.config.values.noAuxiliaryImages') }}
+    <div v-if="showEmptyListMessage(rootFieldName)">
+      {{ t('verrazzano.weblogic.messages.noAuxiliaryImages') }}
     </div>
   </div>
 </template>

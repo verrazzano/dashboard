@@ -7601,8 +7601,20 @@ verrazzano:
       overrideDistributionStrategy: Overrides Distribution Strategy
       overridesConfigMap: Overrides Config Map Name
       restartVersion: Restart Version
+      serverPod:
+        shutdown:
+          ignoreSession: Ignore Sessions
+          shutdownType: Shutdown Type
+          timeoutSeconds: Timeout Seconds
+          waitForAllSessions: Wait for All Sessions
       serverStartPolicy: Server Start Policy
       serverStartState: Server Start State
+
+    ####################################
+    ### verrazzano.weblogic.messages ###
+    ####################################
+    messages:
+      noAuxiliaryImages: No auxiliary images defined
 
     ################################
     ### verrazzano.weblogic.tabs ###
@@ -8245,16 +8257,6 @@ verrazzano:
         precreateService: Pre-Create Services
         restartVersion: Restart Version
         serverName: Server Name
-        serverPod:
-          priorityClassName: Priority Class Name
-          restartPolicy: Restart Policy
-          runtimeClassName: Runtime Class Name
-          serviceAccountName: Service Account Name
-          shutdown:
-            ignoreSession: Ignore Sessions
-            shutdownType: Shutdown Type
-            timeoutSeconds: Timeout Seconds
-            waitForAllSessions: Wait for All Sessions
         serverStartPolicy: Server Start Policy
         serverStartState: Server Start State
         webLogicCredentialsSecret: WebLogic Domain Credentials Secret
@@ -8277,7 +8279,6 @@ verrazzano:
         volumeMounts: Volume Mounts
         wdtTimeouts: WebLogic Deploy Tooling Online Timeouts
       values:
-        noAuxiliaryImages: No Auxiliary Images Defined
         types:
           domainHomeSourceType:
             domainInPV: Domain in Persistent Volume

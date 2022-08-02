@@ -308,7 +308,7 @@ export default {
               <LabeledSelect
                 :value="getField('spec.workload.spec.deploymentTemplate.podSpec.restartPolicy')"
                 :mode="mode"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.restartPolicy')"
+                :label="t('verrazzano.common.fields.podSpec.restartPolicy')"
                 :placeholder="getNotSetPlaceholder(value, 'restartPolicy')"
                 :options="[
                   {
@@ -343,7 +343,7 @@ export default {
               <LabeledInput
                 :value="getField('spec.workload.spec.deploymentTemplate.podSpec.priorityClassName')"
                 :mode="mode"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.priorityClassName')"
+                :label="t('verrazzano.common.fields.podSpec.priorityClassName')"
                 :placeholder="getNotSetPlaceholder(value, 'priorityClassName')"
                 @input="setField('spec.workload.spec.deploymentTemplate.podSpec.priorityClassName', $event)"
               />
@@ -352,7 +352,7 @@ export default {
               <LabeledInput
                 :value="getField('spec.workload.spec.deploymentTemplate.podSpec.runtimeClassName')"
                 :mode="mode"
-                :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.runtimeClassName')"
+                :label="t('verrazzano.common.fields.podSpec.runtimeClassName')"
                 :placeholder="getNotSetPlaceholder(value, 'runtimeClassName')"
                 @input="setField('spec.workload.spec.deploymentTemplate.podSpec.runtimeClassName', $event)"
               />
