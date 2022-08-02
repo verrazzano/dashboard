@@ -124,13 +124,33 @@ export default {
     :aria-hidden="!active"
     role="tabpanel"
   >
-    <h2 v-if="shouldShowHeader" v-show="active">
-      {{ titleDisplay }}
-      <i v-if="tooltip" v-tooltip="tooltip" class="icon icon-info icon-lg" />
-    </h2>
+    <div v-show="active" class="top-header">
+      <h2 v-if="shouldShowHeader">
+        {{ titleDisplay }}
+        <i v-if="tooltip" v-tooltip="tooltip" class="icon icon-info icon-lg" />
+      </h2>
+      <slot name="beside-header" />
+    </div>
     <div v-show="active">
       <slot v-show="active" v-bind="{active}" />
     </div>
     <slot name="nestedTabs" />
   </section>
 </template>
+
+<style lang="scss" scoped>
+.top-header {
+  align-items: flex-start;
+  display: flex;
+}
+
+.top-header h2 {
+  flex: 1 1 auto;
+}
+
+.top-header .btn.close {
+  margin-left: 1em;
+  margin-top: -2px;
+  padding: 0;
+}
+</style>
