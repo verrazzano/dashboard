@@ -61,8 +61,8 @@ export default {
         <KeyValue
           :value="getField('labels')"
           :mode="mode"
-          :title="t('verrazzano.config.titles.labels')"
-          :add-label="t('verrazzano.config.buttons.addLabel')"
+          :title="t('verrazzano.common.titles.labels')"
+          :add-label="t('verrazzano.common.buttons.addLabel')"
           @input="setFieldIfNotEmpty('labels', $event)"
         />
       </div>
@@ -70,8 +70,8 @@ export default {
         <KeyValue
           :value="getField('annotations')"
           :mode="mode"
-          :title="t('verrazzano.config.titles.annotations')"
-          :add-label="t('verrazzano.config.buttons.addAnnotation')"
+          :title="t('verrazzano.common.titles.annotations')"
+          :add-label="t('verrazzano.common.buttons.addAnnotation')"
           @input="setFieldIfNotEmpty('annotations', $event)"
         />
       </div>

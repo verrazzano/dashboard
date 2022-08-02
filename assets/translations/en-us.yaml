@@ -7116,6 +7116,7 @@ verrazzano:
       addContainer: Add Container
       addDNSNameserver: Add DNS Name Server
       addDNSSearchDomain: Add DNS Search Domain
+      addElement: Add { element }
       addEnvVar: Add Environment Variable
       addExternalIP: Add External IP
       addHost: Add Host
@@ -7138,6 +7139,7 @@ verrazzano:
       addVolumeMount: Add Volume Mount
       deleteComponent: Delete Component
       deleteContainer: Delete Container
+      deleteElement: Delete { element }
       deleteIngressRule: Delete Ingress Rule
       deleteTrait: Delete Trait
 
@@ -7227,6 +7229,7 @@ verrazzano:
       namespace: Namespace
       newComponentName: New Component Name
       newContainerName: New Container Name
+      newElementName: New { element } Name
       newTraitType: New Trait Type
       nodeSelectorRequirementType: Node Selector Requirement Type
       ownerReference:
@@ -7295,6 +7298,9 @@ verrazzano:
       whenUnsatisfiable: When Unsatisfiable
       workingDir: Working Directory
       workloadConfigMapName: Workload ConfigMap Name
+    messages:
+      enterName: Enter an new name
+      nameInUse: The name {name} already exists
 
     ##############################
     ### verrazzano.common.tabs ###
@@ -7576,16 +7582,27 @@ verrazzano:
       addAuxiliaryImage: Add Auxiliary Image
       addAuxiliaryImageVolume: Add Auxiliary Image Volume
       addChannel: Add Channel
-      addCluster: Add Cluster
-      addManagedServer: Add Managed Server
 
     ##################################
     ### verrazzano.weblogic.fields ###
     ##################################
     fields:
+      clusters:
+        allowReplicasBelowMinDynClusterSize: Allow Replicas Below Minimum Cluster Size
+        clusterName: Cluster Name
+        maxConcurrentShutdown: Maximum Concurrent Shutdown
+        maxConcurrentStartup: Maximum Concurrent Startup
+        maxUnavailable: Maximum Unavailable
+        replicas: Replicas
+        sessionAffinity: Session Affinity
       introspectorJobActiveDeadlineSeconds: Introspector Job Active Deadline Seconds
+      managedServers:
+        serverName: Server Name
       overrideDistributionStrategy: Overrides Distribution Strategy
       overridesConfigMap: Overrides Config Map Name
+      restartVersion: Restart Version
+      serverStartPolicy: Server Start Policy
+      serverStartState: Server Start State
 
     ################################
     ### verrazzano.weblogic.tabs ###
@@ -7595,12 +7612,14 @@ verrazzano:
       auxiliaryImage: Auxiliary Image
       auxiliaryImages: Auxiliary Images
       auxiliaryImageVolumes: Auxiliary Image Volumes
+      cluster: Cluster
       clusters: Clusters
       configuration: Configuration
       envVariables: Environment Variables
       fluentd: Fluentd Specification
       general: General
       initContainers: Init Containers
+      managedServer: Managed Server
       managedServers: Managed Servers
       monitoringExporter: Monitoring Exporter
       serverPod: Server Pod
@@ -7610,6 +7629,8 @@ verrazzano:
     ### verrazzano.weblogic.titles ###
     ##################################
     titles:
+      clusters:
+        clusterService: Cluster Service
       modelConfiguration: WebLogic Deploy Tooling Model-Related Settings
       opss: OPSS-Related Settings
       serverPod:
@@ -8167,14 +8188,6 @@ verrazzano:
           mountPath: Mount Path
           medium: Medium
           sizeLimit: Volume Size Limit
-        clusters:
-          allowReplicasBelowMinDynClusterSize: Allow Replicas Below Minimum Cluster Size
-          clusterName: Cluster Name
-          maxConcurrentShutdown: Maximum Concurrent Shutdown
-          maxConcurrentStartup: Maximum Concurrent Startup
-          maxUnavailable: Maximum Unavailable
-          replicas: Replicas
-          sessionAffinity: Session Affinity
         configuration:
           model:
             configMap: WDT Model Config Map Name
@@ -8252,7 +8265,6 @@ verrazzano:
         channels: Channels
         advanced: Advanced Settings
         auxiliaryImages: Auxiliary Images
-        clusterService: Cluster Service
         domainLifecycleSettings: Domain Lifecycle Configuration
         domainLogSettings: Domain Logging Configuration
         domainSettings: Domain-Related Settings
