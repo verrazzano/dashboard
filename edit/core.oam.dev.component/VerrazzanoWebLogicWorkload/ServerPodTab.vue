@@ -1,5 +1,6 @@
 <script>
 // Added by Verrazzano
+import AffinityTab from '@/components/verrazzano/AffinityTab';
 import AuxiliaryImages from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImages';
 import ContainerResources from '@/components/verrazzano/ContainerResources';
 import ContainersTab from '@/components/verrazzano/ContainersTab';
@@ -26,6 +27,7 @@ import { allHash } from '@/utils/promise';
 export default {
   name:       'ServerPodTab',
   components: {
+    AffinityTab,
     AuxiliaryImages,
     ContainerResources,
     ContainersTab,
@@ -266,6 +268,13 @@ export default {
           :namespaced-object="namespacedObject"
         />
       </TreeTab>
+
+      <AffinityTab
+        :value="getField('affinity')"
+        :mode="mode"
+        :tab-name="createTabKey(navPrefix, 'affinity')"
+        @input="setFieldIfNotEmpty('affinity', $event)"
+      />
 
       <ContainersTab
         :value="value"

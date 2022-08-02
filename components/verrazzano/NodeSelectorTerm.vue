@@ -27,6 +27,9 @@ export default {
     }
   },
   data() {
+    // eslint-disable-next-line no-console
+    console.log('XXXXXXX NodeSelectorTerm data() got value: ', JSON.stringify(this.value));
+
     let { matchExpressions = [], matchFields = [] } = this.value || {};
 
     matchExpressions = matchExpressions.map((nodeSelector) => {

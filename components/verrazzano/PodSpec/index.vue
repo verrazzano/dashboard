@@ -20,13 +20,13 @@ import { allHash } from '@/utils/promise';
 export default {
   name:       'PodSpec',
   components: {
-    PodDNSConfig,
     Affinity,
     Checkbox,
     Containers,
     HostAliases,
     LabeledInput,
     LabeledSelect,
+    PodDNSConfig,
     PodSecurityContext,
     ReadinessGates,
     Tolerations,
