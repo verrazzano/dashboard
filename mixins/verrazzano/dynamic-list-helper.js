@@ -1,5 +1,6 @@
 // Added by Verrazzano
 
+import { isEmpty } from '@/utils/object';
 import { randomStr } from '~/utils/string';
 import debounce from 'lodash/debounce';
 import CreateEditView from '~/mixins/create-edit-view';
@@ -42,7 +43,9 @@ export default {
     addChild(child) {
       this.children.push({ _id: randomStr(4), ...child });
 
-      this.queueUpdate();
+      if (!isEmpty(child)) {
+        this.queueUpdate();
+      }
     },
     deleteChild(childToDelete) {
       const index = this.children.findIndex(child => child._id === childToDelete._id);
