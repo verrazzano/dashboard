@@ -110,7 +110,7 @@ export default {
           :mode="mode"
           option-label="metadata.name"
           :reduce="serviceAccount => serviceAccount.metadata.name"
-          @input="setField('serviceAccountName', $event)"
+          @input="setFieldIfNotEmpty('serviceAccountName', $event)"
         />
       </div>
       <div class="col span-3">
@@ -122,7 +122,7 @@ export default {
           option-label="label"
           :placeholder="getNotSetPlaceholder(value, 'restartPolicy')"
           :label="t('verrazzano.common.fields.podSpec.restartPolicy')"
-          @input="setField('restartPolicy', $event)"
+          @input="setFieldIfNotEmpty('restartPolicy', $event)"
         />
       </div>
       <div class="col span-3">
@@ -131,7 +131,7 @@ export default {
           :mode="mode"
           :label="t('verrazzano.common.fields.podSpec.priorityClassName')"
           :placeholder="getNotSetPlaceholder(value, 'priorityClassName')"
-          @input="setField('priorityClassName', $event)"
+          @input="setFieldIfNotEmpty('priorityClassName', $event)"
         />
       </div>
       <div class="col span-3">
@@ -140,7 +140,7 @@ export default {
           :mode="mode"
           :label="t('verrazzano.common.fields.podSpec.runtimeClassName')"
           :placeholder="getNotSetPlaceholder(value, 'runtimeClassName')"
-          @input="setField('runtimeClassName', $event)"
+          @input="setFieldIfNotEmpty('runtimeClassName', $event)"
         />
       </div>
     </div>

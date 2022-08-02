@@ -52,7 +52,7 @@ export default {
           :mode="mode"
           :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImage')"
           :placeholder="getNotSetPlaceholder(value, 'image')"
-          @input="setField('image', $event)"
+          @input="setFieldIfNotEmpty('image', $event)"
         />
       </div>
       <div class="col span-3">
@@ -63,7 +63,7 @@ export default {
           :options="imagePullPolicyOptions"
           option-key="value"
           :placeholder="getNotSetPlaceholder(value, 'imagePullPolicy')"
-          @input="setField('imagePullPolicy', $event)"
+          @input="setFieldIfNotEmpty('imagePullPolicy', $event)"
         />
       </div>
     </div>
@@ -75,7 +75,7 @@ export default {
           :mode="mode"
           :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImageVolumeReference')"
           :placeholder="getNotSetPlaceholder(value, 'volume')"
-          @input="setField('volume', $event)"
+          @input="setFieldIfNotEmpty('volume', $event)"
         />
       </div>
       <div class="col span-9">
