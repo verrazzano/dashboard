@@ -7,10 +7,6 @@ import { _VIEW } from '@/config/query-params';
 export default {
   name:       'TabDeleteButton',
   props:      {
-    value: {
-      type:    Array,
-      default: () => ([])
-    },
     mode: {
       type:     String,
       required: true,
