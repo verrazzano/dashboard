@@ -68,8 +68,9 @@ export default {
   },
   data() {
     return {
-      namespace:          '',
+      namespace:          this.namespacedObject.metadata?.namespace,
       allServiceAccounts: {},
+      serviceAccounts:    [],
     };
   },
   async fetch() {
@@ -87,12 +88,21 @@ export default {
       this.sortObjectsByNamespace(hash.serviceAccounts, this.allServiceAccounts);
     }
   },
-  computed: {
-    serviceAccounts() {
-      const namespace = this.get(this.namespacedObject, 'metadata.namespace');
-
-      return this.allServiceAccounts[namespace] || [];
+  methods: {
+    resetServiceAccounts() {
+      if (!this.fetchInProgress) {
+        this.serviceAccounts = this.allServiceAccounts[this.namespace] || [];
+      }
+    }
+  },
+  watch: {
+    fetchInProgress() {
+      this.resetServiceAccounts();
     },
+    'namespacedObject.metadata.namespace'(neu, old) {
+      this.namespace = neu;
+      this.resetServiceAccounts();
+    }
   },
 };
 </script>

@@ -41,35 +41,65 @@ export default {
   data() {
     let preferredDuringSchedulingIgnoredDuringExecution = this.value.nodeAffinity?.preferredDuringSchedulingIgnoredDuringExecution || [];
     let requiredDuringSchedulingIgnoredDuringExecution = this.value.nodeAffinity?.requiredDuringSchedulingIgnoredDuringExecution || {};
-    let nodeSelectorTerms = requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms || [];
-    const allNodeSelectorTerms = [...preferredDuringSchedulingIgnoredDuringExecution, ...nodeSelectorTerms].map((term) => {
-      const neu = this.clone(term);
 
-      neu._id = randomStr(4);
+    // The actual term object is in the preference field of the term
+    const allNodePreferredSelectorTerms = preferredDuringSchedulingIgnoredDuringExecution.map((term) => {
+      const newTerm = this.clone(term);
 
-      return neu;
+      newTerm._id = randomStr(4);
+      if (typeof newTerm.weight === 'undefined') {
+        newTerm.weight = 1;
+      }
+
+      return newTerm;
+    });
+
+    const allNodeRequiredSelectorTerms = (requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms || []).map((term) => {
+      const newTerm = this.clone(term);
+
+      newTerm._id = randomStr(4);
+
+      return newTerm;
     });
 
     preferredDuringSchedulingIgnoredDuringExecution = this.value.podAffinity?.preferredDuringSchedulingIgnoredDuringExecution || [];
-    requiredDuringSchedulingIgnoredDuringExecution = this.value.podAffinity?.requiredDuringSchedulingIgnoredDuringExecution || {};
-    nodeSelectorTerms = requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms || [];
-    const allPodSelectorTerms = [...preferredDuringSchedulingIgnoredDuringExecution, ...nodeSelectorTerms].map((term) => {
-      const neu = this.clone(term);
+    requiredDuringSchedulingIgnoredDuringExecution = this.value.podAffinity?.requiredDuringSchedulingIgnoredDuringExecution || [];
 
-      neu._id = randomStr(4);
+    // The actual term object is in the podAffinityTerm field of the term
+    const allPodPreferredSelectorTerms = preferredDuringSchedulingIgnoredDuringExecution.map((term) => {
+      const newTerm = this.clone(term);
 
-      return neu;
+      newTerm._id = randomStr(4);
+
+      return newTerm;
+    });
+
+    const allPodRequiredSelectorTerms = requiredDuringSchedulingIgnoredDuringExecution.map((term) => {
+      const newTerm = this.clone(term);
+
+      newTerm._id = randomStr(4);
+
+      return newTerm;
     });
 
     preferredDuringSchedulingIgnoredDuringExecution = this.value.podAntiAffinity?.preferredDuringSchedulingIgnoredDuringExecution || [];
-    requiredDuringSchedulingIgnoredDuringExecution = this.value.podAntiAffinity?.requiredDuringSchedulingIgnoredDuringExecution || {};
-    nodeSelectorTerms = requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms || [];
-    const allPodAntiSelectorTerms = [...preferredDuringSchedulingIgnoredDuringExecution, ...nodeSelectorTerms].map((term) => {
-      const neu = this.clone(term);
+    requiredDuringSchedulingIgnoredDuringExecution = this.value.podAntiAffinity?.requiredDuringSchedulingIgnoredDuringExecution || [];
 
-      neu._id = randomStr(4);
+    // The actual term object is in the podAffinityTerm field of the term
+    const allPodAntiPreferredSelectorTerms = preferredDuringSchedulingIgnoredDuringExecution.map((term) => {
+      const newTerm = this.clone(term);
 
-      return neu;
+      newTerm._id = randomStr(4);
+
+      return newTerm;
+    });
+
+    const allPodAntiRequiredSelectorTerms = requiredDuringSchedulingIgnoredDuringExecution.map((term) => {
+      const newTerm = this.clone(term);
+
+      newTerm._id = randomStr(4);
+
+      return newTerm;
     });
 
     return {
@@ -77,9 +107,12 @@ export default {
       treeTabLabel:        this.tabLabel,
       newAffinityType:     '',
       newSelectorTermType: '',
-      allNodeSelectorTerms,
-      allPodSelectorTerms,
-      allPodAntiSelectorTerms,
+      allNodePreferredSelectorTerms,
+      allNodeRequiredSelectorTerms,
+      allPodPreferredSelectorTerms,
+      allPodRequiredSelectorTerms,
+      allPodAntiPreferredSelectorTerms,
+      allPodAntiRequiredSelectorTerms,
     };
   },
   computed: {
@@ -96,122 +129,290 @@ export default {
         { value: 'required', label: this.t('verrazzano.common.types.selectorTermType.required') },
       ];
     },
+    allNodeSelectorTerms() {
+      return [...this.allNodePreferredSelectorTerms, ...this.allNodeRequiredSelectorTerms];
+    },
+    allPodSelectorTerms() {
+      return [...this.allPodPreferredSelectorTerms, ...this.allPodRequiredSelectorTerms];
+    },
+    allPodAntiSelectorTerms() {
+      return [...this.allPodAntiPreferredSelectorTerms, ...this.allPodAntiRequiredSelectorTerms];
+    },
     showNodeAffinityTab() {
-      return this.allNodeSelectorTerms.length > 0;
+      return this.allNodePreferredSelectorTerms.length > 0 || this.allNodeRequiredSelectorTerms.length > 0;
     },
     showPodAffinityTab() {
-      return this.allPodSelectorTerms.length > 0;
+      return this.allPodPreferredSelectorTerms.length > 0 || this.allPodRequiredSelectorTerms.length > 0;
     },
     showPodAntiAffinityTab() {
-      return this.allPodAntiSelectorTerms.length > 0;
+      return this.allPodAntiPreferredSelectorTerms.length > 0 || this.allPodAntiRequiredSelectorTerms.length > 0;
     },
   },
   methods: {
-    _updateHelper(allTerms, required, preferred) {
+    _updateCloneHelper(allTerms, terms) {
       allTerms.forEach((term) => {
-        if (term.weight) {
-          const neuTerm = { ...term };
-          const weight = Number(neuTerm.weight);
+        const newTerm = this.clone(term);
 
-          delete neuTerm.weight;
-          delete neuTerm._id;
+        delete newTerm._id;
 
-          const neu = { weight, preference: neuTerm };
-
-          preferred.push(neu);
-        } else {
-          const neu = { ...term };
-
-          delete neu._id;
-          required.nodeSelectorTerms.push(neu);
-        }
+        terms.push(newTerm);
       });
+    },
+    _updateSetHelper(baseFieldName, prefFieldName, reqFieldName, prefArray, reqArray) {
+      if (prefArray.length > 0) {
+        this.setFieldIfNotEmpty(`${ baseFieldName }.${ prefFieldName }`, prefArray);
+      } else {
+        const fieldNameToSet = prefFieldName.includes('.') ? prefFieldName.split('.')[0] : prefFieldName;
+
+        this.setField(`${ baseFieldName }.${ fieldNameToSet }`, undefined);
+      }
+      if (reqArray.length > 0) {
+        this.setFieldIfNotEmpty(`${ baseFieldName }.${ reqFieldName }`, reqArray);
+      } else {
+        const fieldNameToSet = reqFieldName.includes('.') ? reqFieldName.split('.')[0] : reqFieldName;
+
+        this.setField(`${ baseFieldName }.${ fieldNameToSet }`, undefined);
+      }
+      if (prefArray.length === 0 && reqArray.length === 0) {
+        this.setField(baseFieldName, undefined);
+      }
     },
     update() {
       const nodePreferred = [];
       const nodeRequired = { nodeSelectorTerms: [] };
       const podPreferred = [];
-      const podRequired = { nodeSelectorTerms: [] };
+      const podRequired = [];
       const antiPodPreferred = [];
-      const antiPodRequired = { nodeSelectorTerms: [] };
+      const antiPodRequired = [];
 
-      this._updateHelper(this.allNodeSelectorTerms, nodeRequired, nodePreferred);
-      this._updateHelper(this.allPodSelectorTerms, podRequired, podPreferred);
-      this._updateHelper(this.allPodAntiSelectorTerms, antiPodRequired, antiPodPreferred);
+      this._updateCloneHelper(this.allNodePreferredSelectorTerms, nodePreferred);
+      this._updateCloneHelper(this.allNodeRequiredSelectorTerms, nodeRequired.nodeSelectorTerms);
+      this._updateCloneHelper(this.allPodPreferredSelectorTerms, podPreferred);
+      this._updateCloneHelper(this.allPodRequiredSelectorTerms, podRequired);
+      this._updateCloneHelper(this.allPodAntiPreferredSelectorTerms, antiPodPreferred);
+      this._updateCloneHelper(this.allPodAntiRequiredSelectorTerms, antiPodRequired);
 
-      this.setFieldIfNotEmpty('nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution', nodePreferred);
-      this.setFieldIfNotEmpty('nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution', nodeRequired);
-      this.setFieldIfNotEmpty('podAffinity.preferredDuringSchedulingIgnoredDuringExecution', podPreferred);
-      this.setFieldIfNotEmpty('podAffinity.requiredDuringSchedulingIgnoredDuringExecution', podRequired);
-      this.setFieldIfNotEmpty('podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution', antiPodPreferred);
-      this.setFieldIfNotEmpty('podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution', antiPodRequired);
+      this._updateSetHelper('nodeAffinity', 'preferredDuringSchedulingIgnoredDuringExecution',
+        'requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms', nodePreferred, nodeRequired.nodeSelectorTerms);
+      this._updateSetHelper('podAffinity', 'preferredDuringSchedulingIgnoredDuringExecution',
+        'requiredDuringSchedulingIgnoredDuringExecution', podPreferred, podRequired);
+      this._updateSetHelper('podAntiAffinity', 'preferredDuringSchedulingIgnoredDuringExecution',
+        'requiredDuringSchedulingIgnoredDuringExecution', antiPodPreferred, antiPodRequired);
     },
-    addAffinityTerm(list = null) {
-      if (this.newAffinityType && this.newSelectorTermType) {
-        let affinityList = list;
-
-        if (!affinityList) {
-          switch (this.newAffinityType) {
-          case 'nodeAffinity':
-            affinityList = this.allNodeSelectorTerms;
-            break;
-
-          case 'podAffinity':
-            affinityList = this.allPodSelectorTerms;
-            break;
-
-          case 'podAntiAffinity':
-            affinityList = this.allPodAntiSelectorTerms;
-            break;
-          }
+    addNodeAffinityPreferredTerm() {
+      this.allNodePreferredSelectorTerms.push({
+        _id:        randomStr(4),
+        weight:     1,
+        preference: {}
+      });
+    },
+    addNodeAffinityRequiredTerm() {
+      this.allNodeRequiredSelectorTerms.push({ _id: randomStr(4) });
+    },
+    addPodAffinityPreferredTerm() {
+      this.allPodPreferredSelectorTerms.push({
+        _id:             randomStr(4),
+        weight:          1,
+        podAffinityTerm: {}
+      });
+    },
+    addPodAffinityRequiredTerm() {
+      this.allPodRequiredSelectorTerms.push({ _id: randomStr(4) });
+    },
+    addPodAntiAffinityPreferredTerm() {
+      this.allPodAntiPreferredSelectorTerms.push({
+        _id:             randomStr(4),
+        weight:          1,
+        podAffinityTerm: {}
+      });
+    },
+    addPodAntiAffinityRequiredTerm() {
+      this.allPodAntiRequiredSelectorTerms.push({ _id: randomStr(4) });
+    },
+    addNodeAffinityTerm(type) {
+      if (type || this.newSelectorTermType) {
+        if (!type) {
+          type = this.newSelectorTermType;
         }
-        const newSelectorTerm = { _id: randomStr(4) };
+        const addMethod = type === 'preferred' ? this.addNodeAffinityPreferredTerm : this.addNodeAffinityRequiredTerm;
 
-        if (this.newSelectorTermType === 'preferred') {
-          newSelectorTerm.weight = 1;
-        }
-
-        affinityList.push(newSelectorTerm);
+        addMethod();
       }
     },
+    addPodAffinityTerm(type) {
+      if (type || this.newSelectorTermType) {
+        if (!type) {
+          type = this.newSelectorTermType;
+        }
+        const addMethod = type === 'preferred' ? this.addPodAffinityPreferredTerm : this.addPodAffinityRequiredTerm;
+
+        addMethod();
+      }
+    },
+    addPodAntiAffinityTerm(type = null) {
+      if (type || this.newSelectorTermType) {
+        if (!type) {
+          type = this.newSelectorTermType;
+        }
+        const addMethod = type === 'preferred' ? this.addPodAntiAffinityPreferredTerm : this.addPodAntiAffinityRequiredTerm;
+
+        addMethod();
+      }
+    },
+    addAffinityTerm() {
+      if (this.newAffinityType && this.newSelectorTermType) {
+        switch (this.newAffinityType) {
+        case 'nodeAffinity':
+          this.addNodeAffinityTerm(this.newSelectorTermType);
+          break;
+
+        case 'podAffinity':
+          this.addPodAffinityTerm(this.newSelectorTermType);
+          break;
+
+        case 'podAntiAffinity':
+          this.addPodAntiAffinityTerm(this.newSelectorTermType);
+          break;
+        }
+      }
+    },
+    _isPreferredType(affinityType, index) {
+      let list;
+
+      switch (affinityType) {
+      case 'nodeAffinity':
+        list = this.allNodePreferredSelectorTerms;
+        break;
+
+      case 'podAffinity':
+        list = this.allPodPreferredSelectorTerms;
+        break;
+
+      case 'podAntiAffinity':
+        list = this.allPodAntiPreferredSelectorTerms;
+        break;
+      }
+
+      return index < list.length;
+    },
     getNodeSelectorTermTabName(index) {
-      return this.createTabKey(this.createTabKey(this.treeTabName, 'nodeAffinity'), `term${ index + 1 }`);
+      const prefix = this._isPreferredType('nodeAffinity', index) ? 'preferred' : 'required';
+      const effectiveIndex = prefix === 'preferred' ? index : index - this.allNodePreferredSelectorTerms.length;
+
+      return this.createTabKey(this.createTabKey(this.treeTabName, 'nodeAffinity'), `${ prefix }${ effectiveIndex + 1 }`);
     },
     getNodeSelectorTermTabLabel(index) {
-      return this.t('verrazzano.common.tabs.nodeSelectorTerm', { index: index + 1 });
+      let key;
+      let effectiveIndex;
+
+      if (this._isPreferredType('nodeAffinity', index)) {
+        key = 'verrazzano.common.tabs.nodePreferredSelectorTerm';
+        effectiveIndex = index;
+      } else {
+        key = 'verrazzano.common.tabs.nodeRequiredSelectorTerm';
+        effectiveIndex = index - this.allNodePreferredSelectorTerms.length;
+      }
+
+      return this.t(key, { index: effectiveIndex + 1 });
     },
     getPodSelectorTermTabName(index) {
-      return this.createTabKey(this.createTabKey(this.treeTabName, 'podAffinity'), `term${ index + 1 }`);
+      const prefix = this._isPreferredType('podAffinity', index) ? 'preferred' : 'required';
+      const effectiveIndex = prefix === 'preferred' ? index : index - this.allPodPreferredSelectorTerms.length;
+
+      return this.createTabKey(this.createTabKey(this.treeTabName, 'podAffinity'), `${ prefix }${ effectiveIndex + 1 }`);
     },
     getPodSelectorTermTabLabel(index) {
-      return this.t('verrazzano.common.tabs.podSelectorTerm', { index: index + 1 });
+      let key;
+      let effectiveIndex;
+
+      if (this._isPreferredType('podAffinity', index)) {
+        key = 'verrazzano.common.tabs.podPreferredSelectorTerm';
+        effectiveIndex = index;
+      } else {
+        key = 'verrazzano.common.tabs.podRequiredSelectorTerm';
+        effectiveIndex = index - this.allPodPreferredSelectorTerms.length;
+      }
+
+      return this.t(key, { index: effectiveIndex + 1 });
     },
     getPodAntiSelectorTermTabName(index) {
-      return this.createTabKey(this.createTabKey(this.treeTabName, 'podAntiAffinity'), `term${ index + 1 }`);
+      const prefix = this._isPreferredType('podAntiAffinity', index) ? 'preferred' : 'required';
+      const effectiveIndex = prefix === 'preferred' ? index : index - this.allPodAntiPreferredSelectorTerms.length;
+
+      return this.createTabKey(this.createTabKey(this.treeTabName, 'podAntiAffinity'), `${ prefix }${ effectiveIndex + 1 }`);
     },
     getPodAntiSelectorTermTabLabel(index) {
-      return this.t('verrazzano.common.tabs.podAntiSelectorTerm', { index: index + 1 });
+      let key;
+      let effectiveIndex;
+
+      if (this._isPreferredType('podAntiAffinity', index)) {
+        key = 'verrazzano.common.tabs.podAntiPreferredSelectorTerm';
+        effectiveIndex = index;
+      } else {
+        key = 'verrazzano.common.tabs.podAntiRequiredSelectorTerm';
+        effectiveIndex = index - this.allPodAntiPreferredSelectorTerms;
+      }
+
+      return this.t(key, { index: effectiveIndex + 1 });
     },
-    removeAffinitySelectorTerm(list, index) {
-      list.splice(index, 1);
-      this.queueUpdate();
+    getValueForNodeSelectorTermComponent(term) {
+      return term.weight ? term.preference : term;
+    },
+    getValueForPodAffinityTermComponent(term) {
+      return term.weight ? term.podAffinityTerm : term;
     },
     removeAffinity() {
-      this.allNodeSelectorTerms.length = 0;
-      this.allPodSelectorTerms.length = 0;
-      this.allPodAntiSelectorTerms.length = 0;
+      this.allNodePreferredSelectorTerms.length = 0;
+      this.allNodeRequiredSelectorTerms.length = 0;
+      this.allPodPreferredSelectorTerms.length = 0;
+      this.allPodRequiredSelectorTerms.length = 0;
+      this.allPodAntiPreferredSelectorTerms.length = 0;
+      this.allPodAntiRequiredSelectorTerms.length = 0;
       this.queueUpdate();
     },
     removeNodeAffinity() {
-      this.allNodeSelectorTerms.length = 0;
+      this.allNodePreferredSelectorTerms.length = 0;
+      this.allNodeRequiredSelectorTerms.length = 0;
       this.queueUpdate();
     },
     removePodAffinity() {
-      this.allPodSelectorTerms.length = 0;
+      this.allPodPreferredSelectorTerms.length = 0;
+      this.allPodRequiredSelectorTerms.length = 0;
       this.queueUpdate();
     },
     removePodAntiAffinity() {
-      this.allPodAntiSelectorTerms.length = 0;
+      this.allPodAntiPreferredSelectorTerms.length = 0;
+      this.allPodAntiRequiredSelectorTerms.length = 0;
+      this.queueUpdate();
+    },
+    removeNodeSelectorTerm(term, index) {
+      if (this._isPreferredType('nodeAffinity', index)) {
+        this.allNodePreferredSelectorTerms.splice(index, 1);
+      } else {
+        const effectiveIndex = index - this.allNodePreferredSelectorTerms.length;
+
+        this.allNodeRequiredSelectorTerms.splice(effectiveIndex, 1);
+      }
+      this.queueUpdate();
+    },
+    removePodSelectorTerm(term, index) {
+      if (this._isPreferredType('podAffinity', index)) {
+        this.allPodPreferredSelectorTerms.splice(index, 1);
+      } else {
+        const effectiveIndex = index - this.allPodPreferredSelectorTerms.length;
+
+        this.allPodRequiredSelectorTerms.splice(effectiveIndex, 1);
+      }
+      this.queueUpdate();
+    },
+    removePodAntiSelectorTerm(term, index) {
+      if (this._isPreferredType('podAntiAffinity', index)) {
+        this.allPodAntiPreferredSelectorTerms.splice(index, 1);
+      } else {
+        const effectiveIndex = index - this.allPodAntiPreferredSelectorTerms.length;
+
+        this.allPodAntiRequiredSelectorTerms.splice(effectiveIndex, 1);
+      }
       this.queueUpdate();
     },
   },
@@ -302,8 +503,8 @@ export default {
               <button
                 type="button"
                 :disabled="isView"
-                class="btn role-link close btn-sm"
-                @click="addAffinityTerm(allNodeSelectorTerms)"
+                class="btn role-tertiary add"
+                @click="addNodeAffinityTerm()"
               >
                 {{ t('verrazzano.common.buttons.addNodeSelectorTerm') }}
               </button>
@@ -313,15 +514,24 @@ export default {
         <template #nestedTabs>
           <TreeTab
             v-for="(term, idx) in allNodeSelectorTerms"
-            :key="idx"
+            :key="term._id"
             :name="getNodeSelectorTermTabName(idx)"
             :label="getNodeSelectorTermTabLabel(idx)"
           >
-            <NodeSelectorTerm
-              :value="term"
-              :mode="mode"
-              @input="queueUpdate"
-            />
+            <template #beside-header>
+              <TabDeleteButton
+                :element-name="getNodeSelectorTermTabLabel(idx)"
+                mode="mode"
+                @click="removeNodeSelectorTerm(term, idx)"
+              />
+            </template>
+            <template #default>
+              <NodeSelectorTerm
+                :value="getValueForNodeSelectorTermComponent(term)"
+                :mode="mode"
+                @input="queueUpdate"
+              />
+            </template>
           </TreeTab>
         </template>
       </TreeTab>
@@ -353,8 +563,8 @@ export default {
               <button
                 type="button"
                 :disabled="isView"
-                class="btn role-link close btn-sm"
-                @click="addAffinityTerm(allPodSelectorTerms)"
+                class="btn role-tertiary add"
+                @click="addPodAffinityTerm()"
               >
                 {{ t('verrazzano.common.buttons.addPodSelectorTerm') }}
               </button>
@@ -368,11 +578,20 @@ export default {
             :name="getPodSelectorTermTabName(idx)"
             :label="getPodSelectorTermTabLabel(idx)"
           >
-            <PodAffinityTerm
-              :value="term"
-              :mode="mode"
-              @input="queueUpdate"
-            />
+            <template #beside-header>
+              <TabDeleteButton
+                :element-name="getPodSelectorTermTabLabel(idx)"
+                mode="mode"
+                @click="removePodSelectorTerm(term, idx)"
+              />
+            </template>
+            <template #default>
+              <PodAffinityTerm
+                :value="getValueForPodAffinityTermComponent(term)"
+                :mode="mode"
+                @input="queueUpdate"
+              />
+            </template>
           </TreeTab>
         </template>
       </TreeTab>
@@ -404,8 +623,8 @@ export default {
               <button
                 type="button"
                 :disabled="isView"
-                class="btn role-link close btn-sm"
-                @click="addAffinityTerm(allPodSelectorTerms)"
+                class="btn role-tertiary add"
+                @click="addPodAntiAffinityTerm()"
               >
                 {{ t('verrazzano.common.buttons.addPodSelectorTerm') }}
               </button>
@@ -419,11 +638,20 @@ export default {
             :name="getPodAntiSelectorTermTabName(idx)"
             :label="getPodAntiSelectorTermTabLabel(idx)"
           >
-            <PodAffinityTerm
-              :value="term"
-              :mode="mode"
-              @input="queueUpdate"
-            />
+            <template #beside-header>
+              <TabDeleteButton
+                :element-name="getPodAntiSelectorTermTabLabel(idx)"
+                mode="mode"
+                @click="removePodAntiSelectorTerm(term, idx)"
+              />
+            </template>
+            <template #default>
+              <PodAffinityTerm
+                :value="getValueForPodAffinityTermComponent(term)"
+                :mode="mode"
+                @input="queueUpdate"
+              />
+            </template>
           </TreeTab>
         </template>
       </TreeTab>

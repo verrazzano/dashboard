@@ -7224,6 +7224,11 @@ verrazzano:
       loadBalancerSourceRange: Load Balancer Source Range
       loggingConfig: Fluentd Configuration
       loggingImage: Fluentd Logging Image
+      matchExpressions:
+        key: Key
+        operator: Operator
+        value: Value
+        values: Values
       maxSkew: Maximum Distribution Skew
       metricsSecret: Metrics Endpoint Credentials Secret
       mountPropagationMode: Mount Propagation Mode
@@ -7329,11 +7334,14 @@ verrazzano:
       metricsTrait: Metrics Trait
       metadata: Metadata
       nodeAffinity: Node Affinity
-      nodeSelectorTerm: Term {index}
+      nodePreferredSelectorTerm: Preferred {index}
+      nodeRequiredSelectorTerm: Required {index}
       podAffinity: Pod Affinity
       podAntiAffinity: Pod Anti-Affinity
-      podAntiSelectorTerm: Term {index}
-      podSelectorTerm: Term {index}
+      podAntiPreferredSelectorTerm: Preferred {index}
+      podAntiRequiredSelectorTerm: Required {index}
+      podPreferredSelectorTerm: Preferred {index}
+      podRequiredSelectorTerm: Required {index}
       ports: Ports
       preferredPrefix: Preferred Term
       resources: Resources
@@ -7442,6 +7450,13 @@ verrazzano:
         preferDualStack: Prefer Dual Stack
         requireDualStack: Require Dual Stack
         singleStack: Single Stack
+      matchExpressionOperators:
+        doesNotExist: is not set
+        exists: is set
+        greaterThan: '>'
+        in: in list
+        lessThan: '<'
+        notIn: not in list
       mountPropagationMode:
         bidirectional: Bidirectional
         hostToContainer: Host to Container
