@@ -7107,6 +7107,7 @@ verrazzano:
     ### verrazzano.common.buttons ###
     #################################
     buttons:
+      addAffinitySelectorTerm: Add Affinity Selector Term
       addAnnotation: Add Annotation
       addArgument: Add Argument
       addClusterIP: Add Cluster IP
@@ -7131,6 +7132,7 @@ verrazzano:
       addOwnerReference: Add Owner Reference
       addPath: Add Path
       addPodDNSResolverOption: Add Pod DNS Resolver Option
+      addPodSelectorTerm: Add Pod Selector Term
       addPort: Add Port
       addSecretItem: Add Secret Item
       addTopologySpreadConstraints: Add Topology Spread Constraint
@@ -7222,14 +7224,21 @@ verrazzano:
       loadBalancerSourceRange: Load Balancer Source Range
       loggingConfig: Fluentd Configuration
       loggingImage: Fluentd Logging Image
+      matchExpressions:
+        key: Key
+        operator: Operator
+        value: Value
+        values: Values
       maxSkew: Maximum Distribution Skew
       metricsSecret: Metrics Endpoint Credentials Secret
       mountPropagationMode: Mount Propagation Mode
       name: Name
       namespace: Namespace
+      newAffinityType: New Affinity Type
       newComponentName: New Component Name
       newContainerName: New Container Name
       newElementName: New { element } Name
+      newSelectorTermType: New Affinity Selector Term Type
       newTraitType: New Trait Type
       nodeSelectorRequirementType: Node Selector Requirement Type
       ownerReference:
@@ -7262,7 +7271,9 @@ verrazzano:
         subdomain: Subdomain
         terminationGracePeriodSeconds: Termination Grace Period Seconds
       port: Port
+      preferred: Preferred
       replicas: Replicas
+      required: Required
       scraper: Prometheus Scraper Deployment Name
       sessionAffinity: Session Affinity
       secretKeySelector:
@@ -7306,6 +7317,7 @@ verrazzano:
     ### verrazzano.common.tabs ###
     ##############################
     tabs:
+      affinity: Affinity
       components: Components
       containers: Containers
       ephemeralContainers: Ephemeral Containers
@@ -7321,7 +7333,17 @@ verrazzano:
       manualScalerTrait: Manual Scaler Trait
       metricsTrait: Metrics Trait
       metadata: Metadata
+      nodeAffinity: Node Affinity
+      nodePreferredSelectorTerm: Preferred {index}
+      nodeRequiredSelectorTerm: Required {index}
+      podAffinity: Pod Affinity
+      podAntiAffinity: Pod Anti-Affinity
+      podAntiPreferredSelectorTerm: Preferred {index}
+      podAntiRequiredSelectorTerm: Required {index}
+      podPreferredSelectorTerm: Preferred {index}
+      podRequiredSelectorTerm: Required {index}
       ports: Ports
+      preferredPrefix: Preferred Term
       resources: Resources
       volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
@@ -7398,6 +7420,10 @@ verrazzano:
         rwMany: Read-Write Many
         rwOnce: Read-Write Once
         rwOncePod: Read-Write Once Pod
+      affinityType:
+        nodeAffinity: Node Affinity
+        podAffinity: Pod Affinity
+        podAntiAffinity: Pod Anti-Affinity
       containerProbeAction:
         exec: Execute Command
         grpc: gRPC Request
@@ -7424,6 +7450,13 @@ verrazzano:
         preferDualStack: Prefer Dual Stack
         requireDualStack: Require Dual Stack
         singleStack: Single Stack
+      matchExpressionOperators:
+        doesNotExist: is not set
+        exists: is set
+        greaterThan: '>'
+        in: in list
+        lessThan: '<'
+        notIn: not in list
       mountPropagationMode:
         bidirectional: Bidirectional
         hostToContainer: Host to Container
@@ -7450,6 +7483,9 @@ verrazzano:
         always: Always
         never: Never
         onFailure: On Failure
+      selectorTermType:
+        preferred: Preferred
+        required: Required
       selectorType:
         configMap: Config Map
         secret: Secret
