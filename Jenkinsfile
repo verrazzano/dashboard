@@ -60,7 +60,7 @@ pipeline {
 }
 
 def get_dashboard_version() {
-    dashboard_version = ${env.DASHBOARD_VERSION}
+    dashboard_version = "${env.DASHBOARD_VERSION}"
 
     if (env.TAG_NAME == null) {
         dashboard_version = dashboard_version + "-SNAPSHOT"

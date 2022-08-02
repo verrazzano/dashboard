@@ -40,12 +40,12 @@ export default {
     },
     nodeOperators() {
       return [
-        { label: this.t('workload.scheduling.affinity.matchExpressions.in'), value: 'In' },
-        { label: this.t('workload.scheduling.affinity.matchExpressions.notIn'), value: 'NotIn' },
-        { label: this.t('workload.scheduling.affinity.matchExpressions.exists'), value: 'Exists' },
-        { label: this.t('workload.scheduling.affinity.matchExpressions.doesNotExist'), value: 'DoesNotExist' },
-        { label: this.t('workload.scheduling.affinity.matchExpressions.lessThan'), value: 'Lt' },
-        { label: this.t('workload.scheduling.affinity.matchExpressions.greaterThan'), value: 'Gt' },
+        { label: this.t('verrazzano.common.types.matchExpressionOperators.in'), value: 'In' },
+        { label: this.t('verrazzano.common.types.matchExpressionOperators.notIn'), value: 'NotIn' },
+        { label: this.t('verrazzano.common.types.matchExpressionOperators.exists'), value: 'Exists' },
+        { label: this.t('verrazzano.common.types.matchExpressionOperators.doesNotExist'), value: 'DoesNotExist' },
+        { label: this.t('verrazzano.common.types.matchExpressionOperators.lessThan'), value: 'Lt' },
+        { label: this.t('verrazzano.common.types.matchExpressionOperators.greaterThan'), value: 'Gt' },
       ];
     },
     isValuesSingleElement() {
@@ -109,7 +109,7 @@ export default {
       <LabeledInput
         :value="getField('key')"
         :mode="mode"
-        :label="t('workload.scheduling.affinity.matchExpressions.key')"
+        :label="t('verrazzano.common.fields.matchExpressions.key')"
         required
         @input="setField('key', $event)"
       />
@@ -118,7 +118,7 @@ export default {
       <LabeledSelect
         :value="getField('operator')"
         :mode="mode"
-        :label="t('workload.scheduling.affinity.matchExpressions.operator')"
+        :label="t('verrazzano.common.fields.matchExpressions.operator')"
         required
         :options="nodeOperators"
         option-key="value"
@@ -132,7 +132,7 @@ export default {
         :value="values"
         :mode="mode"
         type="Number"
-        :label="t('workload.scheduling.affinity.matchExpressions.values')"
+        :label="t('verrazzano.common.fields.matchExpressions.value')"
         required
         @input="setField('values', [$event])"
       />
@@ -140,7 +140,7 @@ export default {
         v-else-if="isValuesMultipleElements"
         :value="values"
         :mode="mode"
-        :label="t('workload.scheduling.affinity.matchExpressions.values')"
+        :label="t('verrazzano.common.fields.matchExpressions.values')"
         initial-empty-row
         required
         @input="setField('values', $event)"

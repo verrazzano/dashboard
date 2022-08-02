@@ -1,5 +1,6 @@
 <script>
 // Added by Verrazzano
+import AffinityTab from '@/components/verrazzano/AffinityTab';
 import AuxiliaryImages from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImages';
 import ContainerResources from '@/components/verrazzano/ContainerResources';
 import ContainersTab from '@/components/verrazzano/ContainersTab';
@@ -26,6 +27,7 @@ import { allHash } from '@/utils/promise';
 export default {
   name:       'ServerPodTab',
   components: {
+    AffinityTab,
     AuxiliaryImages,
     ContainerResources,
     ContainersTab,
@@ -66,8 +68,9 @@ export default {
   },
   data() {
     return {
-      namespace:          '',
+      namespace:          this.namespacedObject.metadata?.namespace,
       allServiceAccounts: {},
+      serviceAccounts:    [],
     };
   },
   async fetch() {
@@ -85,12 +88,21 @@ export default {
       this.sortObjectsByNamespace(hash.serviceAccounts, this.allServiceAccounts);
     }
   },
-  computed: {
-    serviceAccounts() {
-      const namespace = this.get(this.namespacedObject, 'metadata.namespace');
-
-      return this.allServiceAccounts[namespace] || [];
+  methods: {
+    resetServiceAccounts() {
+      if (!this.fetchInProgress) {
+        this.serviceAccounts = this.allServiceAccounts[this.namespace] || [];
+      }
+    }
+  },
+  watch: {
+    fetchInProgress() {
+      this.resetServiceAccounts();
     },
+    'namespacedObject.metadata.namespace'(neu, old) {
+      this.namespace = neu;
+      this.resetServiceAccounts();
+    }
   },
 };
 </script>
@@ -267,6 +279,13 @@ export default {
           @input="$emit('input', value)"
         />
       </TreeTab>
+
+      <AffinityTab
+        :value="getField('affinity')"
+        :mode="mode"
+        :tab-name="createTabKey(navPrefix, 'affinity')"
+        @input="setFieldIfNotEmpty('affinity', $event)"
+      />
 
       <ContainersTab
         :value="value"
