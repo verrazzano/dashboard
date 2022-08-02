@@ -2,7 +2,6 @@
 // Added by Verrazzano
 import Checkbox from '@/components/form/Checkbox';
 import ClusterService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab/ClusterService';
-import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import ServerPodTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
@@ -24,7 +23,7 @@ export default {
     TabDeleteButton,
     TreeTab
   },
-  mixins: [WeblogicWorkloadHelper, DynamicListHelper],
+  mixins: [WeblogicWorkloadHelper],
   props:  {
     // the cluster object
     value: {
@@ -46,9 +45,6 @@ export default {
   },
 
   methods: {
-    getRootFieldName() {
-      return 'clusters';
-    },
     clusterKey(cluster) {
       return this.createTabKey('cluster', cluster.clusterName);
     },
