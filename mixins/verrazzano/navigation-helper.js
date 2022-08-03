@@ -14,26 +14,6 @@ export default {
       return result;
     },
 
-    // ensure that the list has been established, then add the specified node.
-    addConfigNode(parentNode, key, configNode) {
-      if (typeof parentNode[key] === 'undefined') {
-        this.$set(parentNode, key, []);
-      }
-
-      parentNode[key].push(configNode);
-    },
-
-    // remove the specified element from the list, and remove the list if it is empty.
-    deleteConfigNode(parentNode, key, configNode) {
-      const index = parentNode[key].indexOf(configNode);
-
-      parentNode[key].splice(index, 1);
-
-      if (!parentNode[key].length) {
-        this.$delete(parentNode, key);
-      }
-    },
-
     // find a key value for a new nodes entry that hasn't been used.
     // if the nodes list is empty or not established, just return the prefix.
     getNextName(nodes, key, prefix) {

@@ -46,14 +46,14 @@ export default {
       <Checkbox
         :value="getField('ignoreSessions')"
         :mode="mode"
-        :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.shutdown.ignoreSession')"
+        :label="t('verrazzano.weblogic.fields.serverPod.shutdown.ignoreSession')"
         @input="setBooleanField('ignoreSessions', $event)"
       />
       <div class="spacer-tiny" />
       <Checkbox
         :value="getField('waitForAllSessions')"
         :mode="mode"
-        :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.shutdown.waitForAllSessions')"
+        :label="t('verrazzano.weblogic.fields.serverPod.shutdown.waitForAllSessions')"
         @input="setBooleanField('waitForAllSessions', $event)"
       />
     </div>
@@ -61,7 +61,7 @@ export default {
       <LabeledSelect
         :value="getField('shutdownType')"
         :mode="mode"
-        :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.shutdown.shutdownType')"
+        :label="t('verrazzano.weblogic.fields.serverPod.shutdown.shutdownType')"
         :options="shutdownTypes"
         @input="setField('shutdownType', $event)"
       />
@@ -72,7 +72,7 @@ export default {
         :mode="mode"
         type="Number"
         min="0"
-        :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.serverPod.shutdown.timeoutSeconds')"
+        :label="t('verrazzano.weblogic.fields.serverPod.shutdown.timeoutSeconds')"
         @input="setNumberField('timeoutSeconds', $event)"
       />
     </div>

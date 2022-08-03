@@ -6807,62 +6807,16 @@ verrazzano:
   ### verrazzano.apps ###
   #######################
   apps:
-    buttons:
-      addComponent: Add Component
-      deleteComponent: Delete Component
-    component:
-      name: Component Name
-    components: Verrazzano Components
-    config:
-      titles:
-        general: General
-        components: Components
-        secrets: Secrets
-    description: This is the Verrazzano Applications page.
     label: Verrazzano Applications
-    placement: Target Clusters
-    secrets: Secrets
-    traits:
-      addlabels:
-        hosts: Add Host
-        paths: Add Path
-        rules: Add Rule
-        traits: New
-      labels:
-        host: host
-        kind: kind
-        loggingconfig: logging config
-        loggingimage: logging image
-        path: path
-        pathtype: Path Type
-        port: port
-        replicaCount: replica count
-        scraper: scraper
-        secret: secret
-      placeholders:
-        host: e.g. myhost
-        loggingconfig: Replace with Fluentd config file
-        loggingimage: e.g. fluent/fleuntd-example-image
-        path: e.g. /metrics
-        ingresspath: e.g. /greet
-        port: e.g. 8080
-        replicaCount: e.g. 2
-        scraper: e.g. verrazzano-system/vmi-system-prometheus-0
-        secret: e.g. trait-secret
-      titles:
-        traits: Traits
-        rules: Rules
-        hosts: Hosts
-        paths: Paths
-        destination: Destination
-        security: Security
-        newtrait: Add Trait
-    version: Version
 
   ############################
   ### verrazzano.coherence ###
   ############################
   coherence:
+
+    ####################################
+    ### verrazzano.coherence.buttons ###
+    ####################################
     buttons:
       addAction: Add Action
       addAllowEndangeredForStatusHA: Add Allow Endangered for StatusHA
@@ -6882,6 +6836,10 @@ verrazzano:
       addSourceLabel: Add Source Label
       addTargetLabel: Add Target Label
       addVolumeClaimTemplate: Add Volume Claim Template
+
+    ###################################
+    ### verrazzano.coherence.fields ###
+    ###################################
     fields:
       actionName: Action Name
       actionProbeTimeoutSeconds: Probe Timeout Seconds
@@ -7040,6 +6998,10 @@ verrazzano:
       volumeClaimTemplate:
         name: Persistent Volume Claim Name
       wkaDeployment: WKA Deployment Name
+
+    #################################
+    ### verrazzano.coherence.tabs ###
+    #################################
     tabs:
       actions: Actions
       affinity: Affinity
@@ -7065,6 +7027,10 @@ verrazzano:
       tolerations: Tolerations
       topologySpreadConstraints: Topology Spread Constraints
       volumeClaimTemplates: Volume Claim Templates
+
+    ###################################
+    ### verrazzano.coherence.titles ###
+    ###################################
     titles:
       actionJob: Job
       actionJobSpec: Job Spec
@@ -7096,6 +7062,10 @@ verrazzano:
         keySecret: Prometheus Container Client Private Key Settings
       volume: Volume
       wka: Well Known Addressing Settings
+
+    ##################################
+    ### verrazzano.coherence.types ###
+    ##################################
     types:
       gcTypes:
         cms: Concurrent Mark and Sweep
@@ -7133,31 +7103,52 @@ verrazzano:
   #########################
   common:
     buttons:
+      addAffinitySelectorTerm: Add Affinity Selector Term
       addAnnotation: Add Annotation
       addArgument: Add Argument
       addClusterIP: Add Cluster IP
       addCommandArg: Add Command Argument
+      addComponent: Add Component
       addConfigMapItem: Add ConfigMap Item
       addContainer: Add Container
+      addDNSNameserver: Add DNS Name Server
+      addDNSSearchDomain: Add DNS Search Domain
+      addElement: Add { type }
       addEnvVar: Add Environment Variable
       addExternalIP: Add External IP
+      addHost: Add Host
+      addIngressRule: Add Rule
       addInitContainer: Add Init Container
       addHttpHeader: Add HTTP Header
       addLabel: Add Label
       addLoadBalancerSourceRange: Add Load Balancer Source Range
       addMatchLabel: Add Match Label
-      addDNSNameserver: Add DNS Name Server
-      addDNSSearchDomain: Add DNS Search Domain
       addNodeSelectorRequirement: Add Node Selector Requirement
       addNodeSelectorTerm: Add Node Selector Term
       addOwnerReference: Add Owner Reference
+      addPath: Add Path
       addPodDNSResolverOption: Add Pod DNS Resolver Option
+      addPodSelectorTerm: Add Pod Selector Term
+      addPort: Add Port
       addSecretItem: Add Secret Item
       addTopologySpreadConstraints: Add Topology Spread Constraint
+      addTrait: Add Trait
+      addVolumeDevice: Add Volume Device
+      addVolumeMount: Add Volume Mount
+      deleteComponent: Delete Component
+      deleteContainer: Delete Container
+      deleteElement: Delete { element }
+      deleteIngressRule: Delete Ingress Rule
+      deleteTrait: Delete Trait
+
+    ################################
+    ### verrazzano.common.fields ###
+    ################################
     fields:
       accessModes: Access Modes
       clusterIP: Cluster IP
       clusterIPs: Cluster IP
+      componentName: Component Name
       configMapKeySelector:
         key: ConfigMap Key
         name: ConfigMap Name
@@ -7205,9 +7196,15 @@ verrazzano:
       externalName: External Name
       externalTrafficPolicy: External Traffic Policy
       healthCheckNodePort: Health Check Node Port
+      host: Host
+      httpCookieName: HTTP Cookie Name
+      httpCookiePath: HTTP Cookie Path
+      httpCookieTTL: HTTP Cookie Time-To-Live Seconds
       httpGet:
         path: HTTP Get Request Path
         port: HTTP Get Request Port
+      httpPath: HTTP Path
+      httpPort: HTTP Port
       image: Image
       imagePullPolicy: Image Pull Policy
       imagePullSecrets: Image Pull Secrets
@@ -7220,12 +7217,27 @@ verrazzano:
         manualSelector: Is Manual Selector
         parallelism: Parallelism
         ttlSecondsAfterFinished: Time-to-Live Seconds After Finished
+      kind: Kind
       loadBalancerIP: Load Balancer IP Address
       loadBalancerSourceRange: Load Balancer Source Range
+      loggingConfig: Fluentd Configuration
+      loggingImage: Fluentd Logging Image
+      matchExpressions:
+        key: Key
+        operator: Operator
+        value: Value
+        values: Values
       maxSkew: Maximum Distribution Skew
+      metricsSecret: Metrics Endpoint Credentials Secret
       mountPropagationMode: Mount Propagation Mode
       name: Name
       namespace: Namespace
+      newAffinityType: New Affinity Type
+      newComponentName: New Component Name
+      newContainerName: New Container Name
+      newElementName: New { type } Name
+      newSelectorTermType: New Affinity Selector Term Type
+      newTraitType: New Trait Type
       nodeSelectorRequirementType: Node Selector Requirement Type
       ownerReference:
         apiVersion: Referent API Version
@@ -7234,6 +7246,8 @@ verrazzano:
         kind: Referent Kind
         name: Referent Name
         uid: Referent UID
+      pathExpression: Path Expression
+      pathType: Path Match Type
       podSpec:
         automountServiceAccountToken: Auto-Mount Service Account Token
         dnsPolicy: DNS Policy
@@ -7255,12 +7269,16 @@ verrazzano:
         subdomain: Subdomain
         terminationGracePeriodSeconds: Termination Grace Period Seconds
       port: Port
+      preferred: Preferred
       replicas: Replicas
+      required: Required
+      scraper: Prometheus Scraper Deployment Name
       sessionAffinity: Session Affinity
       secretKeySelector:
         key: Secret Key
         name: Secret Name
         optional: Secret and Key Are Optional
+      secretName: Secret Name
       secrets: Secrets
       selectorType: Selector Object Type
       sessionAffinityConfig:
@@ -7269,21 +7287,60 @@ verrazzano:
       storageClassName: Storage Class Name
       tcpSocketPort: TCP Port
       topologyKey: Topology Key
+      traits:
+        kind: Trait Kind
+        replicaCount: Replica Count
       value: Value
+      version: Version
+      volumeDevice:
+        devicePath: Container Mount Path
+        name: Persistent Volume Claim Name
       volumeMode: Volume Mode
       volumeName: Volume Name
       whenUnsatisfiable: When Unsatisfiable
       workingDir: Working Directory
       workloadConfigMapName: Workload ConfigMap Name
+    messages:
+      enterName: Enter an non-empty value
+      nameInUse: '"{name}" already exists'
+
+    ##############################
+    ### verrazzano.common.tabs ###
+    ##############################
     tabs:
+      affinity: Affinity
+      components: Components
       containers: Containers
       general: General
+      ingressTrait: Ingress Trait
       initContainers: Init Containers
+      lifecycleHandler:
+        postStart: Post Start
+        preStop: Pre Stop
+      lifecycleHandlers: Lifecycle Handlers
+      loggingTrait: Logging Trait
+      manualScalerTrait: Manual Scaler Trait
+      metricsTrait: Metrics Trait
+      metadata: Metadata
+      nodeAffinity: Node Affinity
+      nodePreferredSelectorTerm: Preferred {index}
+      nodeRequiredSelectorTerm: Required {index}
+      podAffinity: Pod Affinity
+      podAntiAffinity: Pod Anti-Affinity
+      podAntiPreferredSelectorTerm: Preferred {index}
+      podAntiRequiredSelectorTerm: Required {index}
+      podPreferredSelectorTerm: Preferred {index}
+      podRequiredSelectorTerm: Required {index}
+      ports: Ports
+      preferredPrefix: Preferred Term
+      resources: Resources
+      volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
       volumes: Volumes
       workload: Workload
     titles:
       annotations: Annotations
+      component: Component
       configFiles: Config Files
       container:
         args: Container Arguments
@@ -7298,8 +7355,10 @@ verrazzano:
       containerSecurityContext: Security Context
       dataSource: Data Source
       dataSourceRef: Data Source Reference
+      destination: Destination
       dnsResolverOptions: DNS Resolver Options
       envVars: Environment Variables
+      hosts: Hosts
       httpGetHeaders: HTTP Get Request Headers
       labels: Labels
       labelsAndAnnotations: Labels and Annotations
@@ -7308,6 +7367,8 @@ verrazzano:
       matchExpressions: Match Expressions
       matchLabels: Match Labels
       ownerReferences: Owner References
+      paths: Paths
+      podSecurityContext: Pod Security Context
       podSpec:
         affinity: Affinity-Related Settings
         containers: Containers
@@ -7324,6 +7385,8 @@ verrazzano:
       ports: Ports
       readinessProbe: Readiness Probe
       resources: Resources
+      rule: Rule
+      scheduling: Pod Scheduling-Related Settings
       selector: Selector
       startupProbe: Startup Probe
       volumeDevices: Volume Devices
@@ -7337,6 +7400,15 @@ verrazzano:
       deploymentStrategy:
         recreate: Recreate
         rollingUpdate: Rolling Update
+      affinityType:
+        nodeAffinity: Node Affinity
+        podAffinity: Pod Affinity
+        podAntiAffinity: Pod Anti-Affinity
+      containerProbeAction:
+        exec: Execute Command
+        grpc: gRPC Request
+        httpGet: HTTP Get Request
+        tcpSocket: TCP Socket
       dnsPolicy:
         clusterFirst: Cluster First
         clusterFirstWithHostNet: Cluster First with Host Net
@@ -7358,6 +7430,13 @@ verrazzano:
         preferDualStack: Prefer Dual Stack
         requireDualStack: Require Dual Stack
         singleStack: Single Stack
+      matchExpressionOperators:
+        doesNotExist: is not set
+        exists: is set
+        greaterThan: '>'
+        in: in list
+        lessThan: '<'
+        notIn: not in list
       mountPropagationMode:
         bidirectional: Bidirectional
         hostToContainer: Host to Container
@@ -7365,6 +7444,10 @@ verrazzano:
       nodeSelectorTerm:
         matchExpression: Match Expression
         matchField: Match Field
+      pathType:
+        exact: Exact
+        prefix: Prefix
+        regex: Regular Expression
       preemptionPolicy:
         never: Never
         preemptLowerPriority: Preempt Lower Priority
@@ -7376,6 +7459,9 @@ verrazzano:
         always: Always
         never: Never
         onFailure: On Failure
+      selectorTermType:
+        preferred: Preferred
+        required: Required
       selectorType:
         configMap: Config Map
         secret: Secret
@@ -7390,12 +7476,21 @@ verrazzano:
       terminationMessagePolicy:
         fallbackToLogsOnError: FallbackToLogsOnError
         file: File
+      trait:
+        ingress: Ingress Trait
+        logging: Logging Trait
+        manualScaler: Manual Scaler Trait
+        metrics: Metrics Trait
       volumeModes:
         block: Block
         filesystem: Filesystem
       whenUnsatisfiable:
         doNotSchedule: Do Not Schedule
         scheduleAnyway: Schedule Anyway
+
+    ################################
+    ### verrazzano.common.values ###
+    ################################
     values:
       notSet: Not Set
 
@@ -7403,11 +7498,19 @@ verrazzano:
   ### verrazzano.containerized ###
   ################################
   containerized:
+
+    ########################################
+    ### verrazzano.containerized.buttons ###
+    ########################################
     buttons:
       addConfigFile: Add Config File
       addExtendedResource: Add Extended Resource
       addPort: Add Port
       addVolume: Add Volume
+
+    #######################################
+    ### verrazzano.containerized.fields ###
+    #######################################
     fields:
       arch: Architecture
       configFile:
@@ -7433,10 +7536,18 @@ verrazzano:
         name: Volume Name
         sharingPolicy: Volume Sharing Policy
       workloadName: Workload Name
+
+    #######################################
+    ### verrazzano.containerized.titles ###
+    #######################################
     titles:
       disk: Disk-Related Resources
       extendedResources: Extended Resources
       volumes: Volumes
+
+    ######################################
+    ### verrazzano.containerized.types ###
+    ######################################
     types:
       arch:
         amd64: x64
@@ -7487,15 +7598,57 @@ verrazzano:
   ### verrazzano.weblogic ###
   ###########################
   weblogic:
+
+    ###################################
+    ### verrazzano.weblogic.buttons ###
+    ###################################
+    buttons:
+      addAuxiliaryImage: Add Auxiliary Image
+      addAuxiliaryImageVolume: Add Auxiliary Image Volume
+      addChannel: Add Channel
+
+    ##################################
+    ### verrazzano.weblogic.fields ###
+    ##################################
     fields:
+      clusters:
+        allowReplicasBelowMinDynClusterSize: Allow Replicas Below Minimum Cluster Size
+        clusterName: Cluster Name
+        maxConcurrentShutdown: Maximum Concurrent Shutdown
+        maxConcurrentStartup: Maximum Concurrent Startup
+        maxUnavailable: Maximum Unavailable
+        replicas: Replicas
+        sessionAffinity: Session Affinity
       introspectorJobActiveDeadlineSeconds: Introspector Job Active Deadline Seconds
+      managedServers:
+        serverName: Server Name
       overrideDistributionStrategy: Overrides Distribution Strategy
       overridesConfigMap: Overrides Config Map Name
+      restartVersion: Restart Version
+      serverPod:
+        shutdown:
+          ignoreSession: Ignore Sessions
+          shutdownType: Shutdown Type
+          timeoutSeconds: Timeout Seconds
+          waitForAllSessions: Wait for All Sessions
+      serverStartPolicy: Server Start Policy
+      serverStartState: Server Start State
+
+    ####################################
+    ### verrazzano.weblogic.messages ###
+    ####################################
+    messages:
+      noAuxiliaryImages: No auxiliary images defined
+
+    ################################
+    ### verrazzano.weblogic.tabs ###
+    ################################
     tabs:
       adminServer: Admin Server
       auxiliaryImage: Auxiliary Image
       auxiliaryImages: Auxiliary Images
       auxiliaryImageVolumes: Auxiliary Image Volumes
+      cluster: Cluster
       clusters: Clusters
       configuration: Configuration
       containers: Containers
@@ -7503,13 +7656,32 @@ verrazzano:
       fluentd: Fluentd Specification
       general: General
       initContainers: Init Containers
+      managedServer: Managed Server
       managedServers: Managed Servers
       monitoringExporter: Monitoring Exporter
       serverPod: Server Pod
       serverService: Server Service
+
+    ##################################
+    ### verrazzano.weblogic.titles ###
+    ##################################
     titles:
+      clusters:
+        clusterService: Cluster Service
       modelConfiguration: WebLogic Deploy Tooling Model-Related Settings
       opss: OPSS-Related Settings
+      serverPod:
+        affinity: Affinity
+        containers: Containers
+        hostAliases: Host Aliases
+        initContainers: Init Containers
+        nodeSelector: Node Selectors
+        shutdown: WebLogic Server Shutdown
+        title: Server Pod
+
+    #################################
+    ### verrazzano.weblogic.types ###
+    #################################
     types:
       overrideDistributionStrategy:
         dynamic: Dynamic
@@ -8075,14 +8247,6 @@ verrazzano:
           mountPath: Mount Path
           medium: Medium
           sizeLimit: Volume Size Limit
-        clusters:
-          allowReplicasBelowMinDynClusterSize: Allow Replicas Below Minimum Cluster Size
-          clusterName: Cluster Name
-          maxConcurrentShutdown: Maximum Concurrent Shutdown
-          maxConcurrentStartup: Maximum Concurrent Startup
-          maxUnavailable: Maximum Unavailable
-          replicas: Replicas
-          sessionAffinity: Session Affinity
         configuration:
           model:
             configMap: WDT Model Config Map Name
@@ -8140,16 +8304,6 @@ verrazzano:
         precreateService: Pre-Create Services
         restartVersion: Restart Version
         serverName: Server Name
-        serverPod:
-          priorityClassName: Priority Class Name
-          restartPolicy: Restart Policy
-          runtimeClassName: Runtime Class Name
-          serviceAccountName: Service Account Name
-          shutdown:
-            ignoreSession: Ignore Sessions
-            shutdownType: Shutdown Type
-            timeoutSeconds: Timeout Seconds
-            waitForAllSessions: Wait for All Sessions
         serverStartPolicy: Server Start Policy
         serverStartState: Server Start State
         webLogicCredentialsSecret: WebLogic Domain Credentials Secret
@@ -8160,7 +8314,6 @@ verrazzano:
         channels: Channels
         advanced: Advanced Settings
         auxiliaryImages: Auxiliary Images
-        clusterService: Cluster Service
         domainLifecycleSettings: Domain Lifecycle Configuration
         domainLogSettings: Domain Logging Configuration
         domainSettings: Domain-Related Settings
@@ -8191,7 +8344,6 @@ verrazzano:
         volumeMounts: Volume Mounts
         wdtTimeouts: WebLogic Deploy Tooling Online Timeouts
       values:
-        noAuxiliaryImages: No Auxiliary Images Defined
         types:
           domainHomeSourceType:
             domainInPV: Domain in Persistent Volume

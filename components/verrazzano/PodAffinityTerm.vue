@@ -122,9 +122,9 @@ export default {
 <template>
   <div>
     <div>
-      <h4 v-if="showMatchExpressionsTitle">
+      <h3 v-if="showMatchExpressionsTitle">
         {{ matchExprTitle }}
-      </h4>
+      </h3>
       <span v-else />
       <ArrayListGrouped
         v-model="matchExpressions"
@@ -157,13 +157,14 @@ export default {
     </div>
     <div class="spacer" />
     <div class="">
-      <h4 v-if="showMatchLabelsTitle">
+      <h3 v-if="showMatchLabelsTitle">
         {{ matchLblsTitle }}
-      </h4>
+      </h3>
       <span v-else />
       <KeyValue
         v-model="matchLabels"
         :mode="mode"
+        :read-allowed="false"
         :add-label="t('verrazzano.common.buttons.addMatchLabel')"
         @input="queueUpdate"
       />

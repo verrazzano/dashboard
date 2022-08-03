@@ -27,9 +27,9 @@ export default {
     const { exec = {}, httpGet = {} } = this.value;
     let type;
 
-    if (!this.isEmpty(exec)) {
+    if (!this.isEmptyValue(exec)) {
       type = 'exec';
-    } else if (!this.isEmpty(httpGet)) {
+    } else if (!this.isEmptyValue(httpGet)) {
       type = 'httpGet';
     } else {
       type = 'exec';

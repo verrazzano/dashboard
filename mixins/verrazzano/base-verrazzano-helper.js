@@ -100,13 +100,28 @@ export default {
     configMapApiVersion() {
       return 'v1';
     },
+    oamApplicationApiVersion() {
+      return 'core.oam.dev/v1alpha2';
+    },
     oamContainerizedWorkloadApiVersion() {
       return 'core.oam.dev/v1alpha2';
     },
-    verrazzanoApplicationApiVersion() {
+    verrazzanoMultiClusterApplicationApiVersion() {
       return 'oam.verrazzano.io/v1alpha1';
     },
     verrazzanoComponentApiVersion() {
+      return 'oam.verrazzano.io/v1alpha1';
+    },
+    manualScalerTraitApiVersion() {
+      return 'core.oam.dev/v1alpha2';
+    },
+    ingressTraitApiVersion() {
+      return 'oam.verrazzano.io/v1alpha1';
+    },
+    metricsTraitApiVersion() {
+      return 'oam.verrazzano.io/v1alpha1';
+    },
+    loggingTraitApiVersion() {
       return 'oam.verrazzano.io/v1alpha1';
     },
   },
@@ -212,7 +227,7 @@ export default {
       return !this.isView && Array.isArray(this.getListField(fieldName)) && this.getListField(fieldName).length > 0;
     },
     showEmptyListMessage(fieldName) {
-      return this.isView && Array.isArray(this.getListField(fieldName)) && this.getListField(fieldName).length.length === 0;
+      return this.isView && Array.isArray(this.getListField(fieldName)) && this.getListField(fieldName).length === 0;
     },
     didNamedObjectReallyChange(neu, old) {
       const neuIsEmpty = this.isEmpty(neu);
