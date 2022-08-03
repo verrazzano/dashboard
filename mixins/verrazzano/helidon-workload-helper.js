@@ -14,12 +14,27 @@ export default {
     },
     workloadDeploymentTemplateMetadata: {
       get() {
-        return this.get(this.value, 'spec.workload.spec.deploymentTemplate.metadata');
+        return this.get(
+          this.value,
+          'spec.workload.spec.deploymentTemplate.metadata'
+        );
       },
       set(neu) {
-        this.set(this.value, 'spec.workload.spec.deploymentTemplate.metadata', neu);
+        this.set(
+          this.value,
+          'spec.workload.spec.deploymentTemplate.metadata',
+          neu
+        );
       }
     },
+    workloadPodSpec: {
+      get() {
+        return this.workloadDeploymentTemplate?.podSpec;
+      },
+      set(neu) {
+        this.set(this.workloadDeploymentTemplate, 'podSpec', neu);
+      }
+    }
   },
   methods: {
     getWorkloadDeploymentTemplateField(fieldName) {
@@ -62,5 +77,45 @@ export default {
 
       this.setFieldIfNotEmpty(pathName, value);
     },
+    getWorkloadPodSpecField(fieldName) {
+      const pathName = fieldName ? `spec.workload.spec.deploymentTemplate.podSpec.${ fieldName }` : 'spec.workload.spec.deploymentTemplate.podSpec';
+
+      return this.getField(pathName);
+    },
+    getWorkloadPodSpecMetadataField(fieldName) {
+      const pathName = fieldName ? `spec.workload.spec.deploymentTemplate.podSpec.metadata.${ fieldName }` : 'spec.workload.spec.deploymentTemplate.podSpec.metadata';
+
+      return this.getField(pathName);
+    },
+    getWorkloadPodSpecNotSetPlaceholder(fieldName) {
+      const pathName = fieldName ? `spec.workload.spec.deploymentTemplate.podSpec.${ fieldName }` : 'spec.workload.spec.deploymentTemplate.podSpec';
+
+      return this.getNotSetPlaceholder(this.value, pathName);
+    },
+    getWorkloadPodSpecMetadataNotSetPlaceholder(fieldName) {
+      const pathName = fieldName ? `spec.workload.spec.deploymentTemplate.podSpec.metadata.${ fieldName }` : 'spec.workload.spec.deploymentTemplate.podSpec.metadata';
+
+      return this.getNotSetPlaceholder(this.value, pathName);
+    },
+    setWorkloadPodSpecField(fieldName, value) {
+      const pathName = fieldName ? `spec.workload.spec.deploymentTemplate.podSpec.${ fieldName }` : 'spec.workload.spec.deploymentTemplate.podSpec';
+
+      this.setField(pathName, value);
+    },
+    setWorkloadPodSpecFieldIfNotEmpty(fieldName, value) {
+      const pathName = fieldName ? `spec.workload.spec.deploymentTemplate.podSpec.${ fieldName }` : 'spec.workload.spec.deploymentTemplate.podSpec';
+
+      this.setFieldIfNotEmpty(pathName, value);
+    },
+    setWorkloadPodSpecMetadataField(fieldName, value) {
+      const pathName = fieldName ? `spec.workload.spec.deploymentTemplate.podSpec.metadata.${ fieldName }` : 'spec.workload.spec.deploymentTemplate.podSpec.metadata';
+
+      this.setField(pathName, value);
+    },
+    setWorkloadPodSpecMetadataFieldIfNotEmpty(fieldName, value) {
+      const pathName = fieldName ? `spec.workload.spec.deploymentTemplate.podSpec.metadata.${ fieldName }` : 'spec.workload.spec.deploymentTemplate.podSpec.metadata';
+
+      this.setFieldIfNotEmpty(pathName, value);
+    }
   }
 };
