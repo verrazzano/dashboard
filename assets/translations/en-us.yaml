@@ -7102,6 +7102,10 @@ verrazzano:
   ### verrazzano.common ###
   #########################
   common:
+
+    #################################
+    ### verrazzano.common.buttons ###
+    #################################
     buttons:
       addAffinitySelectorTerm: Add Affinity Selector Term
       addAnnotation: Add Annotation
@@ -7160,6 +7164,7 @@ verrazzano:
         imagePullPolicy: Image Pull Policy
         imagePullSecret: Image Pull Secret
         lifecycle:
+          actionType: Lifecycle Handler Action Type
           command: Command
         name: Name
         ports:
@@ -7175,6 +7180,7 @@ verrazzano:
         tty: Allocate TTY
         workingDir: Working Directory
       containerProbe:
+        actionType: Probe Action Type
         command: Command
         failureThreshold: Failure Threshold
         initialDelaySeconds: Initial Delay Seconds
@@ -7296,6 +7302,13 @@ verrazzano:
         devicePath: Container Mount Path
         name: Persistent Volume Claim Name
       volumeMode: Volume Mode
+          volumeMount:
+        mountPath: Mount Path
+        mountPropagation: Mount Propagation
+        name: Name
+        readOnly: Mount Read-Only
+        subPath: Subpath
+        subPathExpr: Subpath Expression
       volumeName: Volume Name
       whenUnsatisfiable: When Unsatisfiable
       workingDir: Working Directory
@@ -7311,6 +7324,8 @@ verrazzano:
       affinity: Affinity
       components: Components
       containers: Containers
+      ephemeralContainers: Ephemeral Containers
+      executionEnvironment: Execution Environment
       general: General
       ingressTrait: Ingress Trait
       initContainers: Init Containers
@@ -7338,10 +7353,16 @@ verrazzano:
       volumeMounts: Volume Mounts
       volumes: Volumes
       workload: Workload
+
+    ################################
+    ### verrazzano.common.titles ###
+    ################################
     titles:
       annotations: Annotations
       component: Component
       configFiles: Config Files
+      # TODO - Rename this to container once the other titles under the container element are deleted...
+      containerTitle: Container
       container:
         args: Container Arguments
         cmd: Container Command
@@ -7383,14 +7404,21 @@ verrazzano:
         volumes: Volumes
       podTemplate: Pod Template
       ports: Ports
+      readinessGates: Readiness Gates
       readinessProbe: Readiness Probe
       resources: Resources
       rule: Rule
       scheduling: Pod Scheduling-Related Settings
       selector: Selector
       startupProbe: Startup Probe
+      tolerations: Tolerations
       volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
+      volumes: Volumes
+
+    ###############################
+    ### verrazzano.common.types ###
+    ###############################
     types:
       accessModes:
         roMany: Read-Only Many
@@ -7455,6 +7483,10 @@ verrazzano:
         exec: Command Execution
         httpGet: HTTP Get Request
         tcpSocket: TCP Socket Probe
+      portProtocol:
+        sctp: SCTP
+        tcp: TCP
+        udp: UDP
       restartPolicy:
         always: Always
         never: Never
