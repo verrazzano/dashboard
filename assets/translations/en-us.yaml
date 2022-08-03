@@ -7189,6 +7189,10 @@ verrazzano:
         successThreshold: Success Threshold
         terminationGracePeriodSeconds: Termination Grace Period Seconds
         timeoutSeconds: Timeout Seconds
+      deploymentStrategy:
+        maxSurge: Maximum Surge
+        maxUnavailable: Maximum Unavailable
+        type: Deployment Strategy Type
       dnsNameserver: DNS Name Server
       dnsSearchDomain: DNS Search Domain
       envVar:
@@ -7348,6 +7352,7 @@ verrazzano:
       volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
       volumes: Volumes
+      workload: Workload
 
     ################################
     ### verrazzano.common.titles ###
@@ -7420,6 +7425,9 @@ verrazzano:
         rwMany: Read-Write Many
         rwOnce: Read-Write Once
         rwOncePod: Read-Write Once Pod
+      deploymentStrategy:
+        recreate: Recreate
+        rollingUpdate: Rolling Update
       affinityType:
         nodeAffinity: Node Affinity
         podAffinity: Pod Affinity
@@ -7593,6 +7601,18 @@ verrazzano:
       sharingPolicy:
         exclusive: Exclusive
         shared: Shared
+
+  ##########################
+  ### verrazzano.helidon ###
+  ##########################
+  helidon:
+    fields:
+      deploymentTemplateName: Deployment Template Name
+      workloadName: Helidon Workload Name
+    tabs:
+      deployment: Deployment Template
+      podSpec: Pod Spec
+      strategy: Strategy
 
   ######################
   ### verrazzano.nav ###
