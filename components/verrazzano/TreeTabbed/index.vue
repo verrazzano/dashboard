@@ -39,6 +39,8 @@ export default {
   provide() {
     const tabs = this.tabs;
     const navigationNode = this.navigationNode;
+    const checkNewTab = this.checkNewTab;
+    const selectTab = this.selectTab;
 
     return {
       addTab(tab) {
@@ -49,6 +51,8 @@ export default {
         }
 
         addObject(tabs, tab);
+
+        checkNewTab(tab);
       },
 
       removeTab(tab) {
@@ -66,14 +70,17 @@ export default {
           navigationNode.children.splice(index, 1);
         }
       },
+
+      selectTab,
     };
   },
 
   data() {
     return {
-      tabs:           [],
-      activeTabName:  null,
-      navigationNode: {
+      tabs:            [],
+      activeTabName:   null,
+      selectWhenAdded: undefined,
+      navigationNode:  {
         children:     [],
         showChildren: true
       },
@@ -199,6 +206,20 @@ export default {
         }
       }
     },
+
+    selectTab(tabName) {
+      this.select(tabName);
+      if (this.activeTabName !== tabName) {
+        this.selectWhenAdded = tabName;
+      }
+    },
+
+    checkNewTab(tab) {
+      if (this.selectWhenAdded === tab.name) {
+        this.select(tab.name);
+        this.selectWhenAdded = undefined;
+      }
+    }
   },
 };
 </script>

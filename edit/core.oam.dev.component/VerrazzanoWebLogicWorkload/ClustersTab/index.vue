@@ -37,7 +37,12 @@ export default {
   methods: {
     getRootFieldName() {
       return 'clusters';
-    }
+    },
+    getChildNavKey(child) {
+      const clusterKey = this.createTabKey('cluster', child.clusterName);
+
+      return this.createTabKey(this.navPrefix, clusterKey);
+    },
   },
 };
 </script>
@@ -61,9 +66,9 @@ export default {
       <ClusterTab
         v-for="cluster in children"
         :key="cluster._id"
-        :nav-prefix="navPrefix"
         :mode="mode"
         :namespaced-object="namespacedObject"
+        :tab-name="getChildNavKey(cluster)"
         :value="cluster"
         @input="queueUpdate"
         @delete="deleteChild($event)"

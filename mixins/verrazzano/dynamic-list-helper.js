@@ -6,6 +6,7 @@ import debounce from 'lodash/debounce';
 import CreateEditView from '~/mixins/create-edit-view';
 
 export default {
+  inject: ['selectTab'],
   mixins: [CreateEditView],
 
   data() {
@@ -45,6 +46,10 @@ export default {
 
       if (!isEmpty(child)) {
         this.queueUpdate();
+      }
+
+      if (typeof this.getChildNavKey === 'function') {
+        this.selectTab(this.getChildNavKey(child));
       }
     },
     deleteChild(childToDelete) {

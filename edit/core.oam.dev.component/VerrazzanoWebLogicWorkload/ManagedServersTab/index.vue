@@ -37,12 +37,20 @@ export default {
     getRootFieldName() {
       return 'managedServers';
     },
+    getChildNavKey(child) {
+      const serverKey = this.createTabKey('managedServer', child['serverName']);
+
+      return this.createTabKey(this.navPrefix, serverKey);
+    },
   },
 };
 </script>
 
 <template>
-  <TreeTab :label="t('verrazzano.weblogic.tabs.managedServers')" name="managedServers">
+  <TreeTab
+    :label="t('verrazzano.weblogic.tabs.managedServers')"
+    :name="createTabKey(navPrefix, 'managedServers')"
+  >
     <template #default>
       <AddNamedElement
         :value="children"
@@ -58,9 +66,9 @@ export default {
       <ManagedServerTab
         v-for="server in children"
         :key="server._id"
-        :nav-prefix="navPrefix"
         :mode="mode"
         :namespaced-object="namespacedObject"
+        :tab-name="getChildNavKey(server)"
         :value="server"
         @input="queueUpdate"
         @delete="deleteChild($event)"
