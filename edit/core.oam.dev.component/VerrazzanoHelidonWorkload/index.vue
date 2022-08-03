@@ -1,8 +1,5 @@
 <script>
 // Added by Verrazzano
-import { SERVICE_ACCOUNT } from '@/config/types';
-
-import { allHash } from '@/utils/promise';
 import DeploymentStrategy from '@/components/verrazzano/DeploymentStrategy.vue';
 import Labels from '@/components/verrazzano/Labels';
 import LabeledInput from '@/components/form/LabeledInput.vue';
@@ -29,9 +26,6 @@ export default {
     },
   },
 
-  data() {
-    return { namespacedObject: this.value, allServiceAccounts: {} };
-  },
   methods: {
     initSpec() {
       this.$set(this.value, 'spec', {
@@ -44,32 +38,6 @@ export default {
     },
   },
 
-  async fetch() {
-    this.allServiceAccounts = {};
-
-    const requests = { };
-
-    if (this.$store.getters['cluster/schemaFor'](SERVICE_ACCOUNT)) {
-      requests.serviceAccounts = this.$store.dispatch('cluster/findAll', { type: SERVICE_ACCOUNT });
-    }
-
-    const hash = await allHash(requests);
-
-    if (hash.serviceAccounts) {
-      this.sortObjectsByNamespace(hash.serviceAccounts, this.allServiceAccounts);
-    }
-  },
-  computed: {
-    serviceAccounts: {
-      cache: false,
-      get() {
-        const namespace = this.get(this.namespacedObject, 'metadata.namespace');
-
-        return this.allServiceAccounts[namespace] || [];
-      },
-    },
-
-  },
 };
 </script>
 

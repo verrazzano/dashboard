@@ -7352,6 +7352,7 @@ verrazzano:
       volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
       volumes: Volumes
+      workload: Workload
 
     ################################
     ### verrazzano.common.titles ###
