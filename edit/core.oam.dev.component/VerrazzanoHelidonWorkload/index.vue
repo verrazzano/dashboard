@@ -75,6 +75,7 @@ export default {
                     :mode="mode"
                     :placeholder="getWorkloadDeploymentTemplateMetadataNotSetPlaceholder('name')"
                     :label="t('verrazzano.helidon.fields.deploymentTemplateName')"
+                    @input="setWorkloadDeploymentTemplateMetadataField('name', $event)"
                   />
                 </div>
               </div>
