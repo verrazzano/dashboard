@@ -71,6 +71,10 @@ export default {
         }
       },
 
+      openNavigation(navigation) {
+        // called by top-level tabs, do nothing
+      },
+
       selectTab,
     };
   },
@@ -165,6 +169,8 @@ export default {
       if ( !selected || selected.disabled) {
         return;
       }
+
+      selected.openParents();
 
       if (this.useHash && routeHash !== hashName) {
         const kurrentRoute = { ...currentRoute };

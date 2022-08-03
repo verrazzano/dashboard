@@ -2,7 +2,7 @@
 // Added by Verrazzano
 
 export default {
-  inject: ['addTab', 'removeTab', 'addNavigation', 'removeNavigation'],
+  inject: ['addTab', 'removeTab', 'addNavigation', 'removeNavigation', 'openNavigation'],
 
   props: {
     label: {
@@ -37,6 +37,7 @@ export default {
 
   provide() {
     const navigationNode = this.navigationNode;
+    const openParents = this.openParents;
 
     return {
       addNavigation(navigation) {
@@ -50,6 +51,11 @@ export default {
           navigationNode.children.splice(index, 1);
         }
       },
+
+      openNavigation() {
+        this.$set(navigationNode, 'showChildren', true);
+        openParents();
+      },
     };
   },
 
@@ -62,6 +68,12 @@ export default {
         children:     []
       },
     };
+  },
+
+  methods: {
+    openParents() {
+      this.openNavigation();
+    }
   },
 
   computed: {
