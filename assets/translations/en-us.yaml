@@ -7132,10 +7132,6 @@ verrazzano:
   ### verrazzano.common ###
   #########################
   common:
-
-    #################################
-    ### verrazzano.common.buttons ###
-    #################################
     buttons:
       addAnnotation: Add Annotation
       addArgument: Add Argument
@@ -7156,16 +7152,8 @@ verrazzano:
       addNodeSelectorTerm: Add Node Selector Term
       addOwnerReference: Add Owner Reference
       addPodDNSResolverOption: Add Pod DNS Resolver Option
-      addPort: Add Port
       addSecretItem: Add Secret Item
       addTopologySpreadConstraints: Add Topology Spread Constraint
-      addVolumeDevice: Add Volume Device
-      addVolumeMount: Add Volume Mount
-      deleteContainer: Delete Container
-
-    ################################
-    ### verrazzano.common.fields ###
-    ################################
     fields:
       accessModes: Access Modes
       clusterIP: Cluster IP
@@ -7181,7 +7169,6 @@ verrazzano:
         imagePullPolicy: Image Pull Policy
         imagePullSecret: Image Pull Secret
         lifecycle:
-          actionType: Lifecycle Handler Action Type
           command: Command
         name: Name
         ports:
@@ -7197,7 +7184,6 @@ verrazzano:
         tty: Allocate TTY
         workingDir: Working Directory
       containerProbe:
-        actionType: Probe Action Type
         command: Command
         failureThreshold: Failure Threshold
         initialDelaySeconds: Initial Delay Seconds
@@ -7206,6 +7192,10 @@ verrazzano:
         successThreshold: Success Threshold
         terminationGracePeriodSeconds: Termination Grace Period Seconds
         timeoutSeconds: Timeout Seconds
+      deploymentStrategy:
+        maxSurge: Maximum Surge
+        maxUnavailable: Maximum Unavailable
+        type: Deployment Strategy Type
       dnsNameserver: DNS Name Server
       dnsSearchDomain: DNS Search Domain
       envVar:
@@ -7236,7 +7226,6 @@ verrazzano:
       mountPropagationMode: Mount Propagation Mode
       name: Name
       namespace: Namespace
-      newContainerName: New Container Name
       nodeSelectorRequirementType: Node Selector Requirement Type
       ownerReference:
         apiVersion: Referent API Version
@@ -7281,49 +7270,21 @@ verrazzano:
       tcpSocketPort: TCP Port
       topologyKey: Topology Key
       value: Value
-      volumeDevice:
-        devicePath: Container Mount Path
-        name: Persistent Volume Claim Name
       volumeMode: Volume Mode
-      volumeMount:
-        mountPath: Mount Path
-        mountPropagation: Mount Propagation
-        name: Name
-        readOnly: Mount Read-Only
-        subPath: Subpath
-        subPathExpr: Subpath Expression
       volumeName: Volume Name
       whenUnsatisfiable: When Unsatisfiable
       workingDir: Working Directory
       workloadConfigMapName: Workload ConfigMap Name
-
-    ##############################
-    ### verrazzano.common.tabs ###
-    ##############################
     tabs:
       containers: Containers
-      ephemeralContainers: Ephemeral Containers
-      executionEnvironment: Execution Environment
       general: General
       initContainers: Init Containers
-      lifecycleHandler:
-        postStart: Post Start
-        preStop: Pre Stop
-      lifecycleHandlers: Lifecycle Handlers
-      ports: Ports
-      resources: Resources
-      volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
       volumes: Volumes
-
-    ################################
-    ### verrazzano.common.titles ###
-    ################################
+      workload: Workload
     titles:
       annotations: Annotations
       configFiles: Config Files
-      # TODO - Rename this to container once the other titles under the container element are deleted...
-      containerTitle: Container
       container:
         args: Container Arguments
         cmd: Container Command
@@ -7347,7 +7308,6 @@ verrazzano:
       matchExpressions: Match Expressions
       matchLabels: Match Labels
       ownerReferences: Owner References
-      podSecurityContext: Pod Security Context
       podSpec:
         affinity: Affinity-Related Settings
         containers: Containers
@@ -7362,31 +7322,21 @@ verrazzano:
         volumes: Volumes
       podTemplate: Pod Template
       ports: Ports
-      readinessGates: Readiness Gates
       readinessProbe: Readiness Probe
       resources: Resources
-      scheduling: Pod Scheduling-Related Settings
       selector: Selector
       startupProbe: Startup Probe
-      tolerations: Tolerations
       volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
-      volumes: Volumes
-
-    ###############################
-    ### verrazzano.common.types ###
-    ###############################
     types:
       accessModes:
         roMany: Read-Only Many
         rwMany: Read-Write Many
         rwOnce: Read-Write Once
         rwOncePod: Read-Write Once Pod
-      containerProbeAction:
-        exec: Execute Command
-        grpc: gRPC Request
-        httpGet: HTTP Get Request
-        tcpSocket: TCP Socket
+      deploymentStrategy:
+        recreate: Recreate
+        rollingUpdate: Rolling Update
       dnsPolicy:
         clusterFirst: Cluster First
         clusterFirstWithHostNet: Cluster First with Host Net
@@ -7422,10 +7372,6 @@ verrazzano:
         exec: Command Execution
         httpGet: HTTP Get Request
         tcpSocket: TCP Socket Probe
-      portProtocol:
-        sctp: SCTP
-        tcp: TCP
-        udp: UDP
       restartPolicy:
         always: Always
         never: Never
@@ -7513,6 +7459,18 @@ verrazzano:
         exclusive: Exclusive
         shared: Shared
 
+  ##########################
+  ### verrazzano.helidon ###
+  ##########################
+  helidon:
+    fields:
+      deploymentTemplateName: Deployment Template Name
+      workloadName: Helidon Workload Name
+    tabs:
+      deployment: Deployment Template
+      podSpec: Pod Spec
+      strategy: Strategy
+
   ######################
   ### verrazzano.nav ###
   ######################
@@ -7529,12 +7487,6 @@ verrazzano:
   ### verrazzano.weblogic ###
   ###########################
   weblogic:
-    buttons:
-      addAuxiliaryImage: Add Auxiliary Image
-      addAuxiliaryImageVolume: Add Auxiliary Image Volume
-      addChannel: Add Channel
-      addCluster: Add Cluster
-      addManagedServer: Add Managed Server
     fields:
       introspectorJobActiveDeadlineSeconds: Introspector Job Active Deadline Seconds
       overrideDistributionStrategy: Overrides Distribution Strategy
@@ -7546,6 +7498,7 @@ verrazzano:
       auxiliaryImageVolumes: Auxiliary Image Volumes
       clusters: Clusters
       configuration: Configuration
+      containers: Containers
       envVariables: Environment Variables
       fluentd: Fluentd Specification
       general: General
@@ -7557,14 +7510,6 @@ verrazzano:
     titles:
       modelConfiguration: WebLogic Deploy Tooling Model-Related Settings
       opss: OPSS-Related Settings
-      serverPod:
-        affinity: Affinity
-        containers: Containers
-        hostAliases: Host Aliases
-        initContainers: Init Containers
-        nodeSelector: Node Selectors
-        shutdown: WebLogic Server Shutdown
-        title: Server Pod
     types:
       overrideDistributionStrategy:
         dynamic: Dynamic
@@ -7685,6 +7630,8 @@ verrazzano:
       addToleration: Add Toleration
       addVolume: Add Volume
       addVolumeAttribute: Add Volume Attribute
+      addVolumeDevice: Add Volume Device
+      addVolumeMount: Add Volume Mount
       addVolumeProjectionSource: Add Volume Projection Source
       addWwid: Add World Wide Identifier
     fields:
@@ -7745,6 +7692,16 @@ verrazzano:
         apiGroup: API Group
         kind: Resource Kind
         name: Resource Name
+      volumeDevice:
+        devicePath: Container Mount Path
+        name: Persistent Volume Claim Name
+      volumeMount:
+        mountPath: Mount Path
+        mountPropagation: Mount Propagation
+        name: Name
+        readOnly: Mount Read-Only
+        subPath: Subpath
+        subPathExpr: Subpath Expression
       volumes:
         awsElasticBlockStore:
           fsType: Filesystem Type
@@ -8008,6 +7965,10 @@ verrazzano:
           never: Never
           ifNeeded: If Needed
           always: Always
+        mountPropagation:
+          bidirectional: Bidirectional
+          hostToContainer: Host to Container
+          none: None
         procMount:
           defaultProcMount: Default Proc Mount
           unmaskedProcMount: Unmasked Proc Mount
@@ -8094,6 +8055,12 @@ verrazzano:
 
   VerrazzanoWebLogicWorkload:
     config:
+      buttons:
+        addAuxiliaryImage: Add Auxiliary Image
+        addChannel: Add Channel
+        addCluster: Add Cluster
+        addConfigurationSetting: Add Configuration Setting
+        addManagedServer: Add Managed Server
       fields:
         adminChannelPortForwardingEnabled: Enable Admin Channel Port Forwarding
         adminServer:
@@ -8202,6 +8169,24 @@ verrazzano:
           configuration: Configuration
         onlineUpdates: Online Update Settings
         resources: Resource Requirements
+        serverPod:
+          affinity: Affinity
+          containerSecurityContext: Container Security Context
+          containers: Containers
+          hostAliases: Host Aliases
+          initContainers: Init Containers
+          livenessProbe: Liveness Probe
+          nodeSelector: Node Selectors
+          podSecurityContext: Pod Security Context
+          readinessGates: Readiness Gates
+          readinessProbe: Readiness Probe
+          resources: Resources
+          scheduling: Pod Scheduling-Related Settings
+          shutdown: WebLogic Server Shutdown
+          title: Server Pod
+          tolerations: Tolerations
+          volumeMounts: Volume Mounts
+          volumes: Volumes
         serverService: Server Service
         volumeMounts: Volume Mounts
         wdtTimeouts: WebLogic Deploy Tooling Online Timeouts
@@ -8217,6 +8202,10 @@ verrazzano:
           onNonDynamicChanges:
             commitUpdateOnly: Commit Update Only
             commitUpdateAndRoll: Commit Update and Roll
+          restartPolicy:
+            always: Always
+            never: Never
+            onFailure: On Failure
           shutdown:
             graceful: Graceful
             forced: Forced

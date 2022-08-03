@@ -71,8 +71,6 @@ export default {
     };
   },
   async fetch() {
-    this.allServiceAccounts = {};
-
     const requests = { };
 
     if (this.$store.getters['cluster/schemaFor'](SERVICE_ACCOUNT)) {
