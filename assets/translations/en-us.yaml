@@ -7117,7 +7117,7 @@ verrazzano:
       addContainer: Add Container
       addDNSNameserver: Add DNS Name Server
       addDNSSearchDomain: Add DNS Search Domain
-      addElement: Add { element }
+      addElement: Add { type }
       addEnvVar: Add Environment Variable
       addExternalIP: Add External IP
       addHost: Add Host
@@ -7237,7 +7237,7 @@ verrazzano:
       newAffinityType: New Affinity Type
       newComponentName: New Component Name
       newContainerName: New Container Name
-      newElementName: New { element } Name
+      newElementName: New { type } Name
       newSelectorTermType: New Affinity Selector Term Type
       newTraitType: New Trait Type
       nodeSelectorRequirementType: Node Selector Requirement Type
@@ -7310,8 +7310,8 @@ verrazzano:
       workingDir: Working Directory
       workloadConfigMapName: Workload ConfigMap Name
     messages:
-      enterName: Enter an new name
-      nameInUse: The name {name} already exists
+      enterName: Enter an non-empty value
+      nameInUse: '"{name}" already exists'
 
     ##############################
     ### verrazzano.common.tabs ###

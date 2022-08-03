@@ -46,8 +46,8 @@ export default {
     <template #default>
       <AddNamedElement
         :value="children"
-        :element-name="t('verrazzano.weblogic.tabs.managedServer')"
-        config-key="serverName"
+        :add-type="t('verrazzano.weblogic.tabs.managedServer')"
+        key-field-name="serverName"
         :mode="mode"
         name-prefix="server"
         @input="addChild({ serverName: $event })"
