@@ -5,6 +5,7 @@ import ContainerLifecycleTab from '@/components/verrazzano/ContainersTab/Contain
 import ContainerPortsTab from '@/components/verrazzano/ContainersTab/ContainerPortsTab';
 import ContainerProbe from '@/components/verrazzano/ContainerProbe';
 import ContainerResources from '@/components/verrazzano/ContainerResources';
+import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import EnvironmentVariables from '@/components/verrazzano/EnvironmentVariables';
 import LabeledArrayList from '@/components/verrazzano/LabeledArrayList';
 import LabeledInput from '@/components/form/LabeledInput';
@@ -26,6 +27,7 @@ export default {
     LabeledArrayList,
     LabeledInput,
     LabeledSelect,
+    TabDeleteButton,
     TreeTab,
     VolumeDevices,
     VolumeMounts,
@@ -56,15 +58,10 @@ export default {
       type:     String,
       required: true
     },
-    title: {
-      type:    String,
-      default: ''
+    typeLabel: {
+      type:     String,
+      required: true
     }
-  },
-  data() {
-    const pageTitle = this.title;
-
-    return { pageTitle };
   },
   computed: {
     terminationMessagePolicyOptions() {
@@ -79,32 +76,19 @@ export default {
       this.$emit('delete', this.value);
     }
   },
-  created() {
-    if (!this.pageTitle) {
-      // TODO - Once the transition to TreeTab is complete and the old components are removed, rename this key.
-      this.pageTitle = this.t('verrazzano.common.titles.containerTitle');
-    }
-  }
 };
 </script>
 
 <template>
-  <TreeTab :name="tabName" :label="tabLabel" :title="pageTitle">
+  <TreeTab :name="tabName" :label="tabLabel" :title="typeLabel">
+    <template #beside-header>
+      <TabDeleteButton
+        :mode="mode"
+        :element-name="typeLabel"
+        @click="deleteContainer()"
+      />
+    </template>
     <template #default>
-      <div class="row">
-        <div class="col span-8" />
-        <div v-if="!isView" class="col span-4">
-          <button
-            type="button"
-            class="btn role-tertiary add"
-            data-testid="add-item"
-            @click="deleteContainer()"
-          >
-            {{ t('verrazzano.common.buttons.deleteContainer') }}
-          </button>
-        </div>
-      </div>
-      <div class="spacer" />
       <div class="row">
         <div class="col span-3">
           <LabeledInput

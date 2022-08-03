@@ -292,7 +292,6 @@ export default {
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-name="createTabKey(navPrefix, 'containers')"
-        :tab-label="t('verrazzano.common.tabs.containers')"
         @input="$emit('input', value)"
       />
 
@@ -300,10 +299,10 @@ export default {
         :value="value"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        :add-button-label="t('verrazzano.common.buttons.addInitContainer')"
         root-field-name="initContainers"
         :tab-name="createTabKey(navPrefix, 'initContainers')"
         :tab-label="t('verrazzano.common.tabs.initContainers')"
+        :type-label="t('verrazzano.common.tabs.initContainer')"
         @input="$emit('input', value)"
       />
 

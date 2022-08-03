@@ -1,21 +1,19 @@
 <script>
 // Added by Verrazzano
+import AddNamedElement from '@/components/verrazzano/AddNamedElement';
 import ContainerTab from '@/components/verrazzano/ContainersTab/ContainerTab';
-import LabeledInput from '@/components/form/LabeledInput';
+import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
-
-import { randomStr } from '@/utils/string';
-import debounce from 'lodash/debounce';
 
 export default {
   name:       'ContainersTab',
   components: {
+    AddNamedElement,
     ContainerTab,
-    LabeledInput,
     TreeTab,
   },
-  mixins: [VerrazzanoHelper],
+  mixins: [VerrazzanoHelper, DynamicListHelper],
   props:  {
     value: {
       // parent object (e.g., pod spec)
@@ -30,10 +28,6 @@ export default {
       type:    String,
       default: 'containers'
     },
-    addButtonLabel: {
-      type:    String,
-      default: ''
-    },
     useEphemeralContainers: {
       type:    Boolean,
       default: false
@@ -43,119 +37,61 @@ export default {
       required: true
     },
     tabName: {
-      type:    String,
-      default: ''
+      type:     String,
+      required: true
     },
     tabLabel: {
       type:    String,
       default: ''
     },
-  },
-  data() {
-    const containers = (this.value[this.rootFieldName] || []).map((container) => {
-      const newContainer = this.clone(container);
-
-      newContainer._id = randomStr(4);
-
-      return newContainer;
-    });
-
-    return {
-      treeTabName:  this.tabName || 'containers',
-      treeTabLabel: this.tabLabel,
-      addLabel:     this.addButtonLabel || '',
-      newName:      '',
-      containers,
-    };
+    typeLabel: {
+      type:    String,
+      default: ''
+    },
   },
   methods: {
-    update() {
-      const containers = [];
-
-      this.containers.forEach((container) => {
-        const newContainer = this.clone(container);
-
-        delete newContainer._id;
-
-        containers.push(newContainer);
-      });
-
-      this.setFieldIfNotEmpty(this.rootFieldName, containers);
+    getRootFieldName() {
+      return this.rootFieldName;
     },
-    addContainer() {
-      if (this.newName) {
-        this.containers.push({ _id: randomStr(4), name: this.newName });
-        this.newName = '';
-
-        this.queueUpdate();
-      }
-    },
-    removeContainer(index) {
-      this.containers.splice(index, 1);
-
-      this.queueUpdate();
-    },
-    deleteContainer(containerToDelete) {
-      const index = this.containers.findIndex(container => container._id === containerToDelete._id);
-
-      if (index !== -1) {
-        this.containers.splice(index, 1);
-        this.queueUpdate();
-      }
-    },
-    containerKey(container) {
-      return this.createTabKey(this.tabName, container.name);
+    getChildNavKey(child) {
+      return this.createTabKey(this.tabName, child.name);
     },
   },
-  created() {
-    if (!this.treeTabLabel) {
-      this.treeTabLabel = this.t('verrazzano.common.tabs.containers');
+  computed: {
+    treeTabLabel() {
+      return this.tabLabel ? this.tabLabel : this.t('verrazzano.common.tabs.containers');
+    },
+    containerTypeLabel() {
+      return this.typeLabel ? this.typeLabel : this.t('verrazzano.common.tabs.container');
     }
-
-    if (!this.addLabel) {
-      this.addLabel = this.t('verrazzano.common.buttons.addContainer');
-    }
-
-    this.queueUpdate = debounce(this.update, 500);
   },
 };
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab :name="tabName" :label="treeTabLabel">
     <template #default>
-      <div class="row">
-        <div class="col span-4">
-          <LabeledInput
-            v-model="newName"
-            :mode="mode"
-            :label="t('verrazzano.common.fields.newContainerName')"
-          />
-        </div>
-        <div class="col span-4">
-          <button
-            type="button"
-            class="btn role-tertiary add"
-            data-testid="add-item"
-            :disabled="isView"
-            @click="addContainer()"
-          >
-            {{ t('verrazzano.common.buttons.addContainer') }}
-          </button>
-        </div>
-      </div>
+      <AddNamedElement
+        :value="children"
+        :add-type="containerTypeLabel"
+        key-field-name="name"
+        :mode="mode"
+        name-prefix="container"
+        @input="addChild({ name: $event })"
+      />
     </template>
     <template #nestedTabs>
       <ContainerTab
-        v-for="container in containers"
+        v-for="container in children"
         :key="container._id"
         :value="container"
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-label="container.name"
-        :tab-name="containerKey(container)"
+        :tab-name="getChildNavKey(container)"
+        :type-label="containerTypeLabel"
         @input="queueUpdate"
-        @delete="deleteContainer($event)"
+        @delete="deleteChild($event)"
       />
     </template>
   </TreeTab>
