@@ -7302,7 +7302,7 @@ verrazzano:
         devicePath: Container Mount Path
         name: Persistent Volume Claim Name
       volumeMode: Volume Mode
-          volumeMount:
+      volumeMount:
         mountPath: Mount Path
         mountPropagation: Mount Propagation
         name: Name
