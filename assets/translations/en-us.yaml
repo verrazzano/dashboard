@@ -7352,7 +7352,6 @@ verrazzano:
       volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
       volumes: Volumes
-      workload: Workload
 
     ################################
     ### verrazzano.common.titles ###
@@ -7683,7 +7682,6 @@ verrazzano:
       cluster: Cluster
       clusters: Clusters
       configuration: Configuration
-      containers: Containers
       envVariables: Environment Variables
       fluentd: Fluentd Specification
       general: General
@@ -7834,8 +7832,6 @@ verrazzano:
       addToleration: Add Toleration
       addVolume: Add Volume
       addVolumeAttribute: Add Volume Attribute
-      addVolumeDevice: Add Volume Device
-      addVolumeMount: Add Volume Mount
       addVolumeProjectionSource: Add Volume Projection Source
       addWwid: Add World Wide Identifier
     fields:
@@ -7896,16 +7892,6 @@ verrazzano:
         apiGroup: API Group
         kind: Resource Kind
         name: Resource Name
-      volumeDevice:
-        devicePath: Container Mount Path
-        name: Persistent Volume Claim Name
-      volumeMount:
-        mountPath: Mount Path
-        mountPropagation: Mount Propagation
-        name: Name
-        readOnly: Mount Read-Only
-        subPath: Subpath
-        subPathExpr: Subpath Expression
       volumes:
         awsElasticBlockStore:
           fsType: Filesystem Type
@@ -8169,10 +8155,6 @@ verrazzano:
           never: Never
           ifNeeded: If Needed
           always: Always
-        mountPropagation:
-          bidirectional: Bidirectional
-          hostToContainer: Host to Container
-          none: None
         procMount:
           defaultProcMount: Default Proc Mount
           unmaskedProcMount: Unmasked Proc Mount
@@ -8259,12 +8241,6 @@ verrazzano:
 
   VerrazzanoWebLogicWorkload:
     config:
-      buttons:
-        addAuxiliaryImage: Add Auxiliary Image
-        addChannel: Add Channel
-        addCluster: Add Cluster
-        addConfigurationSetting: Add Configuration Setting
-        addManagedServer: Add Managed Server
       fields:
         adminChannelPortForwardingEnabled: Enable Admin Channel Port Forwarding
         adminServer:
@@ -8354,24 +8330,6 @@ verrazzano:
           configuration: Configuration
         onlineUpdates: Online Update Settings
         resources: Resource Requirements
-        serverPod:
-          affinity: Affinity
-          containerSecurityContext: Container Security Context
-          containers: Containers
-          hostAliases: Host Aliases
-          initContainers: Init Containers
-          livenessProbe: Liveness Probe
-          nodeSelector: Node Selectors
-          podSecurityContext: Pod Security Context
-          readinessGates: Readiness Gates
-          readinessProbe: Readiness Probe
-          resources: Resources
-          scheduling: Pod Scheduling-Related Settings
-          shutdown: WebLogic Server Shutdown
-          title: Server Pod
-          tolerations: Tolerations
-          volumeMounts: Volume Mounts
-          volumes: Volumes
         serverService: Server Service
         volumeMounts: Volume Mounts
         wdtTimeouts: WebLogic Deploy Tooling Online Timeouts
@@ -8386,10 +8344,6 @@ verrazzano:
           onNonDynamicChanges:
             commitUpdateOnly: Commit Update Only
             commitUpdateAndRoll: Commit Update and Roll
-          restartPolicy:
-            always: Always
-            never: Never
-            onFailure: On Failure
           shutdown:
             graceful: Graceful
             forced: Forced
