@@ -7110,6 +7110,8 @@ verrazzano:
       addAffinitySelectorTerm: Add Affinity Selector Term
       addAnnotation: Add Annotation
       addArgument: Add Argument
+      addCephMonitor: Add Ceph Monitor
+      addCephfsMonitor: Add CephFS Monitor
       addClusterIP: Add Cluster IP
       addCommandArg: Add Command Argument
       addComponent: Add Component
@@ -7117,12 +7119,16 @@ verrazzano:
       addContainer: Add Container
       addDNSNameserver: Add DNS Name Server
       addDNSSearchDomain: Add DNS Search Domain
+      addDownwardApiVolumeFile: Add Downward API Volume File
       addElement: Add { type }
       addEnvVar: Add Environment Variable
       addExternalIP: Add External IP
+      addFlexVolumeOption: Add Flex Volume Option
       addHost: Add Host
       addIngressRule: Add Rule
       addInitContainer: Add Init Container
+      addHostAlias: Add Host Alias
+      addHostName: Add Hostname
       addHttpHeader: Add HTTP Header
       addLabel: Add Label
       addLoadBalancerSourceRange: Add Load Balancer Source Range
@@ -7134,11 +7140,19 @@ verrazzano:
       addPodDNSResolverOption: Add Pod DNS Resolver Option
       addPodSelectorTerm: Add Pod Selector Term
       addPort: Add Port
+      addReadinessGate: Add Pod Readiness Gate
       addSecretItem: Add Secret Item
+      addSupplementalGroup: Add Supplemental Group
+      addTargetPortal: Add iSCSI Target Portal
+      addTargetWwn: Add Target World Wide Name
+      addToleration: Add Toleration
       addTopologySpreadConstraints: Add Topology Spread Constraint
       addTrait: Add Trait
+      addVolumeAttribute: Add Volume Attribute
       addVolumeDevice: Add Volume Device
       addVolumeMount: Add Volume Mount
+      addVolumeProjectionSource: Add Volume Projection Source
+      addWwid: Add World Wide Identifier
       deleteComponent: Delete Component
       deleteContainer: Delete Container
       deleteElement: Delete { element }
@@ -7153,6 +7167,7 @@ verrazzano:
       clusterIP: Cluster IP
       clusterIPs: Cluster IP
       componentName: Component Name
+      conditionType: Condition Type
       configMapKeySelector:
         key: ConfigMap Key
         name: ConfigMap Name
@@ -7199,6 +7214,7 @@ verrazzano:
       externalTrafficPolicy: External Traffic Policy
       healthCheckNodePort: Health Check Node Port
       host: Host
+      hostname: Hostname
       httpCookieName: HTTP Cookie Name
       httpCookiePath: HTTP Cookie Path
       httpCookieTTL: HTTP Cookie Time-To-Live Seconds
@@ -7210,6 +7226,7 @@ verrazzano:
       image: Image
       imagePullPolicy: Image Pull Policy
       imagePullSecrets: Image Pull Secrets
+      ipAddress: IP Address
       ipFamilies: IP Families
       ipFamilyPolicy: IP Family Policy
       jobSpec:
@@ -7238,6 +7255,7 @@ verrazzano:
       newComponentName: New Component Name
       newContainerName: New Container Name
       newElementName: New { type } Name
+      newIpAddress: IP Address for New Host Alias
       newSelectorTermType: New Affinity Selector Term Type
       newTraitType: New Trait Type
       nodeSelectorRequirementType: Node Selector Requirement Type
@@ -7250,6 +7268,16 @@ verrazzano:
         uid: Referent UID
       pathExpression: Path Expression
       pathType: Path Match Type
+      podSecurityContext:
+        fsGroup: Filesystem Group
+        fsGroupChangePolicy: Filesystem Group Change Policy
+        runAsNonRoot: Containers Must Run as Non-Root User
+        runAsGroup: Run as Group ID
+        runAsUser: Run as User ID
+        supplementalGroup: Supplemental Group ID
+        sysctl:
+          key: Kernel Parameter Name
+          value: Kernel Parameter Value
       podSpec:
         automountServiceAccountToken: Auto-Mount Service Account Token
         dnsPolicy: DNS Policy
@@ -7275,7 +7303,9 @@ verrazzano:
       replicas: Replicas
       required: Required
       scraper: Prometheus Scraper Deployment Name
-      sessionAffinity: Session Affinity
+      seccompProfile:
+        localhostProfile: Profile File Name
+        type: Profile Type
       secretKeySelector:
         key: Secret Key
         name: Secret Name
@@ -7283,17 +7313,32 @@ verrazzano:
       secretName: Secret Name
       secrets: Secrets
       selectorType: Selector Object Type
+      seLinuxOptions:
+        level: Level
+        role: Role
+        type: Type
+        user: User
+      sessionAffinity: Session Affinity
       sessionAffinityConfig:
         clientIP:
           timeoutSeconds: Session Affinity Client IP Timeout Seconds
       storageClassName: Storage Class Name
       tcpSocketPort: TCP Port
+      toleration:
+        effect: Effect
+        key: Taint Key
+        operator: Operator
+        tolerationSeconds: Toleration Seconds
+        value: Value
       topologyKey: Topology Key
       traits:
         kind: Trait Kind
         replicaCount: Replica Count
       value: Value
       version: Version
+      volume:
+        name: Volume Name
+        type: Volume Type
       volumeDevice:
         devicePath: Container Mount Path
         name: Persistent Volume Claim Name
@@ -7306,9 +7351,175 @@ verrazzano:
         subPath: Subpath
         subPathExpr: Subpath Expression
       volumeName: Volume Name
+      volumes:
+        awsElasticBlockStore:
+          fsType: Filesystem Type
+          partition: Partition Number
+          readOnly: Mount Read-Only
+          volumeId: Volume ID
+        azureDisk:
+          cachingMode: Caching Mode
+          diskName: Disk Name
+          diskUri: Disk URI
+          fsType: Filesystem Type
+          kind: Kind
+          readOnly: Mount Read-Only
+        cephfs:
+          monitor: Ceph Monitor
+          path: Path
+          readOnly: Mount Read-Only
+          secretFile: Secret File
+          secretRefName: Secret Name
+          user: Rados User Name
+        cinder:
+          fsType: Filesystem Type
+          readOnly: Mount Read-Only
+          secretRef: Secret Ref
+          volumeId: Volume ID
+        configMap:
+          defaultMode: Default File Permissions Mode
+          items:
+            key: ConfigMap Key
+            mode: File Permissions Mode
+            path: Relative File Path
+          name: ConfigMap Name
+          optional: ConfigMap and Keys are Optional
+        csi:
+          driver: CSI Driver Name
+          fsType: Filesystem Type
+          nodePublishSecretName: Node Publish Secret Name
+          readOnly: Read-Only
+        downwardApi:
+          apiVersion: API Version
+          containerName: Container Name
+          defaultMode: Default File Permission Mode
+          divisor: Divisor
+          fieldPath: Field Path
+          mode: File Permission Mode
+          path: Relative File Path
+          resource: Resource
+        emptyDir:
+          medium: Medium
+          sizeLimit: Size Limit
+        ephemeral:
+          accessModes: Access Modes
+          storageClassName: Storage Class Name
+          volumeMode: Volume Mode
+          volumeName: Volume Name
+        fc:
+          fsType: Filesystem Type
+          lun: LUN
+          readOnly: Mount Read-Only
+          targetWwn: Target World Wide Name
+          wwid: World Wide ID
+        flex:
+          driver: Driver
+          fsType: Filesystem Type
+          option: Option
+          readOnly: Mount Read-Only
+          secretRefName: Secret Name
+        flocker:
+          datasetName: Dataset Name
+          datasetUuid: Dataset UUID
+        gce:
+          fsType: Filesystem Type
+          partition: Partition
+          pdName: PD Resource Name
+          readOnly: Mount Read-Only
+        glusterfs:
+          endpoints: Endpoints Name
+          path: Path
+          readOnly: Mount Read-Only
+        hostPath:
+          path: Host Path
+          type: Volume Type
+        iscsi:
+          chapAuthDiscovery: Use Discovery CHAP Authentication
+          chapAuthSession: Use Session CHAP Authentication
+          fsType: Filesystem Type
+          initiatorName: Custom iSCSI Initiator Name
+          iqn: Target iSCSI Qualified Name
+          iscsiInterface: iSCSI Interface Name
+          lun: iSCSI Target LUN
+          portal: iSCSI Target Portal
+          readOnly: Mount Read-Only
+          secretRefName: CHAP Secret Name
+          targetPortal: Target Portal
+        name: Volume Name
+        nfs:
+          path: Path
+          readOnly: Mount Read-Only
+          server: NFS Server
+        photon:
+          fsType: Filesystem Type
+          pdId: Persistent Disk ID
+        portworx:
+          fsType: Filesystem Type
+          readOnly: Mount Read-Only
+          volumeId: Volume ID
+        projected:
+          audience: Audience
+          defaultMode: Default File Permission Mode
+          expirationSeconds: Token Expiration Seconds
+          path: Relative File Path
+          sourceType: Projection Source Type
+        pvc:
+          claimName: Persistent Volume Claim Name
+          readOnly: Mount Read-Only
+        quobyte:
+          group: Group
+          readOnly: Mount Read-Only
+          registry: Quobyte Registry Services
+          tenant: Tenant
+          user: User
+          volume: Volume Name
+        rbd:
+          fsType: Filesystem Type
+          image: Rados Image Name
+          keyring: RBD User Keyring File
+          monitor: Ceph Monitor
+          pool: Rados Pool Name
+          readOnly: Mount Read-Only
+          secretRefName: Secret Name
+          user: Rados User Name
+        secret:
+          defaultMode: Default File Permissions Mode
+          items:
+            key: Secret Key
+            mode: File Permissions Mode
+            path: Relative File Path
+          name: Secret Name
+          optional: Secret and Keys are Optional
+        scaleIO:
+          fsType: Filesystem Type
+          gateway: ScaleIO API Gateway
+          protectionDomain: ScaleIO Protection Domain
+          readOnly: Mount Read-Only
+          secretRefName: Secret Name
+          sslEnabled: Enable SSL
+          storageMode: Storage Mode
+          storagePool: ScaleIO Storage Pool
+          system: Storage System Name
+          volumeName: ScaleIO Volume Name
+        storageOS:
+          fsType: Filesystem Type
+          readOnly: Mount Read-Only
+          secretRefName: Secret Name
+          volumeName: StorageOS Volume Name
+          volumeNamespace: StorageOS Volume Namespace
+        type: Volume Type
+        vsphere:
+          fsType: Filesystem Type
+          storagePolicyID: Storage Policy ID
+          storagePolicyName: Storage Policy Name
+          volumePath: vSphere Volume VMDK Path
       whenUnsatisfiable: When Unsatisfiable
       workingDir: Working Directory
       workloadConfigMapName: Workload ConfigMap Name
+
+    ##################################
+    ### verrazzano.common.messages ###
+    ##################################
     messages:
       enterName: Enter an non-empty value
       nameInUse: '"{name}" already exists'
@@ -7323,6 +7534,8 @@ verrazzano:
       ephemeralContainers: Ephemeral Containers
       executionEnvironment: Execution Environment
       general: General
+      hostAlias: Host Alias
+      hostAliases: Host Aliases
       ingressTrait: Ingress Trait
       initContainers: Init Containers
       lifecycleHandler:
@@ -7340,11 +7553,22 @@ verrazzano:
       podAntiAffinity: Pod Anti-Affinity
       podAntiPreferredSelectorTerm: Preferred {index}
       podAntiRequiredSelectorTerm: Required {index}
+      podDNSConfig: Pod DNS Configuration
       podPreferredSelectorTerm: Preferred {index}
       podRequiredSelectorTerm: Required {index}
+      podSecurityContext: Pod Security Context
+      podSpec: Pod Spec
       ports: Ports
       preferredPrefix: Preferred Term
+      readinessGates: Pod Readiness Gates
       resources: Resources
+      seccompProfile: Secure Computing Profile
+      seLinuxOptions: SE Linux Options
+      sysctls: Kernel Parameters
+      tolerations: Tolerations
+      topologySpreadConstraint: Topology Spread Constraint
+      topologySpreadConstraints: Topology Spread Constraints
+      volume: Volume
       volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
       volumes: Volumes
@@ -7406,10 +7630,51 @@ verrazzano:
       scheduling: Pod Scheduling-Related Settings
       selector: Selector
       startupProbe: Startup Probe
-      tolerations: Tolerations
       volumeDevices: Volume Devices
       volumeMounts: Volume Mounts
-      volumes: Volumes
+      volumes:
+        awsElasticBlockStore: AWS Elastic Block Store
+        azureDisk: Azure Disk
+        cephfs: CephFS
+        cinder: Cinder
+        configMap: ConfigMap
+        csi: Container Storage Interface (CSI)
+        csiVolumeAttributes: Volume Attributes
+        downwardApi:
+          fieldRef: Pod Field Reference
+          resourceFieldRef: Container Resource Reference
+          title: Downward API
+        emptyDir: EmptyDir
+        ephemeral:
+          dataSource: Data Source
+          dataSourceRef: Data Source Reference
+          metadata: Labels and Annotations
+          resources: Resources
+          selector: Label Selector
+          title: Ephemeral Volume Claim Template
+        fc: Fibre Channel
+        flex: Flex Volume
+        flocker: Flocker Volume
+        gce: GCE Persistent Disk
+        glusterfs: GlusterFS
+        hostPath: Host Path
+        iscsi: iSCSI Disk
+        nfs: NFS Mount
+        photon: Photon Persistent Disk
+        portworx: Portworx Volume
+        projected:
+          configMap: Projected ConfigMap
+          downwardApi: Projected Downward API
+          secret: Projected Secret
+          serviceAccountToken: Projected Service Account Token
+          title: Projected Volume
+        pvc: Persistent Volume Claim Volume Source
+        quobyte: Quobyte Volume
+        rbd: Rados Block Device
+        scaleIO: ScaleIO Volume
+        storageOS: StorageOS Volume
+        secret: Secret
+        vsphere: vSphere Volume
 
     ###############################
     ### verrazzano.common.types ###
@@ -7424,6 +7689,20 @@ verrazzano:
         nodeAffinity: Node Affinity
         podAffinity: Pod Affinity
         podAntiAffinity: Pod Anti-Affinity
+      azureDisk:
+        cachingMode:
+          none: None
+          readOnly: Read-Only
+          readWrite: Read-Write
+        kind:
+          dedicated: Dedicated
+          managed: Managed
+          shared: Shared
+      conditionType:
+        containersReady: Containers Ready
+        initialized: Initialized
+        podScheduled: Pod Scheduled
+        ready: Ready
       containerProbeAction:
         exec: Execute Command
         grpc: gRPC Request
@@ -7434,9 +7713,30 @@ verrazzano:
         clusterFirstWithHostNet: Cluster First with Host Net
         default: Default
         none: None
+      downwardApi:
+        cpuLimits: CPU Limits
+        cpuRequests: CPU Requests
+        memoryLimits: Memory Limits
+        memoryRequests: Memory Requests
+      emptyDir:
+        medium:
+          memory: Memory
+          notSet: Default
       externalTrafficPolicy:
         cluster: Cluster
         local: Local
+      fsGroupChangePolicy:
+        always: Always
+        onRootMismatch: On Root Mismatch
+      hostPath:
+        blockDevice: Block Device
+        charDevice: Character Device
+        default: Default
+        directory: Directory
+        directoryOrCreate: Directory or Create
+        file: File
+        fileOrCreate: File or Create
+        socket: Socket
       imagePullPolicy:
         always: Always
         ifNeeded: If Needed
@@ -7468,6 +7768,10 @@ verrazzano:
         exact: Exact
         prefix: Prefix
         regex: Regular Expression
+      portProtocol:
+        sctp: SCTP
+        tcp: TCP
+        udp: UDP
       preemptionPolicy:
         never: Never
         preemptLowerPriority: Preempt Lower Priority
@@ -7475,14 +7779,24 @@ verrazzano:
         exec: Command Execution
         httpGet: HTTP Get Request
         tcpSocket: TCP Socket Probe
-      portProtocol:
-        sctp: SCTP
-        tcp: TCP
-        udp: UDP
+      projected:
+        configMap: Projected ConfigMap
+        downwardApi: Projected Downward API
+        secret: Projected Secret
+        serviceAccountToken: Projected Service Account Token
       restartPolicy:
         always: Always
         never: Never
         onFailure: On Failure
+      scaleIO:
+        storageMode:
+          thick: Thick Provisioned
+          thin: Thin Provisioned
+      seccompProfileType:
+        localhost: Localhost
+        localhostProfile: File
+        runtimeDefault: Runtime Default
+        unconfined: Unconfined
       selectorTermType:
         preferred: Preferred
         required: Required
@@ -7500,6 +7814,15 @@ verrazzano:
       terminationMessagePolicy:
         fallbackToLogsOnError: FallbackToLogsOnError
         file: File
+      toleration:
+        effect:
+          noExecute: No Execute
+          noSchedule: No Schedule
+          notSet: Not Set
+          preferNoSchedule: Prefer No Schedule
+        operator:
+          equal: Equal
+          exists: Exists
       trait:
         ingress: Ingress Trait
         logging: Logging Trait
@@ -7508,6 +7831,34 @@ verrazzano:
       volumeModes:
         block: Block
         filesystem: Filesystem
+      volumeType:
+        aws: AWS Elastic Block Store
+        azure: Azure Disk
+        cephfs: CephFS
+        cinder: Cinder
+        configMap: ConfigMap
+        csi: Container Storage Interface
+        downwardApi: Downward API
+        emptyDir: EmptyDir
+        ephemeral: Ephemeral
+        fc: Fibre Channel
+        flex: Flex Volume
+        flocker: Flocker
+        gce: GCE Persistent Disk
+        glusterfs: GlusterFS
+        hostPath: Host Path
+        iscsi: iSCSI
+        nfs: NFS
+        pvc: Persistent Volume Claim
+        photon: Photon Persistent Disk
+        portworx: Portworx
+        projected: Projected Volume
+        quobyte: Quobyte
+        rbd: Rados Block Device
+        scaleIO: ScaleIO
+        secret: Secret
+        storageOS: StorageOS
+        vsphere: vSphere
       whenUnsatisfiable:
         doNotSchedule: Do Not Schedule
         scheduleAnyway: Schedule Anyway
@@ -7682,9 +8033,7 @@ verrazzano:
       modelConfiguration: WebLogic Deploy Tooling Model-Related Settings
       opss: OPSS-Related Settings
       serverPod:
-        affinity: Affinity
         containers: Containers
-        hostAliases: Host Aliases
         initContainers: Init Containers
         nodeSelector: Node Selectors
         shutdown: WebLogic Server Shutdown
@@ -7810,7 +8159,6 @@ verrazzano:
       addSysctl: Add Sysctl
       addTargetPortal: Add iSCSI Target Portal
       addTargetWwn: Add Target World Wide Name
-      addToleration: Add Toleration
       addVolume: Add Volume
       addVolumeAttribute: Add Volume Attribute
       addVolumeProjectionSource: Add Volume Projection Source
@@ -7855,20 +8203,6 @@ verrazzano:
         port: Port
       readinessGates:
         conditionType: Condition Type
-      seLinuxOptions:
-        level: Level
-        role: Role
-        type: Type
-        user: User
-      seccompProfile:
-        localhost: Localhost
-        type: Type
-      toleration:
-        effect: Effect
-        key: Taint Key
-        operator: Operator
-        tolerationSeconds: Toleration Seconds
-        value: Value
       typedLocalObjectReference:
         apiGroup: API Group
         kind: Resource Kind
@@ -8146,18 +8480,8 @@ verrazzano:
         seccompProfile:
           type:
             localhost: Localhost
-            localhostProfile: File
             runtimeDefault: Runtime Default
             unconfined: Unconfined
-        toleration:
-          effect:
-            noExecute: No Execute
-            noSchedule: No Schedule
-            notSet: Not Set
-            preferNoSchedule: Prefer No Schedule
-          operator:
-            equal: Equal
-            exists: Exists
         volumeType:
           aws: AWS Elastic Block Store
           azure: Azure Disk

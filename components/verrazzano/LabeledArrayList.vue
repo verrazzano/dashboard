@@ -31,6 +31,18 @@ export default {
       type:    String,
       default: 'e.g. bar'
     },
+    valueType: {
+      type:    String,
+      default: undefined
+    },
+    valueMin: {
+      type:    String,
+      default: undefined
+    },
+    valueMax: {
+      type:    String,
+      default: undefined
+    },
     addLabel: {
       type: String,
       default() {
@@ -188,6 +200,8 @@ export default {
                 ref="value"
                 v-model="row.value"
                 :label="valueLabel"
+                :type="valueType"
+                :min="valueMin"
                 :placeholder="valuePlaceholder"
                 :disabled="isView || disabled"
                 @paste.prevent="onPaste(idx, $event)"
