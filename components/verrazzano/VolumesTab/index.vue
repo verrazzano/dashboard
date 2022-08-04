@@ -45,6 +45,9 @@ export default {
     };
   },
   methods: {
+    getDynamicListTabName(child) {
+      return this.createTabName(this.treeTabName, child?.name);
+    },
     addVolume(name) {
       this.dynamicListAddChild({ name });
     },
@@ -74,8 +77,9 @@ export default {
     </template>
     <template #default>
       <AddNamedElement
-        key-field-name="name"
+        :value="dynamicListChildren"
         :mode="mode"
+        key-field-name="name"
         :add-type="t('verrazzano.common.tabs.volume')"
         :field-label="t('verrazzano.common.fields.volume.name')"
         @input="addVolume($event)"

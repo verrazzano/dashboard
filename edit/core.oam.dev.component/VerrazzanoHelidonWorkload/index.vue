@@ -18,10 +18,8 @@ export default {
     TreeTab,
     TreeTabbed,
   },
-
   mixins: [HelidonWorkloadHelper],
-
-  props:    {
+  props:  {
     mode: {
       type:    String,
       default: 'create'

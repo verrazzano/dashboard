@@ -59,12 +59,12 @@ export default {
       this.errorMessage = undefined;
 
       if (!this.newName) {
-        this.errorMessage = this.t('verrazzano.common.messages.enterName');
+        // this.errorMessage = this.t('verrazzano.common.messages.enterName');
 
         return false;
       }
 
-      if (typeof this.value !== 'undefined') {
+      if (Array.isArray(this.value)) {
         if (!this.value.every(node => this.newName !== node[this.keyFieldName])) {
           this.errorMessage = this.t('verrazzano.common.messages.nameInUse', { name: this.newName });
 
@@ -125,7 +125,7 @@ export default {
       type="button"
       class="btn role-tertiary add"
       data-testid="add-item"
-      :disabled="isView || errorMessage"
+      :disabled="isView || errorMessage || !newName"
       @click="returnName()"
     >
       {{ t('verrazzano.common.buttons.addElement', { type: addType }) }}
