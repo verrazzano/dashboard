@@ -30,34 +30,16 @@ export default {
     },
     effectTypes() {
       return [
-        {
-          value: '',
-          label: this.t('verrazzano.config.values.types.toleration.effect.notSet')
-        },
-        {
-          value: 'NoExecute',
-          label: this.t('verrazzano.config.values.types.toleration.effect.noExecute')
-        },
-        {
-          value: 'NoSchedule',
-          label: this.t('verrazzano.config.values.types.toleration.effect.noSchedule')
-        },
-        {
-          value: 'PreferNoSchedule',
-          label: this.t('verrazzano.config.values.types.toleration.effect.preferNoSchedule')
-        },
+        { value: '', label: this.t('verrazzano.common.types.toleration.effect.notSet') },
+        { value: 'NoExecute', label: this.t('verrazzano.common.types.toleration.effect.noExecute') },
+        { value: 'NoSchedule', label: this.t('verrazzano.common.types.toleration.effect.noSchedule') },
+        { value: 'PreferNoSchedule', label: this.t('verrazzano.common.types.toleration.effect.preferNoSchedule') },
       ];
     },
     operatorTypes() {
       return [
-        {
-          value: 'Equal',
-          label: this.t('verrazzano.config.values.types.toleration.operator.equal')
-        },
-        {
-          value: 'Exists',
-          label: this.t('verrazzano.config.values.types.toleration.operator.exists')
-        },
+        { value: 'Equal', label: this.t('verrazzano.common.types.toleration.operator.equal') },
+        { value: 'Exists', label: this.t('verrazzano.common.types.toleration.operator.exists') },
       ];
     }
   },
@@ -79,7 +61,7 @@ export default {
           :value="getField('effect')"
           :mode="mode"
           :options="effectTypes"
-          :label="t('verrazzano.config.fields.toleration.effect')"
+          :label="t('verrazzano.common.fields.toleration.effect')"
           @input="setField('effect', $event)"
         />
       </div>
@@ -89,7 +71,7 @@ export default {
           :mode="mode"
           type="Number"
           min="0"
-          :label="t('verrazzano.config.fields.toleration.tolerationSeconds')"
+          :label="t('verrazzano.common.fields.toleration.tolerationSeconds')"
           @input="setNumberField('tolerationSeconds', $event)"
         />
       </div>
@@ -100,7 +82,7 @@ export default {
         <LabeledInput
           :value="getField('key')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.toleration.key')"
+          :label="t('verrazzano.common.fields.toleration.key')"
           @input="setField('key', $event)"
         />
       </div>
@@ -109,7 +91,7 @@ export default {
           :value="getField('operator')"
           :mode="mode"
           :options="operatorTypes"
-          :label="t('verrazzano.config.fields.toleration.operator')"
+          :label="t('verrazzano.common.fields.toleration.operator')"
           @input="setField('operator', $event)"
         />
       </div>
@@ -118,7 +100,7 @@ export default {
           :value="getField('value')"
           :mode="mode"
           :disabled="disableValue"
-          :label="t('verrazzano.config.fields.toleration.value')"
+          :label="t('verrazzano.common.fields.toleration.value')"
           @input="setField('value', $event)"
         />
       </div>

@@ -31,7 +31,7 @@ export default {
       v-model="value.tolerations"
       :mode="mode"
       :default-add-value="{ }"
-      :add-label="t('verrazzano.config.buttons.addToleration')"
+      :add-label="t('verrazzano.common.buttons.addToleration')"
     >
       <template #remove-button="removeProps">
         <button

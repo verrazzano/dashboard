@@ -6,19 +6,19 @@ import ContainerResources from '@/components/verrazzano/ContainerResources';
 import ContainersTab from '@/components/verrazzano/ContainersTab';
 import ContainerSecurityContext from '@/components/verrazzano/ContainerSecurityContext';
 import EnvironmentVariables from '@/components/verrazzano/EnvironmentVariables';
-import HostAliases from '@/components/verrazzano/HostAliases';
+import HostAliasesTab from '@/components/verrazzano/HostAliasesTab';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import Labels from '@/components/verrazzano/Labels';
 import PodScheduler from '@/components/verrazzano/PodScheduler';
-import PodSecurityContext from '@/components/verrazzano/PodSecurityContext';
+import PodSecurityContextTab from '@/components/verrazzano/PodSecurityContextTab';
 import ProbeTuning from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ProbeTuning';
-import ReadinessGates from '@/components/verrazzano/ReadinessGates';
+import ReadinessGatesTab from '@/components/verrazzano/ReadinessGatesTab';
 import ServerShutdown from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerShutdown';
 import Tolerations from '@/components/verrazzano/Tolerations';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VolumeMounts from '@/components/verrazzano/VolumeMounts';
-import Volumes from '@/components/verrazzano/Volumes';
+import VolumesTab from '@/components/verrazzano/VolumesTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
 import { SERVICE_ACCOUNT } from '@/config/types';
@@ -33,19 +33,19 @@ export default {
     ContainersTab,
     ContainerSecurityContext,
     EnvironmentVariables,
-    HostAliases,
+    HostAliasesTab,
     LabeledInput,
     LabeledSelect,
     Labels,
     PodScheduler,
-    PodSecurityContext,
+    PodSecurityContextTab,
     ProbeTuning,
-    ReadinessGates,
+    ReadinessGatesTab,
     ServerShutdown,
     Tolerations,
     TreeTab,
     VolumeMounts,
-    Volumes,
+    VolumesTab,
   },
   mixins: [WeblogicWorkloadHelper],
   props:  {
@@ -68,6 +68,7 @@ export default {
   },
   data() {
     return {
+      fetchInProgress:    true,
       namespace:          this.namespacedObject.metadata?.namespace,
       allServiceAccounts: {},
       serviceAccounts:    [],
@@ -87,6 +88,7 @@ export default {
     if (hash.serviceAccounts) {
       this.sortObjectsByNamespace(hash.serviceAccounts, this.allServiceAccounts);
     }
+    this.fetchInProgress = false;
   },
   methods: {
     resetServiceAccounts() {
@@ -170,15 +172,6 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.weblogic.titles.serverPod.hostAliases') }}</h3>
-      <HostAliases
-        :value="getListField('hostAliases')"
-        :mode="mode"
-        @input="setFieldIfNotEmpty('hostAliases', $event)"
-      />
-    </div>
-    <div class="spacer" />
-    <div>
       <h3>{{ t('verrazzano.common.titles.livenessProbe') }}</h3>
       <ProbeTuning
         :value="getField('livenessProbe')"
@@ -194,15 +187,6 @@ export default {
         :mode="mode"
         is-readiness-probe
         @input="setFieldIfNotEmpty('readinessProbe', $event)"
-      />
-    </div>
-    <div class="spacer" />
-    <div>
-      <h3>{{ t('verrazzano.common.titles.readinessGates') }}</h3>
-      <ReadinessGates
-        :value="getListField('readinessGates')"
-        :mode="mode"
-        @input="setFieldIfNotEmpty('readinessGates', $event)"
       />
     </div>
     <div class="spacer" />
@@ -225,36 +209,10 @@ export default {
     </div>
     <div class="spacer" />
     <div>
-      <h3>{{ t('verrazzano.common.titles.tolerations') }}</h3>
-      <Tolerations
-        v-model="value"
-        :mode="mode"
-      />
-    </div>
-    <div class="spacer" />
-    <div>
-      <h3>{{ t('verrazzano.common.titles.volumes') }}</h3>
-      <Volumes
-        v-model="value"
-        :mode="mode"
-        :namespaced-object="namespacedObject"
-      />
-    </div>
-    <div class="spacer" />
-    <div>
       <h3>{{ t('verrazzano.common.titles.volumeMounts') }}</h3>
       <VolumeMounts
         v-model="value"
         :mode="mode"
-      />
-    </div>
-    <div class="spacer" />
-    <div>
-      <h3>{{ t('verrazzano.common.titles.podSecurityContext') }}</h3>
-      <PodSecurityContext
-        :value="getField('podSecurityContext')"
-        :mode="mode"
-        @input="setFieldIfNotEmpty('podSecurityContext', $event)"
       />
     </div>
     <div class="spacer" />
@@ -287,6 +245,20 @@ export default {
         @input="setFieldIfNotEmpty('affinity', $event)"
       />
 
+      <HostAliasesTab
+        :value="getListField('hostAliases')"
+        :mode="mode"
+        :tab-name="createTabKey(navPrefix, 'hostAliases')"
+        @input="setFieldIfNotEmpty('hostAliases', $event)"
+      />
+
+      <ReadinessGatesTab
+        :value="getListField('readinessGates')"
+        :mode="mode"
+        :tab-name="createTabKey(navPrefix, 'readinessGates')"
+        @input="setFieldIfNotEmpty('readinessGates', $event)"
+      />
+
       <ContainersTab
         :value="value"
         :mode="mode"
@@ -304,6 +276,28 @@ export default {
         :tab-label="t('verrazzano.common.tabs.initContainers')"
         :type-label="t('verrazzano.common.tabs.initContainer')"
         @input="$emit('input', value)"
+      />
+
+      <VolumesTab
+        :value="getListField('volumes')"
+        :mode="mode"
+        :namespaced-object="namespacedObject"
+        :tab-name="createTabKey(navPrefix, 'volumes')"
+        @input="setFieldIfNotEmpty('volumes', $event)"
+      />
+
+      <TreeTab :name="createTabKey(navPrefix, 'tolerations')" :label="t('verrazzano.common.tabs.tolerations')">
+        <Tolerations
+          v-model="value"
+          :mode="mode"
+        />
+      </TreeTab>
+
+      <PodSecurityContextTab
+        :value="getField('podSecurityContext')"
+        :mode="mode"
+        :tab-name="createTabKey(navPrefix, 'podSecurityContext')"
+        @input="setFieldIfNotEmpty('podSecurityContext', $event)"
       />
 
       <TreeTab

@@ -26,15 +26,15 @@ export default {
       return [
         {
           value: 'Localhost',
-          label: this.t('verrazzano.config.values.types.seccompProfile.type.localhost')
+          label: this.t('verrazzano.common.types.seccompProfileType.localhost')
         },
         {
           value: 'RuntimeDefault',
-          label: this.t('verrazzano.config.values.types.seccompProfile.type.runtimeDefault')
+          label: this.t('verrazzano.common.types.seccompProfileType.runtimeDefault')
         },
         {
           value: 'Unconfined',
-          label: this.t('verrazzano.config.values.types.seccompProfile.type.unconfined')
+          label: this.t('verrazzano.common.types.seccompProfileType.unconfined')
         },
       ];
     },
@@ -59,7 +59,7 @@ export default {
         <LabeledSelect
           :value="getField('type')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.seccompProfile.type')"
+          :label="t('verrazzano.common.fields.seccompProfile.type')"
           :options="typeOptions"
           option-key="value"
           option-label="label"
@@ -70,7 +70,7 @@ export default {
         <LabeledInput
           :value="getField('localhostProfile')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.seccompProfile.localhostProfile')"
+          :label="t('verrazzano.common.fields.seccompProfile.localhostProfile')"
           @input="setField('localhostProfile', $event)"
         />
       </div>
