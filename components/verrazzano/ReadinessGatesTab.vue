@@ -1,14 +1,12 @@
 <script>
 // Added by Verrazzano
 import ArrayListGrouped from '@/components/form/ArrayListGrouped';
+import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import DynamicTabHelper from '@/mixins/verrazzano/dynamic-tab-helper';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
-
-import { randomStr } from '@/utils/string';
-import debounce from 'lodash/debounce';
 
 export default {
   name:       'ReadinessGatesTab',
@@ -18,7 +16,7 @@ export default {
     TabDeleteButton,
     TreeTab,
   },
-  mixins: [VerrazzanoHelper, DynamicTabHelper],
+  mixins: [VerrazzanoHelper, DynamicTabHelper, DynamicListHelper],
   props:  {
     value: {
       type:    Array,
@@ -38,18 +36,9 @@ export default {
     },
   },
   data() {
-    const readinessGates = this.value.map((readinessGate) => {
-      const newReadinessGate = this.clone(readinessGate);
-
-      newReadinessGate._id = randomStr(4);
-
-      return newReadinessGate;
-    });
-
     return {
       treeTabName:  this.tabName,
       treeTabLabel: this.tabLabel,
-      readinessGates,
     };
   },
   computed: {
@@ -63,39 +52,24 @@ export default {
     }
   },
   methods: {
-    update() {
-      const readinessGates = [];
-
-      this.readinessGates.forEach((readinessGate) => {
-        const newReadinessGate = this.clone(readinessGate);
-
-        delete newReadinessGate._id;
-        readinessGates.push(newReadinessGate);
-      });
-      this.$emit('input', readinessGates);
-    },
     addReadinessGate() {
-      this.readinessGates.push({ _id: randomStr(4) });
+      this.dynamicListAddChild();
     },
     removeReadinessGate(index) {
-      this.readinessGates.splice(index, 1);
-      this.queueUpdate();
+      this.dynamicListDeleteChildByIndex(index);
     },
     updateReadinessGate(readinessGate, conditionType) {
       this.set(readinessGate, 'conditionType', conditionType);
       this.queueUpdate();
     },
     deleteReadinessGates() {
-      this.readinessGates.length = 0;
-      this.queueUpdate();
+      this.dynamicListClearChildrenList();
     },
   },
   created() {
     if (!this.treeTabLabel) {
       this.treeTabLabel = this.t('verrazzano.common.tabs.readinessGates');
     }
-
-    this.queueUpdate = debounce(this.update, 500);
   },
 };
 </script>
@@ -111,7 +85,7 @@ export default {
     </template>
     <template #default>
       <ArrayListGrouped
-        :value="readinessGates"
+        :value="dynamicListChildren"
         :mode="mode"
         :default-add-value="{ }"
         :add-label="t('verrazzano.common.buttons.addReadinessGate')"
@@ -119,7 +93,7 @@ export default {
       >
         <template #remove-button="removeProps">
           <button
-            v-if="!isView && readinessGates.length > 0"
+            v-if="!isView && dynamicListChildren.length > 0"
             type="button"
             class="btn role-link close btn-sm"
             @click="removeReadinessGate(removeProps.i)"

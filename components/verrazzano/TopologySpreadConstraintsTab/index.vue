@@ -1,12 +1,10 @@
 <script>
 import AddNamedElement from '@/components/verrazzano/AddNamedElement';
+import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TopologySpreadConstraint from '@/components/verrazzano/TopologySpreadConstraintsTab/TopologySpreadConstraint';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
-
-import { randomStr } from '@/utils/string';
-import debounce from 'lodash/debounce';
 
 export default {
   name:       'TopologySpreadConstraintsTab',
@@ -16,7 +14,7 @@ export default {
     TopologySpreadConstraint,
     TreeTab,
   },
-  mixins: [VerrazzanoHelper],
+  mixins: [VerrazzanoHelper, DynamicListHelper],
   props:  {
     value: {
       type:    Array,
@@ -36,51 +34,34 @@ export default {
     }
   },
   data() {
-    const topologySpreadConstraints = this.value.map((topologySpreadConstraint) => {
-      const newTopologySpreadConstraint = this.clone(topologySpreadConstraint);
-
-      newTopologySpreadConstraint._id = randomStr(4);
-    });
-
     return {
       treeTabName:  this.tabName,
       treeTabLabel: this.tabLabel,
-      topologySpreadConstraints,
     };
   },
   methods: {
-    update() {
-      const topologySpreadConstraints = [];
-
-      this.topologySpreadConstraints.forEach((topologySpreadConstraint) => {
-        const newTopologySpreadConstraint = this.clone(topologySpreadConstraint);
-
-        delete newTopologySpreadConstraint._id;
-
-        topologySpreadConstraints.push(newTopologySpreadConstraint);
-      });
-
-      this.$emit('input', topologySpreadConstraints);
-    },
     addTopologySpreadConstraint(topologyKey) {
-      this.topologySpreadConstraints.push({ _id: randomStr(4), topologyKey });
-      this.queueUpdate();
+      this.dynamicListAddChild({ topologyKey });
     },
     removeTopologySpreadConstraint(index) {
-      this.topologySpreadConstraints.splice(index, 1);
-      this.queueUpdate();
+      // eslint-disable-next-line no-console
+      console.log(`XXXXXX removeTopologySpreadConstraint(${ index })`);
+      this.dynamicListDeleteChildByIndex(index);
+      // eslint-disable-next-line no-console
+      console.log('XXXXXX removeTopologySpreadConstraint after deleting child by index: ', JSON.stringify(this.dynamicListChildren));
     },
     deleteTopologySpreadConstraints() {
-      this.topologySpreadConstraints.length = 0;
-      this.queueUpdate();
+      // eslint-disable-next-line no-console
+      console.log('XXXXXX deleteTopologySpreadConstraints before deleting children: ', JSON.stringify(this.dynamicListChildren));
+      this.dynamicListClearChildrenList();
+      // eslint-disable-next-line no-console
+      console.log('XXXXXX deleteTopologySpreadConstraints after deleting children: ', JSON.stringify(this.dynamicListChildren));
     },
   },
   created() {
     if (!this.treeTabLabel) {
       this.treeTabLabel = this.t('verrazzano.common.tabs.topologySpreadConstraints');
     }
-
-    this.queueUpdate = debounce(this.update, 500);
   },
 };
 </script>
@@ -89,7 +70,7 @@ export default {
   <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #beside-header>
       <TabDeleteButton
-        element-name="t('verrazzano.common.tabs.topologySpreadConstraints')"
+        :element-name="t('verrazzano.common.tabs.topologySpreadConstraints')"
         :mode="mode"
         @click="deleteTopologySpreadConstraints()"
       />
@@ -98,30 +79,30 @@ export default {
       <AddNamedElement
         key-field-name="topologyKey"
         :mode="mode"
-        :add-type="t('verrazzano.common.tab.topologySpreadConstraint')"
+        :add-type="t('verrazzano.common.tabs.topologySpreadConstraint')"
         :field-label="t('verrazzano.common.fields.topologyKey')"
         @input="addTopologySpreadConstraint($event)"
       />
     </template>
     <template #nestedTabs>
       <TreeTab
-        v-for="(topologySpreadConstraint, idx) in topologySpreadConstraints"
+        v-for="(topologySpreadConstraint, idx) in dynamicListChildren"
         :key="topologySpreadConstraint._id"
         :name="createTabKey(treeTabName, topologySpreadConstraint.topologyKey)"
         :label="topologySpreadConstraint.topologyKey"
       >
         <template #beside-header>
           <TabDeleteButton
-            :element-name="t('verrazzano.common.tab.topologySpreadConstraint')"
+            :element-name="t('verrazzano.common.tabs.topologySpreadConstraint')"
             :mode="mode"
-            @input="removeTopologySpreadConstraint(idx)"
+            @click="removeTopologySpreadConstraint(idx)"
           />
         </template>
         <template #default>
           <TopologySpreadConstraint
             :value="topologySpreadConstraint"
             :mode="mode"
-            @input="queueUpdate()"
+            @input="dynamicListUpdate()"
           />
         </template>
       </TreeTab>

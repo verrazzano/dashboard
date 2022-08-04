@@ -1,15 +1,13 @@
 <script>
 // Added by Verrazzano
 import AddNamedElement from '@/components/verrazzano/AddNamedElement';
+import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import DynamicTabHelper from '@/mixins/verrazzano/dynamic-tab-helper';
 import LabeledArrayList from '@/components/verrazzano/LabeledArrayList';
 import LabeledInput from '@/components/form/LabeledInput';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
-
-import { randomStr } from '@/utils/string';
-import debounce from 'lodash/debounce';
 
 export default {
   name:       'HostAliasesTab',
@@ -20,7 +18,7 @@ export default {
     TabDeleteButton,
     TreeTab,
   },
-  mixins: [VerrazzanoHelper, DynamicTabHelper],
+  mixins: [VerrazzanoHelper, DynamicTabHelper, DynamicListHelper],
   props:  {
     value: {
       type:    Array,
@@ -40,52 +38,26 @@ export default {
     }
   },
   data() {
-    const hostAliases = this.value.map((hostAlias) => {
-      const newHostAlias = this.clone(hostAlias);
-
-      newHostAlias._id = randomStr(4);
-
-      return newHostAlias;
-    });
-
     return {
       treeTabName:  this.tabName,
       treeTabLabel: this.tabLabel,
-      hostAliases,
     };
   },
   methods: {
-    update() {
-      const hostAliases = [];
-
-      this.hostAliases.forEach((hostAlias) => {
-        const newHostAlias = this.clone(hostAlias);
-
-        delete newHostAlias._id;
-
-        hostAliases.push(newHostAlias);
-      });
-      this.$emit('input', hostAliases);
-    },
     clearHostAliases() {
-      this.hostAliases.length = 0;
-      this.queueUpdate();
+      this.dynamicListClearChildrenList();
     },
     addHostAlias(newIpAddress) {
-      this.hostAliases.push({ _id: randomStr(4), ip: newIpAddress });
-      this.queueUpdate();
+      this.dynamicListAddChild({ ip: newIpAddress });
     },
     removeHostAlias(index) {
-      this.hostAliases.splice(index, 1);
-      this.queueUpdate();
+      this.dynamicListDeleteChildByIndex(index);
     },
   },
   created() {
     if (!this.treeTabLabel) {
       this.treeTabLabel = this.t('verrazzano.common.tabs.hostAliases');
     }
-
-    this.queueUpdate = debounce(this.update, 500);
   }
 };
 </script>
@@ -110,7 +82,7 @@ export default {
     </template>
     <template #nestedTabs>
       <TreeTab
-        v-for="(hostAlias, idx) in hostAliases"
+        v-for="(hostAlias, idx) in dynamicListChildren"
         :key="hostAlias._id"
         :name="createTabKey(treeTabName, hostAlias.ip)"
         :label="hostAlias.ip"

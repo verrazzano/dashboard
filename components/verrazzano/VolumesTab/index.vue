@@ -1,13 +1,11 @@
 <script>
 // Added by Verrazzano
 import AddNamedElement from '@/components/verrazzano/AddNamedElement';
+import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import Volume from '@/components/verrazzano/VolumesTab/Volume';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
-
-import { randomStr } from '@/utils/string';
-import debounce from 'lodash/debounce';
 
 export default {
   name:       'VolumesTab',
@@ -17,7 +15,7 @@ export default {
     TreeTab,
     Volume,
   },
-  mixins: [VerrazzanoHelper],
+  mixins: [VerrazzanoHelper, DynamicListHelper],
   props:  {
     value: {
       type:    Array,
@@ -41,52 +39,26 @@ export default {
     },
   },
   data() {
-    const volumes = this.value.map((volume) => {
-      const newVolume = this.clone(volume);
-
-      newVolume._id = randomStr(4);
-
-      return newVolume;
-    });
-
     return {
       treeTabName:  this.tabName,
       treeTabLabel: this.tabLabel,
-      volumes,
     };
   },
   methods: {
-    update() {
-      const volumes = [];
-
-      this.volumes.forEach((volume) => {
-        const newVolume = this.clone(volume);
-
-        delete newVolume._id;
-
-        volumes.push(newVolume);
-      });
-      this.$emit('input', volumes);
-    },
     addVolume(name) {
-      this.volumes.push({ _id: randomStr(4), name });
-      this.queueUpdate();
+      this.dynamicListAddChild({ name });
     },
     removeVolume(index) {
-      this.volumes.splice(index, 1);
-      this.queueUpdate();
+      this.dynamicListDeleteChildByIndex(index);
     },
     deleteVolumes() {
-      this.volumes.length = 0;
-      this.queueUpdate();
+      this.dynamicListClearChildrenList();
     }
   },
   created() {
     if (!this.treeTabLabel) {
       this.treeTabLabel = this.t('verrazzano.common.tabs.volumes');
     }
-
-    this.queueUpdate = debounce(this.update, 500);
   }
 };
 </script>
@@ -111,7 +83,7 @@ export default {
     </template>
     <template #nestedTabs>
       <TreeTab
-        v-for="(volume, idx) in volumes"
+        v-for="(volume, idx) in dynamicListChildren"
         :key="volume._id"
         :name="createTabKey(treeTabName, volume.name)"
         :label="volume.name"
@@ -128,7 +100,7 @@ export default {
             :value="volume"
             :mode="mode"
             :namespaced-object="namespacedObject"
-            @input="queueUpdate"
+            @input="dynamicListUpdate"
           />
         </template>
       </TreeTab>

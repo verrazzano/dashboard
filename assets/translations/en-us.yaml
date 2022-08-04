@@ -7962,7 +7962,6 @@ verrazzano:
       workloadName: Helidon Workload Name
     tabs:
       deployment: Deployment Template
-      podSpec: Pod Spec
       strategy: Strategy
 
   ######################

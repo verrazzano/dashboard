@@ -331,6 +331,7 @@ export default {
         :namespaced-object="namespacedObject"
         root-field-name="initContainers"
         :tab-name="createTabKey(treeTabName, 'initContainers')"
+        :tab-label="t('verrazzano.common.tabs.initContainers')"
         @input="$emit('input', value)"
       />
       <ContainersTab
@@ -340,6 +341,7 @@ export default {
         use-ephemeral-containers
         :namespaced-object="namespacedObject"
         :tab-name="createTabKey(treeTabName, 'ephemeralContainers')"
+        :tab-label="t('verrazzano.common.tabs.ephemeralContainers')"
         @input="$emit('input', value)"
       />
       <VolumesTab

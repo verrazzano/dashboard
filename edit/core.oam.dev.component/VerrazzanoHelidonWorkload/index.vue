@@ -1,16 +1,22 @@
 <script>
 // Added by Verrazzano
 import DeploymentStrategy from '@/components/verrazzano/DeploymentStrategy.vue';
+import HelidonWorkloadHelper from '@/mixins/verrazzano/helidon-workload-helper';
 import Labels from '@/components/verrazzano/Labels';
 import LabeledInput from '@/components/form/LabeledInput.vue';
-import HelidonWorkloadHelper from '@/mixins/verrazzano/helidon-workload-helper';
-import TreeTabbed from '@/components/verrazzano/TreeTabbed';
+import PodSpecTab from '@/components/verrazzano/PodSpecTab';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
-import PodSpec from '@/components/verrazzano/PodSpec';
+import TreeTabbed from '@/components/verrazzano/TreeTabbed';
+
 export default {
   name:       'CruVerrazzanoHelidonWorkload',
   components: {
-    DeploymentStrategy, TreeTabbed, TreeTab, PodSpec, Labels, LabeledInput
+    DeploymentStrategy,
+    LabeledInput,
+    Labels,
+    PodSpecTab,
+    TreeTab,
+    TreeTabbed,
   },
 
   mixins: [HelidonWorkloadHelper],
@@ -92,14 +98,13 @@ export default {
                   @input="setFieldIfNotEmpty('strategy', $event)"
                 />
               </TreeTab>
-              <TreeTab :label="t('verrazzano.helidon.tabs.podSpec')" name="podSpec">
-                <PodSpec
-                  :value="getWorkloadDeploymentTemplateField('podSpec')"
-                  :mode="mode"
-                  :namespaced-object="value"
-                  @input="setWorkloadDeploymentTemplateField('podSpec', $event)"
-                />
-              </TreeTab>
+              <PodSpecTab
+                :value="getWorkloadDeploymentTemplateField('podSpec')"
+                :mode="mode"
+                :namespaced-object="value"
+                tab-name="podSpec"
+                @input="setWorkloadDeploymentTemplateField('podSpec', $event)"
+              />
             </template>
           </TreeTab>
         </template>
