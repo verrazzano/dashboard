@@ -50,10 +50,10 @@ export default {
     },
   },
   methods: {
-    getRootFieldName() {
+    getDynamicListRootFieldName() {
       return this.rootFieldName;
     },
-    getChildNavKey(child) {
+    getDynamicListNavKey(child) {
       return this.createTabKey(this.tabName, child.name);
     },
   },
@@ -72,26 +72,26 @@ export default {
   <TreeTab :name="tabName" :label="treeTabLabel">
     <template #default>
       <AddNamedElement
-        :value="children"
+        :value="dynamicListChildren"
         :add-type="containerTypeLabel"
         key-field-name="name"
         :mode="mode"
         name-prefix="container"
-        @input="addChild({ name: $event })"
+        @input="dynamicListAddChild({ name: $event })"
       />
     </template>
     <template #nestedTabs>
       <ContainerTab
-        v-for="container in children"
+        v-for="container in dynamicListChildren"
         :key="container._id"
         :value="container"
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-label="container.name"
-        :tab-name="getChildNavKey(container)"
+        :tab-name="getDynamicListNavKey(container)"
         :type-label="containerTypeLabel"
-        @input="queueUpdate"
-        @delete="deleteChild($event)"
+        @input="dynamicListUpdate"
+        @delete="dynamicListDeleteChild($event)"
       />
     </template>
   </TreeTab>

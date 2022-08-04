@@ -35,10 +35,10 @@ export default {
   },
 
   methods: {
-    getRootFieldName() {
+    getDynamicListRootFieldName() {
       return 'clusters';
     },
-    getChildNavKey(child) {
+    getDynamicListNavKey(child) {
       const clusterKey = this.createTabKey('cluster', child.clusterName);
 
       return this.createTabKey(this.navPrefix, clusterKey);
@@ -54,24 +54,24 @@ export default {
   >
     <template #default>
       <AddNamedElement
-        :value="children"
+        :value="dynamicListChildren"
         :add-type="t('verrazzano.weblogic.tabs.cluster')"
         key-field-name="clusterName"
         :mode="mode"
         name-prefix="cluster"
-        @input="addChild({ clusterName: $event })"
+        @input="dynamicListAddChild({ clusterName: $event })"
       />
     </template>
     <template #nestedTabs>
       <ClusterTab
-        v-for="cluster in children"
+        v-for="cluster in dynamicListChildren"
         :key="cluster._id"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        :tab-name="getChildNavKey(cluster)"
+        :tab-name="getDynamicListNavKey(cluster)"
         :value="cluster"
-        @input="queueUpdate"
-        @delete="deleteChild($event)"
+        @input="dynamicListUpdate"
+        @delete="dynamicListDeleteChild($event)"
       />
     </template>
   </TreeTab>
