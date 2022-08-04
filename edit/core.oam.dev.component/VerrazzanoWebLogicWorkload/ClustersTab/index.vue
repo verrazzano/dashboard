@@ -38,7 +38,7 @@ export default {
     getDynamicListRootFieldName() {
       return 'clusters';
     },
-    getDynamicListNavKey(child) {
+    getDynamicListTabName(child) {
       const clusterKey = this.createTabKey('cluster', child.clusterName);
 
       return this.createTabKey(this.navPrefix, clusterKey);
@@ -68,7 +68,7 @@ export default {
         :key="cluster._id"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        :tab-name="getDynamicListNavKey(cluster)"
+        :tab-name="getDynamicListTabName(cluster)"
         :value="cluster"
         @input="dynamicListUpdate"
         @delete="dynamicListDeleteChild($event)"

@@ -53,7 +53,7 @@ export default {
     getDynamicListRootFieldName() {
       return this.rootFieldName;
     },
-    getDynamicListNavKey(child) {
+    getDynamicListTabName(child) {
       return this.createTabKey(this.tabName, child.name);
     },
   },
@@ -88,7 +88,7 @@ export default {
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-label="container.name"
-        :tab-name="getDynamicListNavKey(container)"
+        :tab-name="getDynamicListTabName(container)"
         :type-label="containerTypeLabel"
         @input="dynamicListUpdate"
         @delete="dynamicListDeleteChild($event)"
