@@ -360,7 +360,7 @@ export default {
         effectiveIndex = index;
       } else {
         key = 'verrazzano.common.tabs.podAntiRequiredSelectorTerm';
-        effectiveIndex = index - this.allPodAntiPreferredSelectorTerms;
+        effectiveIndex = index - this.allPodAntiPreferredSelectorTerms.length;
       }
 
       return this.t(key, { index: effectiveIndex + 1 });
