@@ -37,7 +37,7 @@ export default {
     getDynamicListRootFieldName() {
       return 'managedServers';
     },
-    getDynamicListNavKey(child) {
+    getDynamicListTabName(child) {
       const serverKey = this.createTabKey('managedServer', child['serverName']);
 
       return this.createTabKey(this.navPrefix, serverKey);
@@ -68,7 +68,7 @@ export default {
         :key="server._id"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        :tab-name="getDynamicListNavKey(server)"
+        :tab-name="getDynamicListTabName(server)"
         :value="server"
         @input="dynamicListUpdate"
         @delete="dynamicListDeleteChild($event)"

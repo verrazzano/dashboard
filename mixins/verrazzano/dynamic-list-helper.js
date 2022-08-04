@@ -71,8 +71,8 @@ export default {
         this.queueUpdate();
       }
 
-      if (typeof this.getDynamicListNavKey === 'function') {
-        this.selectTab(this.getDynamicListNavKey(child));
+      if (typeof this.getDynamicListTabName === 'function') {
+        this.selectTab(this.getDynamicListTabName(child));
       }
     },
     dynamicListDeleteChild(childToDelete) {
