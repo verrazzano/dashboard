@@ -59,8 +59,8 @@ export default {
       required: true
     },
     typeLabel: {
-      type:     String,
-      required: true
+      type:    String,
+      default: ''
     }
   },
   computed: {
@@ -69,6 +69,9 @@ export default {
         { value: 'File', label: this.t('verrazzano.common.types.terminationMessagePolicy.file') },
         { value: 'FallbackToLogsOnError', label: this.t('verrazzano.common.types.terminationMessagePolicy.fallbackToLogsOnError') },
       ];
+    },
+    containerTypeLabel() {
+      return this.typeLabel ? this.typeLabel : this.t('verrazzano.common.tabs.container');
     }
   },
   methods: {
@@ -80,11 +83,11 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="tabName" :label="tabLabel" :title="typeLabel">
+  <TreeTab :name="tabName" :label="tabLabel" :title="containerTypeLabel">
     <template #beside-header>
       <TabDeleteButton
         :mode="mode"
-        :element-name="typeLabel"
+        :element-name="containerTypeLabel"
         @click="deleteContainer()"
       />
     </template>
