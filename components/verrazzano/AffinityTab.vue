@@ -18,6 +18,7 @@ export default {
     TabDeleteButton,
     TreeTab,
   },
+  inject: ['selectTab'],
   mixins: [VerrazzanoHelper],
   props:  {
     value: {
@@ -205,9 +206,12 @@ export default {
         weight:     1,
         preference: {}
       });
+      this.selectTab(this.getNodeSelectorTermTabName(this.allNodePreferredSelectorTerms.length - 1));
     },
     addNodeAffinityRequiredTerm() {
       this.allNodeRequiredSelectorTerms.push({ _id: randomStr(4) });
+      this.selectTab(this.getNodeSelectorTermTabName(this.allNodeRequiredSelectorTerms.length +
+          this.allNodePreferredSelectorTerms.length - 1));
     },
     addPodAffinityPreferredTerm() {
       this.allPodPreferredSelectorTerms.push({
@@ -215,9 +219,12 @@ export default {
         weight:          1,
         podAffinityTerm: {}
       });
+      this.selectTab(this.getPodSelectorTermTabName(this.allPodPreferredSelectorTerms.length - 1));
     },
     addPodAffinityRequiredTerm() {
       this.allPodRequiredSelectorTerms.push({ _id: randomStr(4) });
+      this.selectTab(this.getPodSelectorTermTabName(this.allPodRequiredSelectorTerms.length +
+          this.allPodPreferredSelectorTerms.length - 1));
     },
     addPodAntiAffinityPreferredTerm() {
       this.allPodAntiPreferredSelectorTerms.push({
@@ -225,9 +232,12 @@ export default {
         weight:          1,
         podAffinityTerm: {}
       });
+      this.selectTab(this.getPodAntiSelectorTermTabName(this.allPodAntiPreferredSelectorTerms.length - 1));
     },
     addPodAntiAffinityRequiredTerm() {
       this.allPodAntiRequiredSelectorTerms.push({ _id: randomStr(4) });
+      this.selectTab(this.getPodAntiSelectorTermTabName(this.allPodAntiRequiredSelectorTerms.length +
+          this.allPodAntiPreferredSelectorTerms.length - 1));
     },
     addNodeAffinityTerm(type) {
       if (type || this.newSelectorTermType) {
@@ -350,7 +360,7 @@ export default {
         effectiveIndex = index;
       } else {
         key = 'verrazzano.common.tabs.podAntiRequiredSelectorTerm';
-        effectiveIndex = index - this.allPodAntiPreferredSelectorTerms;
+        effectiveIndex = index - this.allPodAntiPreferredSelectorTerms.length;
       }
 
       return this.t(key, { index: effectiveIndex + 1 });

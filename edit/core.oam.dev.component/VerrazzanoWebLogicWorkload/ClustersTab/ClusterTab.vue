@@ -37,23 +37,17 @@ export default {
       type:     Object,
       required: true
     },
-    navPrefix: {
-      type:    String,
-      default: undefined
+    tabName: {
+      type:     String,
+      required: true
     }
-  },
-
-  methods: {
-    clusterKey(cluster) {
-      return this.createTabKey('cluster', cluster.clusterName);
-    },
   },
 };
 </script>
 
 <template>
   <TreeTab
-    :name="createTabKey(navPrefix, clusterKey(value))"
+    :name="tabName"
     :label="value.clusterName"
     :title="t('verrazzano.weblogic.tabs.cluster')"
   >
@@ -188,7 +182,7 @@ export default {
         :value="getField('serverPod')"
         :mode="mode"
         :namespaced-object="value"
-        :nav-prefix="createTabKey(navPrefix, clusterKey(value))"
+        :nav-prefix="tabName"
         @input="setFieldIfNotEmpty('serverPod', $event)"
       />
     </template>

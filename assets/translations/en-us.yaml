@@ -7534,6 +7534,7 @@ verrazzano:
     tabs:
       affinity: Affinity
       components: Components
+      container: Container
       containers: Containers
       ephemeralContainers: Ephemeral Containers
       executionEnvironment: Execution Environment
@@ -7541,6 +7542,7 @@ verrazzano:
       hostAlias: Host Alias
       hostAliases: Host Aliases
       ingressTrait: Ingress Trait
+      initContainer: Init Container
       initContainers: Init Containers
       lifecycleHandler:
         postStart: Post Start

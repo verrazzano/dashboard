@@ -34,36 +34,44 @@ export default {
   },
 
   methods: {
-    getRootFieldName() {
+    getDynamicListRootFieldName() {
       return 'managedServers';
+    },
+    getDynamicListNavKey(child) {
+      const serverKey = this.createTabKey('managedServer', child['serverName']);
+
+      return this.createTabKey(this.navPrefix, serverKey);
     },
   },
 };
 </script>
 
 <template>
-  <TreeTab :label="t('verrazzano.weblogic.tabs.managedServers')" name="managedServers">
+  <TreeTab
+    :label="t('verrazzano.weblogic.tabs.managedServers')"
+    :name="createTabKey(navPrefix, 'managedServers')"
+  >
     <template #default>
       <AddNamedElement
-        :value="children"
+        :value="dynamicListChildren"
         :add-type="t('verrazzano.weblogic.tabs.managedServer')"
         key-field-name="serverName"
         :mode="mode"
         name-prefix="server"
-        @input="addChild({ serverName: $event })"
+        @input="dynamicListAddChild({ serverName: $event })"
       />
     </template>
 
     <template #nestedTabs>
       <ManagedServerTab
-        v-for="server in children"
+        v-for="server in dynamicListChildren"
         :key="server._id"
-        :nav-prefix="navPrefix"
         :mode="mode"
         :namespaced-object="namespacedObject"
+        :tab-name="getDynamicListNavKey(server)"
         :value="server"
-        @input="queueUpdate"
-        @delete="deleteChild($event)"
+        @input="dynamicListUpdate"
+        @delete="dynamicListDeleteChild($event)"
       />
     </template>
   </TreeTab>

@@ -32,15 +32,9 @@ export default {
       type:     Object,
       required: true
     },
-    navPrefix: {
-      type:    String,
-      default: undefined
-    }
-  },
-
-  methods: {
-    serverKey(server) {
-      return this.createTabKey('managedServer', server['serverName']);
+    tabName: {
+      type:     String,
+      required: true
     }
   },
 };
@@ -49,7 +43,7 @@ export default {
 <template>
   <TreeTab
     :label="value['serverName']"
-    :name="createTabKey(navPrefix, serverKey(value))"
+    :name="tabName"
     :title="t('verrazzano.weblogic.tabs.managedServer')"
   >
     <template #default>
@@ -116,7 +110,7 @@ export default {
         :value="getField('serverPod')"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        :nav-prefix="createTabKey(navPrefix, serverKey(value))"
+        :nav-prefix="tabName"
         @input="setFieldIfNotEmpty('serverPod', $event)"
       />
     </template>

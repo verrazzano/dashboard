@@ -6,6 +6,7 @@ import debounce from 'lodash/debounce';
 import CreateEditView from '~/mixins/create-edit-view';
 
 export default {
+  inject: ['selectTab'],
   mixins: [CreateEditView],
 
   data() {
@@ -13,12 +14,12 @@ export default {
     let dynamicListHelperRootType;
     const valueType = typeof this.value;
 
-    if ((valueType === 'object' || valueType === 'undefined') && typeof this.getRootFieldName === 'function') {
-      const rootFieldName = this.getRootFieldName();
+    if ((valueType === 'object' || valueType === 'undefined') && typeof this.getDynamicListRootFieldName === 'function') {
+      const rootFieldName = this.getDynamicListRootFieldName();
 
       list = this.value[rootFieldName] || [];
       dynamicListHelperRootType = 'object';
-    } else if (Array.isArray(this.value) || (valueType === 'undefined' && typeof this.getRootFieldName === 'undefined')) {
+    } else if (Array.isArray(this.value) || (valueType === 'undefined' && typeof this.getDynamicListRootFieldName === 'undefined')) {
       list = this.value || [];
       dynamicListHelperRootType = 'array';
     } else {
@@ -41,17 +42,6 @@ export default {
       dynamicListHelperRootType,
     };
   },
-  computed: {
-    // TODO - delete me once everyone is using dynamicListChildren.
-    children: {
-      get() {
-        return this.dynamicListChildren;
-      },
-      set(neu) {
-        this.dynamicListChildren = neu;
-      }
-    },
-  },
   methods: {
     update() {
       // create a config list from the local copy, removing the ID from each
@@ -67,7 +57,7 @@ export default {
       });
 
       if (this.dynamicListHelperRootType === 'object') {
-        const rootFieldName = this.getRootFieldName();
+        const rootFieldName = this.getDynamicListRootFieldName();
 
         this.setFieldIfNotEmpty(rootFieldName, children);
       } else {
@@ -79,6 +69,10 @@ export default {
 
       if (!isEmpty(child)) {
         this.queueUpdate();
+      }
+
+      if (typeof this.getDynamicListNavKey === 'function') {
+        this.selectTab(this.getDynamicListNavKey(child));
       }
     },
     dynamicListDeleteChild(childToDelete) {
@@ -100,13 +94,6 @@ export default {
     dynamicListUpdate() {
       this.queueUpdate();
     },
-    // TODO delete these once everyone is using the renamed methods.
-    addChild(child = {}) {
-      this.dynamicListAddChild(child);
-    },
-    deleteChild(childToDelete) {
-      this.dynamicListDeleteChild(childToDelete);
-    }
   },
 
   created() {

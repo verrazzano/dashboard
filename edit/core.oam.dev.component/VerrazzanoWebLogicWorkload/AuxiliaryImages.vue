@@ -33,7 +33,7 @@ export default {
   },
 
   methods: {
-    getRootFieldName() {
+    getDynamicListRootFieldName() {
       return this.rootFieldName;
     }
   },
@@ -43,18 +43,18 @@ export default {
 <template>
   <div>
     <ArrayListGrouped
-      v-model="children"
+      v-model="dynamicListChildren"
       :mode="mode"
       :default-add-value="{ }"
       :add-label="t('verrazzano.weblogic.buttons.addAuxiliaryImage')"
-      @add="addChild({})"
+      @add="dynamicListAddChild({})"
     >
       <template #remove-button="removeProps">
         <button
           v-if="showListRemoveButton(rootFieldName)"
           type="button"
           class="btn role-link close btn-sm"
-          @click="deleteChild(children[removeProps.i])"
+          @click="dynamicListDeleteChildByIndex(removeProps.i)"
         >
           <i class="icon icon-2x icon-x" />
         </button>
@@ -65,7 +65,7 @@ export default {
           :value="props.row.value"
           :mode="mode"
           :namespaced-object="namespacedObject"
-          @input="queueUpdate"
+          @input="dynamicListUpdate"
         />
       </template>
     </ArrayListGrouped>
