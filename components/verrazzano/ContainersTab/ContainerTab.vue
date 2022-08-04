@@ -138,7 +138,7 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab :name="createTabKey(tabName, 'execution')" :label="t('verrazzano.common.tabs.executionEnvironment')">
+      <TreeTab :name="createTabName(tabName, 'execution')" :label="t('verrazzano.common.tabs.executionEnvironment')">
         <div class="row">
           <div class="col span-6">
             <LabeledArrayList
@@ -225,24 +225,24 @@ export default {
       <ContainerPortsTab
         :value="value"
         :mode="mode"
-        :tab-name="createTabKey(tabName, 'ports')"
+        :tab-name="createTabName(tabName, 'ports')"
         @input="$emit('input', $event)"
       />
-      <TreeTab :name="createTabKey(tabName, 'resources')" :label="t('verrazzano.common.tabs.resources')">
+      <TreeTab :name="createTabName(tabName, 'resources')" :label="t('verrazzano.common.tabs.resources')">
         <ContainerResources
           :value="getField('resources')"
           :mode="mode"
           @input="setFieldIfNotEmpty('resources', $event)"
         />
       </TreeTab>
-      <TreeTab :name="createTabKey(tabName, 'livenessProbe')" :label="t('verrazzano.common.tabs.livenessProbe')">
+      <TreeTab :name="createTabName(tabName, 'livenessProbe')" :label="t('verrazzano.common.tabs.livenessProbe')">
         <ContainerProbe
           :value="getField('livenessProbe')"
           :mode="mode"
           @input="setFieldIfNotEmpty('livenessProbe', $event)"
         />
       </TreeTab>
-      <TreeTab :name="createTabKey(tabName, 'readinessProbe')" :label="t('verrazzano.common.tabs.readinessProbe')">
+      <TreeTab :name="createTabName(tabName, 'readinessProbe')" :label="t('verrazzano.common.tabs.readinessProbe')">
         <ContainerProbe
           :value="getField('readinessProbe')"
           :mode="mode"
@@ -250,7 +250,7 @@ export default {
           @input="setFieldIfNotEmpty('readinessProbe', $event)"
         />
       </TreeTab>
-      <TreeTab :name="createTabKey(tabName, 'startupProbe')" :label="t('verrazzano.common.tabs.startupProbe')">
+      <TreeTab :name="createTabName(tabName, 'startupProbe')" :label="t('verrazzano.common.tabs.startupProbe')">
         <ContainerProbe
           :value="getField('startupProbe')"
           :mode="mode"
@@ -260,17 +260,17 @@ export default {
       <ContainerLifecycleTab
         :value="getField('lifecycle')"
         :mode="mode"
-        :tab-name="createTabKey(tabName, 'lifecycle')"
+        :tab-name="createTabName(tabName, 'lifecycle')"
         @input="setFieldIfNotEmpty('lifecycle', $event)"
       />
-      <TreeTab :name="createTabKey(tabName, 'volumeMounts')" :label="t('verrazzano.common.tabs.volumeMounts')">
+      <TreeTab :name="createTabName(tabName, 'volumeMounts')" :label="t('verrazzano.common.tabs.volumeMounts')">
         <VolumeMounts
           :value="value"
           :mode="mode"
           @input="$emit('input', $event)"
         />
       </TreeTab>
-      <TreeTab :name="createTabKey(tabName, 'volumeDevices')" :label="t('verrazzano.common.tabs.volumeDevices')">
+      <TreeTab :name="createTabName(tabName, 'volumeDevices')" :label="t('verrazzano.common.tabs.volumeDevices')">
         <VolumeDevices
           :value="value"
           :mode="mode"

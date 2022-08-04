@@ -309,7 +309,7 @@ export default {
       const prefix = this._isPreferredType('nodeAffinity', index) ? 'preferred' : 'required';
       const effectiveIndex = prefix === 'preferred' ? index : index - this.allNodePreferredSelectorTerms.length;
 
-      return this.createTabKey(this.createTabKey(this.treeTabName, 'nodeAffinity'), `${ prefix }${ effectiveIndex + 1 }`);
+      return this.createTabName(this.treeTabName, 'nodeAffinity', `${ prefix }${ effectiveIndex + 1 }`);
     },
     getNodeSelectorTermTabLabel(index) {
       let key;
@@ -329,7 +329,7 @@ export default {
       const prefix = this._isPreferredType('podAffinity', index) ? 'preferred' : 'required';
       const effectiveIndex = prefix === 'preferred' ? index : index - this.allPodPreferredSelectorTerms.length;
 
-      return this.createTabKey(this.createTabKey(this.treeTabName, 'podAffinity'), `${ prefix }${ effectiveIndex + 1 }`);
+      return this.createTabName(this.treeTabName, 'podAffinity', `${ prefix }${ effectiveIndex + 1 }`);
     },
     getPodSelectorTermTabLabel(index) {
       let key;
@@ -349,7 +349,7 @@ export default {
       const prefix = this._isPreferredType('podAntiAffinity', index) ? 'preferred' : 'required';
       const effectiveIndex = prefix === 'preferred' ? index : index - this.allPodAntiPreferredSelectorTerms.length;
 
-      return this.createTabKey(this.createTabKey(this.treeTabName, 'podAntiAffinity'), `${ prefix }${ effectiveIndex + 1 }`);
+      return this.createTabName(this.treeTabName, 'podAntiAffinity', `${ prefix }${ effectiveIndex + 1 }`);
     },
     getPodAntiSelectorTermTabLabel(index) {
       let key;
@@ -485,7 +485,7 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab v-if="showNodeAffinityTab" :name="createTabKey(treeTabName, 'nodeAffinity')" :label="t('verrazzano.common.tabs.nodeAffinity')">
+      <TreeTab v-if="showNodeAffinityTab" :name="createTabName(treeTabName, 'nodeAffinity')" :label="t('verrazzano.common.tabs.nodeAffinity')">
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.common.tabs.nodeAffinity')"
@@ -545,7 +545,7 @@ export default {
           </TreeTab>
         </template>
       </TreeTab>
-      <TreeTab v-if="showPodAffinityTab" :name="createTabKey(treeTabName, 'podAffinity')" :label="t('verrazzano.common.tabs.podAffinity')">
+      <TreeTab v-if="showPodAffinityTab" :name="createTabName(treeTabName, 'podAffinity')" :label="t('verrazzano.common.tabs.podAffinity')">
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.common.tabs.podAffinity')"
@@ -605,7 +605,7 @@ export default {
           </TreeTab>
         </template>
       </TreeTab>
-      <TreeTab v-if="showPodAntiAffinityTab" :name="createTabKey(treeTabName, 'podAntiAffinity')" :label="t('verrazzano.common.tabs.podAntiAffinity')">
+      <TreeTab v-if="showPodAntiAffinityTab" :name="createTabName(treeTabName, 'podAntiAffinity')" :label="t('verrazzano.common.tabs.podAntiAffinity')">
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.common.tabs.podAntiAffinity')"

@@ -85,7 +85,7 @@ export default {
       <TreeTab
         v-for="(volume, idx) in dynamicListChildren"
         :key="volume._id"
-        :name="createTabKey(treeTabName, volume.name)"
+        :name="createTabName(treeTabName, volume.name)"
         :label="volume.name"
       >
         <template #beside-header>
