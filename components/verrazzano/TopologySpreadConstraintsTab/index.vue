@@ -88,7 +88,7 @@ export default {
       <TreeTab
         v-for="(topologySpreadConstraint, idx) in dynamicListChildren"
         :key="topologySpreadConstraint._id"
-        :name="createTabKey(treeTabName, topologySpreadConstraint.topologyKey)"
+        :name="createTabName(treeTabName, topologySpreadConstraint.topologyKey)"
         :label="topologySpreadConstraint.topologyKey"
       >
         <template #beside-header>

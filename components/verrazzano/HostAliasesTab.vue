@@ -84,7 +84,7 @@ export default {
       <TreeTab
         v-for="(hostAlias, idx) in dynamicListChildren"
         :key="hostAlias._id"
-        :name="createTabKey(treeTabName, hostAlias.ip)"
+        :name="createTabName(treeTabName, hostAlias.ip)"
         :label="hostAlias.ip"
       >
         <template #beside-header>

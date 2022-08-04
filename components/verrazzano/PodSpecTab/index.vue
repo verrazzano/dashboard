@@ -322,7 +322,7 @@ export default {
         v-model="value"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        :tab-name="createTabKey(treeTabName, 'containers')"
+        :tab-name="createTabName(treeTabName, 'containers')"
         @input="$emit('input', value)"
       />
       <ContainersTab
@@ -330,7 +330,7 @@ export default {
         :mode="mode"
         :namespaced-object="namespacedObject"
         root-field-name="initContainers"
-        :tab-name="createTabKey(treeTabName, 'initContainers')"
+        :tab-name="createTabName(treeTabName, 'initContainers')"
         :tab-label="t('verrazzano.common.tabs.initContainers')"
         @input="$emit('input', value)"
       />
@@ -340,7 +340,7 @@ export default {
         root-field-name="ephemeralContainers"
         use-ephemeral-containers
         :namespaced-object="namespacedObject"
-        :tab-name="createTabKey(treeTabName, 'ephemeralContainers')"
+        :tab-name="createTabName(treeTabName, 'ephemeralContainers')"
         :tab-label="t('verrazzano.common.tabs.ephemeralContainers')"
         @input="$emit('input', value)"
       />
@@ -348,28 +348,28 @@ export default {
         :value="getListField('volumes')"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        :tab-name="createTabKey(treeTabName, 'volumes')"
+        :tab-name="createTabName(treeTabName, 'volumes')"
         @input="setFieldIfNotEmpty('volumes', $event)"
       />
       <AffinityTab
         :value="getField('affinity')"
         :mode="mode"
-        :tab-name="createTabKey(treeTabName, 'affinity')"
+        :tab-name="createTabName(treeTabName, 'affinity')"
         @input="setFieldIfNotEmpty('affinity', $event)"
       />
       <TopologySpreadConstraintsTab
         :value="getListField('topologySpreadConstraints')"
         :mode="mode"
-        :tab-name="createTabKey(treeTabName, 'topologySpreadConstraints')"
+        :tab-name="createTabName(treeTabName, 'topologySpreadConstraints')"
         @input="setFieldIfNotEmpty('topologySpreadConstraints', $event)"
       />
       <ReadinessGatesTab
         :value="getListField('readinessGates')"
         :mode="mode"
-        :tab-name="createTabKey(treeTabName, 'readinessGates')"
+        :tab-name="createTabName(treeTabName, 'readinessGates')"
         @input="setFieldIfNotEmpty('readinessGates', $event)"
       />
-      <TreeTab :name="createTabKey(treeTabName, 'tolerations')" :label="t('verrazzano.common.tabs.tolerations')">
+      <TreeTab :name="createTabName(treeTabName, 'tolerations')" :label="t('verrazzano.common.tabs.tolerations')">
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.common.tabs.tolerations')"
@@ -388,17 +388,17 @@ export default {
       <PodSecurityContextTab
         :value="getField('securityContext')"
         :mode="mode"
-        :tab-name="createTabKey(treeTabName, 'securityContext')"
+        :tab-name="createTabName(treeTabName, 'securityContext')"
         @input="setFieldIfNotEmpty('securityContext', $event)"
       />
       <HostAliasesTab
         :value="getListField('hostAliases')"
         :mode="mode"
-        :tab-name="createTabKey(treeTabName, 'hostAliases')"
+        :tab-name="createTabName(treeTabName, 'hostAliases')"
         @input="setFieldIfNotEmpty('hostAliases', $event)"
       />
       <TreeTab
-        :name="createTabKey(treeTabName, 'dnsConfig')"
+        :name="createTabName(treeTabName, 'dnsConfig')"
         :label="t('verrazzano.common.tabs.podDNSConfig')"
       >
         <template #beside-header>

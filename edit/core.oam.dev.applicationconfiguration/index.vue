@@ -131,7 +131,7 @@ export default {
       }
     },
     componentKey(component) {
-      return this.createTabKey('component', component.componentName);
+      return this.createTabName('component', component.componentName);
     },
     getAvailableTraitTypes(component) {
       const usedTraitTypes = component.traits.map(trait => trait.trait.kind);
@@ -366,7 +366,7 @@ export default {
                     :value="getIngressTrait(component)"
                     :mode="mode"
                     :namespaced-object="value"
-                    :tab-name="createTabKey(componentKey(component), 'ingressTrait')"
+                    :tab-name="createTabName(componentKey(component), 'ingressTrait')"
                     @deleteTrait="removeTrait(component, $event)"
                     @input="queueUpdate"
                   />
@@ -374,7 +374,7 @@ export default {
                     v-if="getLoggingTrait(component)"
                     :value="getLoggingTrait(component)"
                     :mode="mode"
-                    :tab-name="createTabKey(componentKey(component), 'loggingTrait')"
+                    :tab-name="createTabName(componentKey(component), 'loggingTrait')"
                     @deleteTrait="removeTrait(component, $event)"
                     @input="queueUpdate"
                   />
@@ -382,7 +382,7 @@ export default {
                     v-if="getManualScalerTrait(component)"
                     :value="getManualScalerTrait(component)"
                     :mode="mode"
-                    :tab-name="createTabKey(componentKey(component), 'manualScalerTrait')"
+                    :tab-name="createTabName(componentKey(component), 'manualScalerTrait')"
                     @deleteTrait="removeTrait(component, $event)"
                     @input="queueUpdate"
                   />
@@ -391,7 +391,7 @@ export default {
                     :value="getMetricsTrait(component)"
                     :mode="mode"
                     :namespaced-object="value"
-                    :tab-name="createTabKey(componentKey(component), 'metricsTrait')"
+                    :tab-name="createTabName(componentKey(component), 'metricsTrait')"
                     @deleteTrait="removeTrait(component, $event)"
                     @input="queueUpdate"
                   />

@@ -39,9 +39,7 @@ export default {
       return 'clusters';
     },
     getDynamicListTabName(child) {
-      const clusterKey = this.createTabKey('cluster', child.clusterName);
-
-      return this.createTabKey(this.navPrefix, clusterKey);
+      return this.createTabName(this.navPrefix, 'cluster', child.clusterName);
     },
   },
 };
@@ -50,7 +48,7 @@ export default {
 <template>
   <TreeTab
     :label="t('verrazzano.weblogic.tabs.clusters')"
-    :name="createTabKey(navPrefix, 'clusters')"
+    :name="createTabName(navPrefix, 'clusters')"
   >
     <template #default>
       <AddNamedElement
