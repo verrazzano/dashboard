@@ -10,10 +10,26 @@ export default {
   mixins: [CreateEditView],
 
   data() {
-    const rootFieldName = this.getRootFieldName();
+    let list;
+    let dynamicListHelperRootType;
+    const valueType = typeof this.value;
+
+    if ((valueType === 'object' || valueType === 'undefined') && typeof this.getRootFieldName === 'function') {
+      const rootFieldName = this.getRootFieldName();
+
+      list = this.value[rootFieldName] || [];
+      dynamicListHelperRootType = 'object';
+    } else if (Array.isArray(this.value) || (valueType === 'undefined' && typeof this.getRootFieldName === 'undefined')) {
+      list = this.value || [];
+      dynamicListHelperRootType = 'array';
+    } else {
+      // eslint-disable-next-line no-console
+      console.error('dynamic-list-helper could not find the list for value: ', JSON.stringify(this.value));
+      throw new Error(`dynamic-list-helper could not find the list for value: ${ JSON.stringify(this.value) }`);
+    }
 
     // create a copy of the config list with an ID in each element
-    const children = (this.value[rootFieldName] || []).map((child) => {
+    const dynamicListChildren = list.map((child) => {
       const newChild = this.clone(child);
 
       newChild._id = randomStr(4);
@@ -21,17 +37,29 @@ export default {
       return newChild;
     });
 
-    return { children };
+    return {
+      dynamicListChildren,
+      dynamicListHelperRootType,
+    };
   },
-
+  computed: {
+    // TODO - delete me once everyone is using dynamicListChildren.
+    children: {
+      get() {
+        return this.dynamicListChildren;
+      },
+      set(neu) {
+        this.dynamicListChildren = neu;
+      }
+    },
+  },
   methods: {
     update() {
       // create a config list from the local copy, removing the ID from each
 
-      const rootFieldName = this.getRootFieldName();
       const children = [];
 
-      this.children.forEach((child) => {
+      this.dynamicListChildren.forEach((child) => {
         const newChild = this.clone(child);
 
         delete newChild._id;
@@ -39,10 +67,16 @@ export default {
         children.push(newChild);
       });
 
-      this.setFieldIfNotEmpty(rootFieldName, children);
+      if (this.dynamicListHelperRootType === 'object') {
+        const rootFieldName = this.getRootFieldName();
+
+        this.setFieldIfNotEmpty(rootFieldName, children);
+      } else {
+        this.$emit('input', children);
+      }
     },
-    addChild(child) {
-      this.children.push({ _id: randomStr(4), ...child });
+    dynamicListAddChild(child = {}) {
+      this.dynamicListChildren.push({ _id: randomStr(4), ...child });
 
       if (!isEmpty(child)) {
         this.queueUpdate();
@@ -52,14 +86,32 @@ export default {
         this.selectTab(this.getChildNavKey(child));
       }
     },
-    deleteChild(childToDelete) {
-      const index = this.children.findIndex(child => child._id === childToDelete._id);
+    dynamicListDeleteChild(childToDelete) {
+      const index = this.dynamicListChildren.findIndex(child => child._id === childToDelete._id);
 
       if (index !== -1) {
-        this.children.splice(index, 1);
+        this.dynamicListChildren.splice(index, 1);
         this.queueUpdate();
       }
     },
+    dynamicListDeleteChildByIndex(index) {
+      this.dynamicListChildren.splice(index, 1);
+      this.queueUpdate();
+    },
+    dynamicListClearChildrenList() {
+      this.dynamicListChildren.splice(0, this.dynamicListChildren.length);
+      this.queueUpdate();
+    },
+    dynamicListUpdate() {
+      this.queueUpdate();
+    },
+    // TODO delete these once everyone is using the renamed methods.
+    addChild(child = {}) {
+      this.dynamicListAddChild(child);
+    },
+    deleteChild(childToDelete) {
+      this.dynamicListDeleteChild(childToDelete);
+    }
   },
 
   created() {

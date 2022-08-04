@@ -50,11 +50,13 @@ export default {
     getDynamicTabListField(value, fieldName) {
       return this.getDynamicTabField(value, fieldName) || [];
     },
-    setDynamicTabField(value, fieldName, neu) {
+    setDynamicTabField(value, fieldName, neu, suppressEvent = false) {
       set(value, fieldName, neu);
-      this.$emit('input', value);
+      if (!suppressEvent) {
+        this.$emit('input', value);
+      }
     },
-    setDynamicTabBooleanField(value, fieldName, neu) {
+    setDynamicTabBooleanField(value, fieldName, neu, suppressEvent = false) {
       let newValue;
 
       if (typeof neu === 'undefined' || neu === null) {
@@ -65,9 +67,9 @@ export default {
         newValue = Boolean(neu);
       }
 
-      this.setDynamicTabField(value, fieldName, newValue);
+      this.setDynamicTabField(value, fieldName, newValue, suppressEvent);
     },
-    setDynamicTabNumberField(value, fieldName, neu) {
+    setDynamicTabNumberField(value, fieldName, neu, suppressEvent = false) {
       let newValue;
 
       if (typeof neu === 'undefined' || neu === null) {
@@ -78,15 +80,15 @@ export default {
         newValue = Number(neu);
       }
 
-      this.setDynamicTabField(value, fieldName, newValue);
+      this.setDynamicTabField(value, fieldName, newValue, suppressEvent);
     },
-    setDynamicTabFieldIfNotEmpty(value, fieldName, neu) {
+    setDynamicTabFieldIfNotEmpty(value, fieldName, neu, suppressEvent = false) {
       let valueToSet = neu;
 
       if (this.isDynamicTabEmptyValue(fieldName, neu)) {
         valueToSet = undefined;
       }
-      this.setDynamicTabField(value, fieldName, valueToSet);
+      this.setDynamicTabField(value, fieldName, valueToSet, suppressEvent);
     },
   }
 };
