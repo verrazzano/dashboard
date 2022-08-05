@@ -1,4 +1,5 @@
 <script>
+// Added by Verrazzano
 import AddNamedElement from '@/components/verrazzano/AddNamedElement';
 import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
