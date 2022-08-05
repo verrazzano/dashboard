@@ -40,14 +40,14 @@ export default {
     <AdminServer
       :value="getField('adminServer')"
       :mode="mode"
-      :namespaced-object="value"
+      :namespaced-object="namespacedObject"
       @input="setFieldIfNotEmpty('adminServer', $event)"
     />
     <template #nestedTabs>
       <ServerPodTab
         :value="getField('adminServer.serverPod')"
         :mode="mode"
-        :namespaced-object="value"
+        :namespaced-object="namespacedObject"
         :tab-name="tabName"
         @input="setFieldIfNotEmpty('adminServer.serverPod', $event)"
       />
