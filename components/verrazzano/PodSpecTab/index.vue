@@ -1,4 +1,5 @@
 <script>
+// Added by Verrazzano
 import AffinityTab from '@/components/verrazzano/AffinityTab';
 import Checkbox from '@/components/form/Checkbox';
 import ContainersTab from '@/components/verrazzano/ContainersTab';

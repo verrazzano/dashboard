@@ -1,4 +1,5 @@
 <script>
+// Added by Verrazzano
 import LabeledSelect from '@/components/form/LabeledSelect';
 import NodeSelectorTerm from '@/components/verrazzano/NodeSelectorTerm';
 import PodAffinityTerm from '@/components/verrazzano/PodAffinityTerm';
