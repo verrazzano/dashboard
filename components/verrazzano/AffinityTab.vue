@@ -373,28 +373,31 @@ export default {
       return term.weight ? term.podAffinityTerm : term;
     },
     removeAffinity() {
-      this.allNodePreferredSelectorTerms.length = 0;
-      this.allNodeRequiredSelectorTerms.length = 0;
-      this.allPodPreferredSelectorTerms.length = 0;
-      this.allPodRequiredSelectorTerms.length = 0;
-      this.allPodAntiPreferredSelectorTerms.length = 0;
-      this.allPodAntiRequiredSelectorTerms.length = 0;
+      this.allNodePreferredSelectorTerms.splice(0);
+      this.allNodeRequiredSelectorTerms.splice(0);
+      this.allPodPreferredSelectorTerms.splice(0);
+      this.allPodRequiredSelectorTerms.splice(0);
+      this.allPodAntiPreferredSelectorTerms.splice(0);
+      this.allPodAntiRequiredSelectorTerms.splice(0);
       this.queueUpdate();
     },
     removeNodeAffinity() {
-      this.allNodePreferredSelectorTerms.length = 0;
-      this.allNodeRequiredSelectorTerms.length = 0;
+      this.allNodePreferredSelectorTerms.splice(0);
+      this.allNodeRequiredSelectorTerms.splice(0);
       this.queueUpdate();
+      this.selectTab(this.treeTabName);
     },
     removePodAffinity() {
-      this.allPodPreferredSelectorTerms.length = 0;
-      this.allPodRequiredSelectorTerms.length = 0;
+      this.allPodPreferredSelectorTerms.splice(0);
+      this.allPodRequiredSelectorTerms.splice(0);
       this.queueUpdate();
+      this.selectTab(this.treeTabName);
     },
     removePodAntiAffinity() {
-      this.allPodAntiPreferredSelectorTerms.length = 0;
-      this.allPodAntiRequiredSelectorTerms.length = 0;
+      this.allPodAntiPreferredSelectorTerms.splice(0);
+      this.allPodAntiRequiredSelectorTerms.splice(0);
       this.queueUpdate();
+      this.selectTab(this.treeTabName);
     },
     removeNodeSelectorTerm(term, index) {
       if (this._isPreferredType('nodeAffinity', index)) {
@@ -405,6 +408,7 @@ export default {
         this.allNodeRequiredSelectorTerms.splice(effectiveIndex, 1);
       }
       this.queueUpdate();
+      this.selectTab(this.treeTabName);
     },
     removePodSelectorTerm(term, index) {
       if (this._isPreferredType('podAffinity', index)) {
@@ -415,6 +419,7 @@ export default {
         this.allPodRequiredSelectorTerms.splice(effectiveIndex, 1);
       }
       this.queueUpdate();
+      this.selectTab(this.treeTabName);
     },
     removePodAntiSelectorTerm(term, index) {
       if (this._isPreferredType('podAntiAffinity', index)) {
@@ -425,6 +430,7 @@ export default {
         this.allPodAntiRequiredSelectorTerms.splice(effectiveIndex, 1);
       }
       this.queueUpdate();
+      this.selectTab(this.treeTabName);
     },
   },
   created() {
@@ -585,7 +591,7 @@ export default {
         <template #nestedTabs>
           <TreeTab
             v-for="(term, idx) in allPodSelectorTerms"
-            :key="idx"
+            :key="term._id"
             :name="getPodSelectorTermTabName(idx)"
             :label="getPodSelectorTermTabLabel(idx)"
           >
@@ -645,7 +651,7 @@ export default {
         <template #nestedTabs>
           <TreeTab
             v-for="(term, idx) in allPodAntiSelectorTerms"
-            :key="idx"
+            :key="term._id"
             :name="getPodAntiSelectorTermTabName(idx)"
             :label="getPodAntiSelectorTermTabLabel(idx)"
           >
