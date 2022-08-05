@@ -2,7 +2,7 @@
 // Added by Verrazzano
 import ArrayListGrouped from '@/components/form/ArrayListGrouped';
 import KeyValue from '@/components/form/KeyValue';
-import WebLogicChannel from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServer/WebLogicChannel';
+import WebLogicChannel from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServerTab/WebLogicChannel';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
 export default {

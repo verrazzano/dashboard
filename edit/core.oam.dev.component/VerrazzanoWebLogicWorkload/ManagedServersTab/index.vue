@@ -27,10 +27,10 @@ export default {
       type:     Object,
       required: true
     },
-    navPrefix: {
+    tabName: {
       type:    String,
-      default: undefined
-    }
+      default: 'managedServers'
+    },
   },
 
   methods: {
@@ -38,7 +38,7 @@ export default {
       return 'managedServers';
     },
     getDynamicListTabName(child) {
-      return this.createTabName(this.navPrefix, 'managedServer', child['serverName']);
+      return this.createTabName(this.tabName, child?.serverName);
     },
   },
 };
@@ -47,7 +47,7 @@ export default {
 <template>
   <TreeTab
     :label="t('verrazzano.weblogic.tabs.managedServers')"
-    :name="createTabName(navPrefix, 'managedServers')"
+    :name="getDynamicListTabName()"
   >
     <template #default>
       <AddNamedElement

@@ -1,6 +1,6 @@
 <script>
 // Added by Verrazzano
-import AdminService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServer/AdminService';
+import AdminService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServerTab/AdminService';
 import Checkbox from '@/components/form/Checkbox';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';

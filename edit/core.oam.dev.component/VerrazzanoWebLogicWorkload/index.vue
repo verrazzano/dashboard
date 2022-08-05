@@ -1,6 +1,6 @@
 <script>
 // Added by Verrazzano
-import AdminServer from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServer';
+import AdminServerTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServerTab';
 import ArrayListGrouped from '@/components/form/ArrayListGrouped';
 import AuxiliaryImageVolume from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImageVolume';
 import ClustersTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab';
@@ -20,7 +20,7 @@ const WKO_DOMAIN_VERSION = 'domain-v8';
 export default {
   name:       'VerrazzanoWebLogicWorkload',
   components: {
-    AdminServer,
+    AdminServerTab,
     ArrayListGrouped,
     AuxiliaryImageVolume,
     ClustersTab,
@@ -169,23 +169,11 @@ export default {
        |                                        Admin Server Tab                                              |
        -------------------------------------------------------------------------------------------------------->
 
-      <TreeTab :label="t('verrazzano.weblogic.tabs.adminServer')" name="adminServer">
-        <AdminServer
-          :value="getWorkloadSpecField('adminServer')"
-          :mode="mode"
-          :namespaced-object="value"
-          @input="setWorkloadSpecFieldIfNotEmpty('adminServer', $event)"
-        />
-        <template #nestedTabs>
-          <ServerPodTab
-            :value="getWorkloadSpecField('adminServer.serverPod')"
-            :mode="mode"
-            :namespaced-object="value"
-            nav-prefix="adminServer"
-            @input="setWorkloadSpecFieldIfNotEmpty('adminServer.serverPod', $event)"
-          />
-        </template>
-      </TreeTab>
+      <AdminServerTab
+        :value="workloadTemplateSpec"
+        :mode="mode"
+        :namespaced-object="value"
+      />
 
       <!-------------------------------------------------------------------------------------------------------
        |                                      Managed Servers Tab                                             |

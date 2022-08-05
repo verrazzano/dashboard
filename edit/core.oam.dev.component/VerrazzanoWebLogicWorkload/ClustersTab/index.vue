@@ -28,10 +28,10 @@ export default {
       type:     Object,
       required: true
     },
-    navPrefix: {
+    tabName: {
       type:    String,
-      default: undefined
-    }
+      default: 'clusters'
+    },
   },
 
   methods: {
@@ -39,7 +39,7 @@ export default {
       return 'clusters';
     },
     getDynamicListTabName(child) {
-      return this.createTabName(this.navPrefix, 'cluster', child.clusterName);
+      return this.createTabName(this.tabName, child?.clusterName);
     },
   },
 };
@@ -48,7 +48,7 @@ export default {
 <template>
   <TreeTab
     :label="t('verrazzano.weblogic.tabs.clusters')"
-    :name="createTabName(navPrefix, 'clusters')"
+    :name="getDynamicListTabName()"
   >
     <template #default>
       <AddNamedElement
