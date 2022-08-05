@@ -4,7 +4,7 @@ import AffinityTab from '@/components/verrazzano/AffinityTab';
 import AuxiliaryImages from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImages';
 import ContainerResources from '@/components/verrazzano/ContainerResources';
 import ContainersTab from '@/components/verrazzano/ContainersTab';
-import ContainerSecurityContext from '@/components/verrazzano/ContainerSecurityContext';
+import ContainerSecurityContextTab from '@/components/verrazzano/ContainerSecurityContextTab';
 import EnvironmentVariables from '@/components/verrazzano/EnvironmentVariables';
 import HostAliasesTab from '@/components/verrazzano/HostAliasesTab';
 import LabeledInput from '@/components/form/LabeledInput';
@@ -17,7 +17,7 @@ import ReadinessGatesTab from '@/components/verrazzano/ReadinessGatesTab';
 import ServerShutdown from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerShutdown';
 import Tolerations from '@/components/verrazzano/Tolerations';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
-import VolumeMounts from '@/components/verrazzano/VolumeMounts';
+import VolumeMountsTab from '@/components/verrazzano/VolumeMountsTab';
 import VolumesTab from '@/components/verrazzano/VolumesTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
@@ -31,7 +31,7 @@ export default {
     AuxiliaryImages,
     ContainerResources,
     ContainersTab,
-    ContainerSecurityContext,
+    ContainerSecurityContextTab,
     EnvironmentVariables,
     HostAliasesTab,
     LabeledInput,
@@ -44,7 +44,7 @@ export default {
     ServerShutdown,
     Tolerations,
     TreeTab,
-    VolumeMounts,
+    VolumeMountsTab,
     VolumesTab,
   },
   mixins: [WeblogicWorkloadHelper],
@@ -207,25 +207,21 @@ export default {
         @input="setFieldIfNotEmpty('shutdown', $event)"
       />
     </div>
-    <div class="spacer" />
-    <div>
-      <h3>{{ t('verrazzano.common.titles.volumeMounts') }}</h3>
-      <VolumeMounts
-        v-model="value"
-        :mode="mode"
-      />
-    </div>
-    <div class="spacer" />
-    <div>
-      <h3>{{ t('verrazzano.common.titles.containerSecurityContext') }}</h3>
-      <ContainerSecurityContext
-        :value="getField('containerSecurityContext')"
-        :mode="mode"
-        @input="setFieldIfNotEmpty('containerSecurityContext', $event)"
-      />
-    </div>
 
     <template #nestedTabs>
+      <TreeTab
+        :label="t('verrazzano.weblogic.tabs.envVariables')"
+        :name="createTabName(navPrefix, 'envVariables')"
+      >
+        <EnvironmentVariables
+          :value="value"
+          :mode="mode"
+          :namespaced-object="namespacedObject"
+          :enable-env-from-options="false"
+          @input="$emit('input', value)"
+        />
+      </TreeTab>
+
       <TreeTab
         :label="t('verrazzano.weblogic.tabs.auxiliaryImages')"
         :name="createTabName(navPrefix, 'auxiliaryImages')"
@@ -286,6 +282,13 @@ export default {
         @input="setFieldIfNotEmpty('volumes', $event)"
       />
 
+      <VolumeMountsTab
+        :value="getListField('volumeMounts')"
+        :mode="mode"
+        :tab-name="createTabName(navPrefix, 'volumeMounts')"
+        @input="setFieldIfNotEmpty('volumeMounts', $event)"
+      />
+
       <TreeTab :name="createTabName(navPrefix, 'tolerations')" :label="t('verrazzano.common.tabs.tolerations')">
         <Tolerations
           v-model="value"
@@ -300,18 +303,12 @@ export default {
         @input="setFieldIfNotEmpty('podSecurityContext', $event)"
       />
 
-      <TreeTab
-        :label="t('verrazzano.weblogic.tabs.envVariables')"
-        :name="createTabName(navPrefix, 'envVariables')"
-      >
-        <EnvironmentVariables
-          :value="value"
-          :mode="mode"
-          :namespaced-object="namespacedObject"
-          :enable-env-from-options="false"
-          @input="$emit('input', value)"
-        />
-      </TreeTab>
+      <ContainerSecurityContextTab
+        :value="getField('containerSecurityContext')"
+        :mode="mode"
+        :tab-name="createTabName(navPrefix, 'containerSecurityContext')"
+        @input="setFieldIfNotEmpty('containerSecurityContext', $event)"
+      />
     </template>
   </TreeTab>
 </template>

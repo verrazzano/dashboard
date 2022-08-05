@@ -99,6 +99,10 @@ export default {
       this.dynamicListChildren.splice(0, this.dynamicListChildren.length);
       this.queueUpdate();
     },
+    // Useful for ArrayListGrouped component using dynamic lists.
+    dynamicListShowRemoveButton() {
+      return !this.isView && this.dynamicListChildren.length > 0;
+    },
     dynamicListUpdate() {
       this.queueUpdate();
     },

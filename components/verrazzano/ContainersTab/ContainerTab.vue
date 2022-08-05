@@ -3,7 +3,7 @@
 import Checkbox from '@/components/form/Checkbox';
 import ContainerLifecycleTab from '@/components/verrazzano/ContainersTab/ContainerLifecycleTab';
 import ContainerPortsTab from '@/components/verrazzano/ContainersTab/ContainerPortsTab';
-import ContainerProbe from '@/components/verrazzano/ContainerProbe';
+import ContainerProbeTab from '@/components/verrazzano/ContainerProbeTab';
 import ContainerResources from '@/components/verrazzano/ContainerResources';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import EnvironmentVariables from '@/components/verrazzano/EnvironmentVariables';
@@ -12,8 +12,8 @@ import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
-import VolumeDevices from '@/components/verrazzano/VolumeDevices';
-import VolumeMounts from '@/components/verrazzano/VolumeMounts';
+import VolumeDevicesTab from '@/components/verrazzano/VolumeDevicesTab';
+import VolumeMountsTab from '@/components/verrazzano/VolumeMountsTab';
 
 export default {
   name:       'ContainerTab',
@@ -21,7 +21,7 @@ export default {
     Checkbox,
     ContainerLifecycleTab,
     ContainerPortsTab,
-    ContainerProbe,
+    ContainerProbeTab,
     ContainerResources,
     EnvironmentVariables,
     LabeledArrayList,
@@ -29,8 +29,8 @@ export default {
     LabeledSelect,
     TabDeleteButton,
     TreeTab,
-    VolumeDevices,
-    VolumeMounts,
+    VolumeDevicesTab,
+    VolumeMountsTab,
   },
   mixins: [VerrazzanoHelper],
   props:  {
@@ -235,48 +235,49 @@ export default {
           @input="setFieldIfNotEmpty('resources', $event)"
         />
       </TreeTab>
-      <TreeTab :name="createTabName(tabName, 'livenessProbe')" :label="t('verrazzano.common.tabs.livenessProbe')">
-        <ContainerProbe
-          :value="getField('livenessProbe')"
-          :mode="mode"
-          @input="setFieldIfNotEmpty('livenessProbe', $event)"
-        />
-      </TreeTab>
-      <TreeTab :name="createTabName(tabName, 'readinessProbe')" :label="t('verrazzano.common.tabs.readinessProbe')">
-        <ContainerProbe
-          :value="getField('readinessProbe')"
-          :mode="mode"
-          is-readiness-probe
-          @input="setFieldIfNotEmpty('readinessProbe', $event)"
-        />
-      </TreeTab>
-      <TreeTab :name="createTabName(tabName, 'startupProbe')" :label="t('verrazzano.common.tabs.startupProbe')">
-        <ContainerProbe
-          :value="getField('startupProbe')"
-          :mode="mode"
-          @input="setFieldIfNotEmpty('startupProbe', $event)"
-        />
-      </TreeTab>
+      <ContainerProbeTab
+        :value="getField('livenessProbe')"
+        :mode="mode"
+        :tab-name="createTabName(tabName, 'livenessProbe')"
+        :tab-label="t('verrazzano.common.tabs.livenessProbe')"
+        @input="setFieldIfNotEmpty('livenessProbe', $event)"
+        @delete="setField('livenessProbe', undefined)"
+      />
+      <ContainerProbeTab
+        :value="getField('readinessProbe')"
+        :mode="mode"
+        is-readiness-probe
+        :tab-name="createTabName(tabName, 'readinessProbe')"
+        :tab-label="t('verrazzano.common.tabs.readinessProbe')"
+        @input="setFieldIfNotEmpty('readinessProbe', $event)"
+        @delete="setField('livenessProbe', undefined)"
+      />
+      <ContainerProbeTab
+        :value="getField('startupProbe')"
+        :mode="mode"
+        :tab-name="createTabName(tabName, 'startupProbe')"
+        :tab-label="t('verrazzano.common.tabs.startupProbe')"
+        @input="setFieldIfNotEmpty('startupProbe', $event)"
+        @delete="setField('startupProbe', undefined)"
+      />
       <ContainerLifecycleTab
         :value="getField('lifecycle')"
         :mode="mode"
         :tab-name="createTabName(tabName, 'lifecycle')"
         @input="setFieldIfNotEmpty('lifecycle', $event)"
       />
-      <TreeTab :name="createTabName(tabName, 'volumeMounts')" :label="t('verrazzano.common.tabs.volumeMounts')">
-        <VolumeMounts
-          :value="value"
-          :mode="mode"
-          @input="$emit('input', $event)"
-        />
-      </TreeTab>
-      <TreeTab :name="createTabName(tabName, 'volumeDevices')" :label="t('verrazzano.common.tabs.volumeDevices')">
-        <VolumeDevices
-          :value="value"
-          :mode="mode"
-          @input="$emit('input', $event)"
-        />
-      </TreeTab>
+      <VolumeMountsTab
+        :value="getListField('volumeMounts')"
+        :mode="mode"
+        :tab-name="createTabName(tabName, 'volumeMounts')"
+        @input="setFieldIfNotEmpty('volumeMounts', $event)"
+      />
+      <VolumeDevicesTab
+        :value="getListField('volumeDevices')"
+        :mode="mode"
+        :tab-name="createTabName(tabName, 'volumeDevices')"
+        @input="setFieldIfNotEmpty('volumeDevices', $event)"
+      />
     </template>
   </TreeTab>
 </template>
