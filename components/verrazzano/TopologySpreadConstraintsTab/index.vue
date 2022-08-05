@@ -40,22 +40,17 @@ export default {
     };
   },
   methods: {
+    getDynamicListTabName(child) {
+      return this.createTabName(this.treeTabName, child?.topologyKey);
+    },
     addTopologySpreadConstraint(topologyKey) {
       this.dynamicListAddChild({ topologyKey });
     },
     removeTopologySpreadConstraint(index) {
-      // eslint-disable-next-line no-console
-      console.log(`XXXXXX removeTopologySpreadConstraint(${ index })`);
       this.dynamicListDeleteChildByIndex(index);
-      // eslint-disable-next-line no-console
-      console.log('XXXXXX removeTopologySpreadConstraint after deleting child by index: ', JSON.stringify(this.dynamicListChildren));
     },
     deleteTopologySpreadConstraints() {
-      // eslint-disable-next-line no-console
-      console.log('XXXXXX deleteTopologySpreadConstraints before deleting children: ', JSON.stringify(this.dynamicListChildren));
       this.dynamicListClearChildrenList();
-      // eslint-disable-next-line no-console
-      console.log('XXXXXX deleteTopologySpreadConstraints after deleting children: ', JSON.stringify(this.dynamicListChildren));
     },
   },
   created() {
@@ -77,8 +72,9 @@ export default {
     </template>
     <template #default>
       <AddNamedElement
-        key-field-name="topologyKey"
+        :value="dynamicListChildren"
         :mode="mode"
+        key-field-name="topologyKey"
         :add-type="t('verrazzano.common.tabs.topologySpreadConstraint')"
         :field-label="t('verrazzano.common.fields.topologyKey')"
         @input="addTopologySpreadConstraint($event)"
