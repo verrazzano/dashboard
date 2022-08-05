@@ -13,7 +13,6 @@ export default {
   mixins: [ContainerizedWorkloadHelper],
   props:  {
     value: {
-      // parent object (e.g., OAM Resources object)
       type:    Object,
       default: () => ({})
     },

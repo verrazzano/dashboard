@@ -157,7 +157,7 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab :name="createTabKey(treeTabName, 'sysctls')" :label="t('verrazzano.common.tabs.sysctls')">
+      <TreeTab :name="createTabName(treeTabName, 'sysctls')" :label="t('verrazzano.common.tabs.sysctls')">
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.common.tabs.sysctls')"
@@ -181,14 +181,14 @@ export default {
           </div>
         </template>
       </TreeTab>
-      <TreeTab :name="createTabKey(treeTabName, 'seLinuxOptions')" :label="t('verrazzano.common.tabs.seLinuxOptions')">
+      <TreeTab :name="createTabName(treeTabName, 'seLinuxOptions')" :label="t('verrazzano.common.tabs.seLinuxOptions')">
         <SELinuxOptions
           :value="getField('seLinuxOptions')"
           :mode="mode"
           @input="setFieldIfNotEmpty('seLinuxOptions', $event)"
         />
       </TreeTab>
-      <TreeTab :name="createTabKey(treeTabName, 'seccompProfile')" :label="t('verrazzano.common.tabs.seccompProfile')">
+      <TreeTab :name="createTabName(treeTabName, 'seccompProfile')" :label="t('verrazzano.common.tabs.seccompProfile')">
         <SeccompProfile
           :value="getField('seccompProfile')"
           :mode="mode"

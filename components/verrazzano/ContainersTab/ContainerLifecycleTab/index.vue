@@ -46,14 +46,14 @@ export default {
 <template>
   <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #nestedTabs>
-      <TreeTab :name="createTabKey(treeTabName, 'postStart')" :label="t('verrazzano.common.tabs.lifecycleHandler.postStart')">
+      <TreeTab :name="createTabName(treeTabName, 'postStart')" :label="t('verrazzano.common.tabs.lifecycleHandler.postStart')">
         <LifecycleHook
           :value="getField('postStart')"
           :mode="mode"
           @input="setFieldIfNotEmpty('postStart', $event)"
         />
       </TreeTab>
-      <TreeTab :name="createTabKey(treeTabName, 'preStop')" :label="t('verrazzano.common.tabs.lifecycleHandler.preStop')">
+      <TreeTab :name="createTabName(treeTabName, 'preStop')" :label="t('verrazzano.common.tabs.lifecycleHandler.preStop')">
         <LifecycleHook
           :value="getField('preStop')"
           :mode="mode"

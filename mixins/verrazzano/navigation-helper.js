@@ -2,16 +2,12 @@
 export default {
   methods: {
 
-    // join two names with an underscore to create a key.
-    // if the first name is empty, just return the second.
-    createTabKey(prefix, pageName) {
-      let result = pageName;
+    // join multiple names with an underscore to create a key.
+    // if the any name is empty, just skip it.
+    createTabName(...args) {
+      const scrubbedArgs = args.filter(arg => !!arg);
 
-      if (prefix) {
-        result = `${ prefix }_${ pageName }`;
-      }
-
-      return result;
+      return scrubbedArgs.join('_');
     },
 
     // find a key value for a new nodes entry that hasn't been used.

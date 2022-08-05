@@ -82,10 +82,18 @@ export default {
         this.dynamicListChildren.splice(index, 1);
         this.queueUpdate();
       }
+
+      if (typeof this.getDynamicListTabName === 'function') {
+        this.selectTab(this.getDynamicListTabName());
+      }
     },
     dynamicListDeleteChildByIndex(index) {
       this.dynamicListChildren.splice(index, 1);
       this.queueUpdate();
+
+      if (typeof this.getDynamicListTabName === 'function') {
+        this.selectTab(this.getDynamicListTabName());
+      }
     },
     dynamicListClearChildrenList() {
       this.dynamicListChildren.splice(0, this.dynamicListChildren.length);

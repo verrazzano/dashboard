@@ -54,7 +54,7 @@ export default {
       return this.rootFieldName;
     },
     getDynamicListTabName(child) {
-      return this.createTabKey(this.tabName, child.name);
+      return this.createTabName(this.tabName, child?.name);
     },
   },
   computed: {

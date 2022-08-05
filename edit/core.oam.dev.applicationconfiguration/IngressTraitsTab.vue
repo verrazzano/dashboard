@@ -107,7 +107,7 @@ export default {
       return `${ this.t('verrazzano.common.titles.rule') } ${ index + 1 }`;
     },
     getRuleTabName(index) {
-      return this.createTabKey(this.treeTabName, `rule${ index + 1 }`);
+      return this.createTabName(this.treeTabName, `rule${ index + 1 }`);
     },
     addRule() {
       this.rules.push({ _id: randomStr(4) });

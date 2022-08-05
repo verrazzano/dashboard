@@ -1,21 +1,22 @@
 <script>
 // Added by Verrazzano
 import AddNamedElement from '@/components/verrazzano/AddNamedElement';
+import ContainerizedWorkloadHelper from '@/mixins/verrazzano/containerized-workload-helper';
 import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
+import OAMVolumeTab
+  from '@/edit/core.oam.dev.component/ContainerizedWorkload/OAMContainersTab/OAMResourcesTab/OAMVolumesTab/OAMVolumeTab';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
-import Volume from '@/components/verrazzano/VolumesTab/Volume';
-import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
 
 export default {
-  name:       'VolumesTab',
+  name:       'OAMVolumesTab',
   components: {
     AddNamedElement,
+    OAMVolumeTab,
     TabDeleteButton,
     TreeTab,
-    Volume,
   },
-  mixins: [VerrazzanoHelper, DynamicListHelper],
+  mixins: [ContainerizedWorkloadHelper, DynamicListHelper],
   props:  {
     value: {
       type:    Array,
@@ -23,11 +24,7 @@ export default {
     },
     mode: {
       type:    String,
-      default: 'create'
-    },
-    namespacedObject: {
-      type:     Object,
-      required: true
+      default: 'create',
     },
     tabName: {
       type:     String,
@@ -47,22 +44,13 @@ export default {
   methods: {
     getDynamicListTabName(child) {
       return this.createTabName(this.treeTabName, child?.name);
-    },
-    addVolume(name) {
-      this.dynamicListAddChild({ name });
-    },
-    removeVolume(index) {
-      this.dynamicListDeleteChildByIndex(index);
-    },
-    deleteVolumes() {
-      this.dynamicListClearChildrenList();
     }
   },
   created() {
     if (!this.treeTabLabel) {
       this.treeTabLabel = this.t('verrazzano.common.tabs.volumes');
     }
-  }
+  },
 };
 </script>
 
@@ -72,7 +60,7 @@ export default {
       <TabDeleteButton
         :element-name="t('verrazzano.common.tabs.volumes')"
         :mode="mode"
-        @click="deleteVolumes()"
+        @click="dynamicListClearChildrenList"
       />
     </template>
     <template #default>
@@ -81,33 +69,20 @@ export default {
         :mode="mode"
         key-field-name="name"
         :add-type="t('verrazzano.common.tabs.volume')"
-        :field-label="t('verrazzano.common.fields.volume.name')"
-        @input="addVolume($event)"
+        @input="dynamicListAddChild({ name: $event })"
       />
     </template>
     <template #nestedTabs>
-      <TreeTab
+      <OAMVolumeTab
         v-for="(volume, idx) in dynamicListChildren"
         :key="volume._id"
-        :name="createTabName(treeTabName, volume.name)"
-        :label="volume.name"
-      >
-        <template #beside-header>
-          <TabDeleteButton
-            :element-name="t('verrazzano.common.tabs.volume')"
-            :mode="mode"
-            @click="removeVolume(idx)"
-          />
-        </template>
-        <template #default>
-          <Volume
-            :value="volume"
-            :mode="mode"
-            :namespaced-object="namespacedObject"
-            @input="dynamicListUpdate"
-          />
-        </template>
-      </TreeTab>
+        :value="volume"
+        :mode="mode"
+        :tab-name="createTabName(treeTabName, volume.name)"
+        :tab-label="volume.name"
+        @input="dynamicListUpdate"
+        @delete="dynamicListDeleteChildByIndex(idx)"
+      />
     </template>
   </TreeTab>
 </template>

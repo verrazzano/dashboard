@@ -7536,6 +7536,7 @@ verrazzano:
       components: Components
       container: Container
       containers: Containers
+      environmentVariables: Environment Variables
       ephemeralContainers: Ephemeral Containers
       executionEnvironment: Execution Environment
       general: General
@@ -7891,7 +7892,6 @@ verrazzano:
       addConfigFile: Add Config File
       addExtendedResource: Add Extended Resource
       addPort: Add Port
-      addVolume: Add Volume
 
     #######################################
     ### verrazzano.containerized.fields ###
@@ -7922,13 +7922,20 @@ verrazzano:
         sharingPolicy: Volume Sharing Policy
       workloadName: Workload Name
 
+    #####################################
+    ### verrazzano.containerized.tabs ###
+    #####################################
+    tabs:
+      configFiles: Config Files
+      extendedResources: Extended Resources
+      livenessProbe: Liveness Probe
+      readinessProbe: ReadinessProbe
+
     #######################################
     ### verrazzano.containerized.titles ###
     #######################################
     titles:
       disk: Disk-Related Resources
-      extendedResources: Extended Resources
-      volumes: Volumes
 
     ######################################
     ### verrazzano.containerized.types ###
