@@ -7204,6 +7204,14 @@ verrazzano:
         successThreshold: Success Threshold
         terminationGracePeriodSeconds: Termination Grace Period Seconds
         timeoutSeconds: Timeout Seconds
+      containerSecurityContext:
+        allowPrivilegeEscalation: Allow Privilege Escalation
+        privileged: Run Container in Privileged Mode
+        procMount: Proc Mount
+        readOnlyRootFilesystem: Read-Only Root Filesystem
+        runAsGroup: Run As Group
+        runAsNonRoot: Containers Must Run as Non-Root User
+        runAsUser: Run As User
       deploymentStrategy:
         maxSurge: Maximum Surge
         maxUnavailable: Maximum Unavailable
@@ -7536,6 +7544,7 @@ verrazzano:
       components: Components
       container: Container
       containers: Containers
+      containerSecurityContext: Container Security Context
       environmentVariables: Environment Variables
       ephemeralContainers: Ephemeral Containers
       executionEnvironment: Execution Environment
@@ -7549,6 +7558,7 @@ verrazzano:
         postStart: Post Start
         preStop: Pre Stop
       lifecycleHandlers: Lifecycle Handlers
+      livenessProbe: Liveness Probe
       loggingTrait: Logging Trait
       manualScalerTrait: Manual Scaler Trait
       metricsTrait: Metrics Trait
@@ -7568,15 +7578,19 @@ verrazzano:
       ports: Ports
       preferredPrefix: Preferred Term
       readinessGates: Pod Readiness Gates
+      readinessProbe: Readiness Probe
       resources: Resources
       seccompProfile: Secure Computing Profile
       seLinuxOptions: SE Linux Options
+      startupProbe: Startup Probe
       sysctls: Kernel Parameters
       tolerations: Tolerations
       topologySpreadConstraint: Topology Spread Constraint
       topologySpreadConstraints: Topology Spread Constraints
       volume: Volume
+      volumeDevice: Volume Device
       volumeDevices: Volume Devices
+      volumeMount: Volume Mount
       volumeMounts: Volume Mounts
       volumes: Volumes
       workload: Workload
@@ -7639,6 +7653,7 @@ verrazzano:
       selector: Selector
       startupProbe: Startup Probe
       volumeDevices: Volume Devices
+      volumeMount: Volume Mount
       volumeMounts: Volume Mounts
       volumes:
         awsElasticBlockStore: AWS Elastic Block Store
@@ -7790,6 +7805,9 @@ verrazzano:
         exec: Command Execution
         httpGet: HTTP Get Request
         tcpSocket: TCP Socket Probe
+      procMount:
+        defaultProcMount: Default Proc Mount
+        unmaskedProcMount: Unmasked Proc Mount
       projected:
         configMap: Projected ConfigMap
         downwardApi: Projected Downward API
