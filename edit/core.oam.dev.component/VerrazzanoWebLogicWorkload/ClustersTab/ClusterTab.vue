@@ -182,7 +182,7 @@ export default {
         :value="getField('serverPod')"
         :mode="mode"
         :namespaced-object="value"
-        :nav-prefix="tabName"
+        :tab-name="tabName"
         @input="setFieldIfNotEmpty('serverPod', $event)"
       />
     </template>

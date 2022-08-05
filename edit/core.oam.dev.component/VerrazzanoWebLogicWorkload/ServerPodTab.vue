@@ -61,7 +61,7 @@ export default {
       type:     Object,
       required: true
     },
-    navPrefix: {
+    tabName: {
       type:    String,
       default: undefined
     }
@@ -112,7 +112,7 @@ export default {
 <template>
   <TreeTab
     :label="t('verrazzano.weblogic.tabs.serverPod')"
-    :name="createTabName(navPrefix, 'serverPod')"
+    :name="createTabName(tabName, 'serverPod')"
   >
     <div class="row">
       <div class="col span-3">
@@ -211,7 +211,7 @@ export default {
     <template #nestedTabs>
       <TreeTab
         :label="t('verrazzano.weblogic.tabs.envVariables')"
-        :name="createTabName(navPrefix, 'envVariables')"
+        :name="createTabName(tabName, 'envVariables')"
       >
         <EnvironmentVariables
           :value="value"
@@ -224,7 +224,7 @@ export default {
 
       <TreeTab
         :label="t('verrazzano.weblogic.tabs.auxiliaryImages')"
-        :name="createTabName(navPrefix, 'auxiliaryImages')"
+        :name="createTabName(tabName, 'auxiliaryImages')"
       >
         <AuxiliaryImages
           :value="value"
@@ -237,21 +237,21 @@ export default {
       <AffinityTab
         :value="getField('affinity')"
         :mode="mode"
-        :tab-name="createTabName(navPrefix, 'affinity')"
+        :tab-name="createTabName(tabName, 'affinity')"
         @input="setFieldIfNotEmpty('affinity', $event)"
       />
 
       <HostAliasesTab
         :value="getListField('hostAliases')"
         :mode="mode"
-        :tab-name="createTabName(navPrefix, 'hostAliases')"
+        :tab-name="createTabName(tabName, 'hostAliases')"
         @input="setFieldIfNotEmpty('hostAliases', $event)"
       />
 
       <ReadinessGatesTab
         :value="getListField('readinessGates')"
         :mode="mode"
-        :tab-name="createTabName(navPrefix, 'readinessGates')"
+        :tab-name="createTabName(tabName, 'readinessGates')"
         @input="setFieldIfNotEmpty('readinessGates', $event)"
       />
 
@@ -259,7 +259,7 @@ export default {
         :value="value"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        :tab-name="createTabName(navPrefix, 'containers')"
+        :tab-name="createTabName(tabName, 'containers')"
         @input="$emit('input', value)"
       />
 
@@ -268,7 +268,7 @@ export default {
         :mode="mode"
         :namespaced-object="namespacedObject"
         root-field-name="initContainers"
-        :tab-name="createTabName(navPrefix, 'initContainers')"
+        :tab-name="createTabName(tabName, 'initContainers')"
         :tab-label="t('verrazzano.common.tabs.initContainers')"
         :type-label="t('verrazzano.common.tabs.initContainer')"
         @input="$emit('input', value)"
@@ -278,18 +278,18 @@ export default {
         :value="getListField('volumes')"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        :tab-name="createTabName(navPrefix, 'volumes')"
+        :tab-name="createTabName(tabName, 'volumes')"
         @input="setFieldIfNotEmpty('volumes', $event)"
       />
 
       <VolumeMountsTab
         :value="getListField('volumeMounts')"
         :mode="mode"
-        :tab-name="createTabName(navPrefix, 'volumeMounts')"
+        :tab-name="createTabName(tabName, 'volumeMounts')"
         @input="setFieldIfNotEmpty('volumeMounts', $event)"
       />
 
-      <TreeTab :name="createTabName(navPrefix, 'tolerations')" :label="t('verrazzano.common.tabs.tolerations')">
+      <TreeTab :name="createTabName(tabName, 'tolerations')" :label="t('verrazzano.common.tabs.tolerations')">
         <Tolerations
           v-model="value"
           :mode="mode"
@@ -299,14 +299,14 @@ export default {
       <PodSecurityContextTab
         :value="getField('podSecurityContext')"
         :mode="mode"
-        :tab-name="createTabName(navPrefix, 'podSecurityContext')"
+        :tab-name="createTabName(tabName, 'podSecurityContext')"
         @input="setFieldIfNotEmpty('podSecurityContext', $event)"
       />
 
       <ContainerSecurityContextTab
         :value="getField('containerSecurityContext')"
         :mode="mode"
-        :tab-name="createTabName(navPrefix, 'containerSecurityContext')"
+        :tab-name="createTabName(tabName, 'containerSecurityContext')"
         @input="setFieldIfNotEmpty('containerSecurityContext', $event)"
       />
     </template>

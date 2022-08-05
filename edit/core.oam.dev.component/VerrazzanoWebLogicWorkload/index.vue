@@ -181,7 +181,7 @@ export default {
             :value="getWorkloadSpecField('adminServer.serverPod')"
             :mode="mode"
             :namespaced-object="value"
-            nav-prefix="adminServer"
+            tab-name="adminServer"
             @input="setWorkloadSpecFieldIfNotEmpty('adminServer.serverPod', $event)"
           />
         </template>
