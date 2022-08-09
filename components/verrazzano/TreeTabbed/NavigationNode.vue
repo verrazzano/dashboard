@@ -107,15 +107,13 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-  $nav-tabs-width: 260px;
 
   .tree-tabbed {
-    > .tab-set {
-      width: $nav-tabs-width;
-      min-width: $nav-tabs-width;
-
-      > .tabs {
-        margin-left: 0;
+    & .tab-nav {
+      > .tab-set {
+        > .tabs {
+          margin-left: 0;
+        }
       }
     }
 
@@ -126,6 +124,7 @@ export default {
       display: flex;
       flex: 1 0;
       flex-direction: column;
+      user-select: none;
 
       &:focus {
         outline:none;
@@ -138,7 +137,6 @@ export default {
       & .tab {
         width: 100%;
         position: relative;
-        top: 1px;
         float: left;
         margin: 0 8px 0 0;
         cursor: pointer;
@@ -175,7 +173,7 @@ export default {
           display: block;
           padding: 10px 15px 10px 15px;
           color: var(--primary);
-          word-break: break-word;
+          white-space: nowrap;
         }
 
         & A.active {

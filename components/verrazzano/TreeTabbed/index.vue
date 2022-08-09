@@ -4,6 +4,7 @@ import head from 'lodash/head';
 import isEmpty from 'lodash/isEmpty';
 import { addObject, removeObject, findBy } from '@/utils/array';
 import NavigationHelper from '@/mixins/verrazzano/navigation-helper';
+import SliderHelper from '@/mixins/verrazzano/slider-helper';
 import NavigationNode from '@/components/verrazzano/TreeTabbed/NavigationNode';
 
 export default {
@@ -11,7 +12,7 @@ export default {
 
   components: { NavigationNode },
 
-  mixins: [NavigationHelper],
+  mixins: [NavigationHelper, SliderHelper],
 
   props: {
     defaultTab: {
@@ -131,12 +132,22 @@ export default {
     if ( this.useHash ) {
       window.addEventListener('hashchange', this.hashChange);
     }
+
+    this.slider = this.sliderHelper.create(
+      this.$refs.slider,
+      this.$refs.treeTabNav,
+      this.$refs.treeTabContent,
+      'treeTab',
+      false
+    );
   },
 
   unmounted() {
     if ( this.useHash ) {
       window.removeEventListener('hashchange', this.hashChange);
     }
+
+    this.slider.destroy();
   },
 
   methods: {
@@ -232,13 +243,22 @@ export default {
 
 <template>
   <div class="tree-tabbed">
-    <NavigationNode
-      :nav-node="navigationNode"
-      :navigator="this"
-      :active-tab-name="activeTabName"
+    <div ref="treeTabNav" class="tab-nav">
+      <NavigationNode
+        :nav-node="navigationNode"
+        :navigator="this"
+        :active-tab-name="activeTabName"
+      />
+    </div>
+    <div
+      ref="slider"
+      class="slider"
     >
-    </NavigationNode>
-    <div :class="{ 'tab-container': !!tabs.length, 'no-content': noContent }">
+    </div>
+    <div
+      ref="treeTabContent"
+      :class="{ 'tab-container': !!tabs.length, 'no-content': noContent }"
+    >
       <slot />
       <slot name="nestedTabs" />
     </div>
@@ -248,16 +268,21 @@ export default {
 <style lang="scss" scoped>
   $nav-tabs-width: 260px;
 
-  .tree-tabbed{
+  .tree-tabbed {
     display: flex;
     box-shadow: 0 0 20px var(--shadow);
     border-radius: calc(var(--border-radius) * 2);
     background-color: var(--tabbed-sidebar-bg);
 
+    .tab-nav {
+      width: $nav-tabs-width;
+      min-width: 200px;
+      max-width: 50%;
+      overflow: auto;
+    }
+
     .tab-container {
       padding: 20px;
-      // box-shadow: 0 0 20px var(--shadow);
-      width: calc(100% - #{$nav-tabs-width});
       flex-grow: 1;
       background-color: var(--body-bg);
 
@@ -265,5 +290,13 @@ export default {
         padding: 0 0 3px 0;
       }
     }
+  }
+
+  .tree-tabbed .slider {
+    width: 10px;
+    margin: 0 -10px 0 0;
+    cursor: ew-resize;
+    user-select: none;
+    z-index: 99;
   }
 </style>
