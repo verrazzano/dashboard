@@ -285,6 +285,7 @@ export default {
       padding: 20px;
       flex-grow: 1;
       background-color: var(--body-bg);
+      overflow: auto;
 
       &.no-content {
         padding: 0 0 3px 0;
