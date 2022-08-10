@@ -113,6 +113,7 @@ export default {
           <span v-else />
         </template>
         <template #default="props">
+          <div class="spacer-small" />
           <ProjectionSource
             v-model="props.row.value"
             :mode="mode"

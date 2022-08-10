@@ -161,6 +161,7 @@ export default {
           <span v-else />
         </template>
         <template #default="props">
+          <div class="spacer-small" />
           <div class="row">
             <div class="col span-6">
               <LabeledSelect

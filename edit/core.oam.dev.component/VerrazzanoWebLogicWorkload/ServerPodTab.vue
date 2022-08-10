@@ -15,7 +15,7 @@ import PodSecurityContextTab from '@/components/verrazzano/PodSecurityContextTab
 import ProbeTuning from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ProbeTuning';
 import ReadinessGatesTab from '@/components/verrazzano/ReadinessGatesTab';
 import ServerShutdown from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerShutdown';
-import Tolerations from '@/components/verrazzano/Tolerations';
+import TolerationsTab from '@/components/verrazzano/TolerationsTab';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VolumeMountsTab from '@/components/verrazzano/VolumeMountsTab';
 import VolumesTab from '@/components/verrazzano/VolumesTab';
@@ -42,7 +42,7 @@ export default {
     ProbeTuning,
     ReadinessGatesTab,
     ServerShutdown,
-    Tolerations,
+    TolerationsTab,
     TreeTab,
     VolumeMountsTab,
     VolumesTab,
@@ -256,22 +256,21 @@ export default {
       />
 
       <ContainersTab
-        :value="value"
+        :value="getListField('containers')"
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-name="createTabName(tabName, 'containers')"
-        @input="$emit('input', value)"
+        @input="setFieldIfNotEmpty('containers', $event)"
       />
 
       <ContainersTab
-        :value="value"
+        :value="getListField('initContainers')"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        root-field-name="initContainers"
         :tab-name="createTabName(tabName, 'initContainers')"
         :tab-label="t('verrazzano.common.tabs.initContainers')"
         :type-label="t('verrazzano.common.tabs.initContainer')"
-        @input="$emit('input', value)"
+        @input="setFieldIfNotEmpty('initContainers', $event)"
       />
 
       <VolumesTab
@@ -289,12 +288,12 @@ export default {
         @input="setFieldIfNotEmpty('volumeMounts', $event)"
       />
 
-      <TreeTab :name="createTabName(tabName, 'tolerations')" :label="t('verrazzano.common.tabs.tolerations')">
-        <Tolerations
-          v-model="value"
-          :mode="mode"
-        />
-      </TreeTab>
+      <TolerationsTab
+        :value="getListField('tolerations')"
+        :mode="mode"
+        :tab-name="createTabName(tabName, 'tolerations')"
+        @input="setFieldIfNotEmpty('tolerations', $event)"
+      />
 
       <PodSecurityContextTab
         :value="getField('podSecurityContext')"

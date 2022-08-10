@@ -4,7 +4,7 @@ import Checkbox from '@/components/form/Checkbox';
 import ContainerLifecycleTab from '@/components/verrazzano/ContainersTab/ContainerLifecycleTab';
 import ContainerPortsTab from '@/components/verrazzano/ContainersTab/ContainerPortsTab';
 import ContainerProbeTab from '@/components/verrazzano/ContainerProbeTab';
-import ContainerResources from '@/components/verrazzano/ContainerResources';
+import ContainerResourcesTab from '@/components/verrazzano/ContainerResourcesTab';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import EnvironmentVariables from '@/components/verrazzano/EnvironmentVariables';
 import LabeledArrayList from '@/components/verrazzano/LabeledArrayList';
@@ -22,7 +22,7 @@ export default {
     ContainerLifecycleTab,
     ContainerPortsTab,
     ContainerProbeTab,
-    ContainerResources,
+    ContainerResourcesTab,
     EnvironmentVariables,
     LabeledArrayList,
     LabeledInput,
@@ -228,13 +228,12 @@ export default {
         :tab-name="createTabName(tabName, 'ports')"
         @input="$emit('input', $event)"
       />
-      <TreeTab :name="createTabName(tabName, 'resources')" :label="t('verrazzano.common.tabs.resources')">
-        <ContainerResources
-          :value="getField('resources')"
-          :mode="mode"
-          @input="setFieldIfNotEmpty('resources', $event)"
-        />
-      </TreeTab>
+      <ContainerResourcesTab
+        :value="getField('resources')"
+        :mode="mode"
+        :tab-name="createTabName(tabName, 'resources')"
+        @input="setFieldIfNotEmpty('resources', $event)"
+      />
       <ContainerProbeTab
         :value="getField('livenessProbe')"
         :mode="mode"

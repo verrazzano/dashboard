@@ -18,7 +18,7 @@ export default {
 
       if (typeof nodes !== 'undefined') {
         nodes.forEach((node) => {
-          usedNames.push(node[key]);
+          usedNames.push(this.get(node, key));
         });
 
         let index = 0;

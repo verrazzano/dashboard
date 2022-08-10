@@ -58,13 +58,12 @@ export default {
   <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #beside-header>
       <TabDeleteButton
-        :element-name="t('verrazzano.containerized.tabs.extendedResources')"
+        :element-name="treeTabLabel"
         :mode="mode"
         @click="dynamicListClearChildrenList"
       />
     </template>
     <template #default>
-      <div class="spacer" />
       <ArrayListGrouped
         v-model="dynamicListChildren"
         :mode="mode"
@@ -84,6 +83,7 @@ export default {
           <span v-else />
         </template>
         <template #default="props">
+          <div class="spacer-small" />
           <OAMExtendedResource
             :value="props.row.value"
             :mode="mode"

@@ -27,7 +27,7 @@ export default {
     imagePullPolicyOptions() {
       return [
         { value: 'Always', label: this.t('verrazzano.common.types.imagePullPolicy.always') },
-        { value: 'IfNeeded', label: this.t('verrazzano.common.types.imagePullPolicy.ifNeeded') },
+        { value: 'IfNotPresent', label: this.t('verrazzano.common.types.imagePullPolicy.ifNotPresent') },
         { value: 'Never', label: this.t('verrazzano.common.types.imagePullPolicy.never') },
       ];
     },
