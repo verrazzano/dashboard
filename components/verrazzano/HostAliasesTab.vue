@@ -70,7 +70,7 @@ export default {
     <template #beside-header>
       <TabDeleteButton
         :mode="mode"
-        element-name="treeTabLabel"
+        :element-name="treeTabLabel"
         @click="clearHostAliases()"
       />
     </template>

@@ -6824,17 +6824,22 @@ verrazzano:
       addAutoResumeServiceSetting: Add Auto Resume Service Setting
       addClasspathEntry: Add Classpath Entry
       addConfigMapVolume: Add ConfigMap Volume
-      addGarbageCollectorArg: Java Garbage Collector Argument
+      addGarbageCollectorArg: Add Garbage Collector Argument
       addHttpParam: Add HTTP Parameter
       addJVMArg: Add JVM Argument
+      serviceMonitor:
+        addLabel: Add Service Monitor Label
       addMetricRelabeling: Add Metric Relabeling
       addPodTargetLabel: Add Pod Target Label
       addPort: Add Port
+      addRelabelConfig: Add Relabeling Config Item
       addRelabeling: Add Relabeling
+      addSecretItem: Add Secret Item
       addSecretVolume: Add Secret Volume
       addSidecarContainer: Add Sidecar Container
       addSourceLabel: Add Source Label
-      addTargetLabel: Add Target Label
+      addStartQuorum: Add Start Quorum
+      addTargetLabel: Add Service Target Label
       addVolumeClaimTemplate: Add Volume Claim Template
 
     ###################################
@@ -6867,11 +6872,13 @@ verrazzano:
         readOnly: Mount Read Only
         subPath: Sub Path within Volume to Mount
         subPathExpr: Sub Path Expression
+        volumeName: Volume Name
       directMemorySize: Direct Memory Size
       enableIpMonitor: Enable IP Monitor
       excludeFromWKA: Exclude from WKA
       garbageCollector: Java Garbage Collector
       garbageCollectorArg: Java Garbage Collector Argument
+      garbageCollectorLogging: Enable Detailed Garbage Collector Logging
       haBeforeUpdate: Test HA Status Before Update or Delete
       healthPort: Health Port
       heapPercentage: Heap Percentage
@@ -6911,6 +6918,8 @@ verrazzano:
         port: Port Number
         protocol: Protocol
       nativeMemoryTracking: Native Memory Tracking
+      newConfigMapVolumeName: New ConfigMap Volume Name
+      newSecretVolumeName: New Secret Volume Name
       onOutOfMemory:
         exit: Exit on Out of Memory Error
         heapDump: Perform Heap Dump on Out of Memory Error
@@ -6920,6 +6929,7 @@ verrazzano:
       portEnabled: Enable Port
       preemptionPolicy: Preemption Policy
       priorityClassName: Priority Class Name
+      probeTimeoutSeconds: Probe Timeout Seconds
       publishNotReadyAddresses: Publish Not Ready Addresses
       role: Coherence Role Name
       rackLabel: Rack Label
@@ -6948,20 +6958,25 @@ verrazzano:
         readOnly: Mount Read Only
         subPath: Sub Path within Volume to Mount
         subPathExpr: Sub Path Expression
+        volumeName: Volume Name
       serviceEnabled: Enable Service Creation
       serviceMonitor:
+        authType: Authentication Type
+        caType: Certificate Authority Source
+        certType: Certificate Source
         enabled: Enable Prometheus ServiceMonitor
         honorLabels: Honor Labels in Metrics Data
         honorTimestamps: Honor Timestamps in Metrics Data
         interval: Metrics Scraping Interval
         jobLabel: Job Label
+        keyType: Private Key Source
         path: HTTP Path for Metrics Scraping
         podTargetLabel: Pod Target Label
         proxyURL: Proxy URL
         sampleLimit: Sample Limit
         scheme: HTTP Scheme for Metric Scraping
         scrapeTimeout: Metrics Scrape Timeout
-        targetLabel: Target Label
+        targetLabel: Service Target Label
       serviceName: Service Name
       servicePort: Service Port
       servicePortName: Service Port Name
@@ -6997,33 +7012,64 @@ verrazzano:
       versionLabel: Version Label
       volumeClaimTemplate:
         name: Persistent Volume Claim Name
-      wkaDeployment: WKA Deployment Name
+      wka:
+        deployment: WKA Deployment Name
+        namespace: Namespace for WKA Deployment
 
     #################################
     ### verrazzano.coherence.tabs ###
     #################################
     tabs:
+      action: Action
       actions: Actions
       affinity: Affinity
       application: Application Spec
       coherence: Coherence Spec
       configMapVolumes: ConfigMap Volumes
       containerSecurity: Container Security Context
+      diagnosticsVolume: Diagnostics Volume
+      dnsConfig: DNS Configuration
       env: Environment
+      externalName: External Name Settings
+      ipSettings: IP Settings
       jvm: JVM Spec
+      jvmDebug: Debug Settings
+      jvmGC: Garbage Collector Settings
+      jvmMemory: Memory Settings
+      labels: Labels
       lifecycle: Lifecycle
       livenessProbe: Liveness Probe
+      loadBalancer: Load Balancer Settings
+      metricsPublishing: Metric Publishing
+      metricsRelabeling: Metrics Relabeling
+      metricsRelabelings: Metrics Relabelings
       network: Network
       nodeSelector: Node Selector
+      persistence: Persistence
+      persistentVolumeClaimSpec: Spec
       podSecurity: Pod Security Context
+      port: Port
       ports: Ports
+      prometheusCA: Certificate Authority
+      prometheusCert: Certificate
+      prometheusKey: Private Key
       readinessGates: Readiness Gates
       readinessProbe: Readiness Probe
+      reconfigItem: Reconfig Item {number}
+      relabeling: Relabeling
+      relabelings: Relabelings
       resources: Resources
+      restManagement: REST Management
       scaling: Scaling
+      scalingProbe: Scaling Probe
       secretVolumes: Secret Volumes
+      service: Service Settings
+      serviceMonitor: Service Monitor Settings
       sideCars: Sidecar Containers
+      snapshots: Snapshots
+      startQuorums: Start Quorums
       startupProbe: Startup Probe
+      suspendProbe: Suspend Probe
       tolerations: Tolerations
       topologySpreadConstraints: Topology Spread Constraints
       volumeClaimTemplates: Volume Claim Templates
@@ -7038,6 +7084,8 @@ verrazzano:
       basicAuth:
         password: Password Secret Settings
         username: Username Secret Settings
+      clusterIPs: Cluster IP Addresses
+      configMapItems: ConfigMap Items
       debugSettings: Debug Settings
       diagnosticsVolume: Diagnostics Volume Settings
       gcSettings: Garbage Collection Settings
@@ -7049,9 +7097,22 @@ verrazzano:
       serviceMonitorSettings: Prometheus ServiceMonitor-Related Settings
       persistence: Persistence Settings
       persistentVolumeClaim: Persistent Volume Claim
+      persistentVolumeClaimMetadata: '{name} Metadata'
+      secretItems: Secret Items
       serviceMonitor:
+        authentication: Authentication
+        basicAuth:
+          password: Basic Auth Password Secret
+          username: Basic Auth Username Secret
         bearerTokenSecret: Bearer Token Secret
         bearerTokenSettings: Prometheus Bearer Token-Related Settings
+        caKubernetes: Prometheus Container Certificate Authority Settings
+        certKubernetes: Prometheus Container Certificate Settings
+        httpSettings: HTTP Endpoint Settings
+        keyKubernetes: Prometheus Container Private Key Settings
+        labels: Service Monitor Labels
+        podTargetLabels: Pod Target Labels
+        targetLabels: Service Target Labels
         tlsConfig: Prometheus TLS Settings
       serviceSettings: Service-Related Settings
       snapshots: Snapshots
@@ -7067,6 +7128,10 @@ verrazzano:
     ### verrazzano.coherence.types ###
     ##################################
     types:
+      authentication:
+        basicAuth: Basic Auth
+        bearerTokenFile: Bearer Token from File
+        bearerTokenSecret: Bearer Token from Secret
       gcTypes:
         cms: Concurrent Mark and Sweep
         default: Default
@@ -7080,6 +7145,9 @@ verrazzano:
         active: Active
         activeAsync: Active Async
         onDemand: On Demand
+      prometheusTLS:
+        file: File
+        k8s: Kubernetes Object
       protocol:
         tcp: TCP
         udp: UDP
@@ -7132,6 +7200,7 @@ verrazzano:
       addHttpHeader: Add HTTP Header
       addLabel: Add Label
       addLoadBalancerSourceRange: Add Load Balancer Source Range
+      addMatchExpression: Add Match Expression
       addMatchLabel: Add Match Label
       addNodeSelectorRequirement: Add Node Selector Requirement
       addNodeSelectorTerm: Add Node Selector Term
@@ -7204,6 +7273,13 @@ verrazzano:
         successThreshold: Success Threshold
         terminationGracePeriodSeconds: Termination Grace Period Seconds
         timeoutSeconds: Timeout Seconds
+      containerResources:
+        limitCpu: CPU Limit
+        limitEphemeralStorage: Ephemeral Storage Limit
+        limitMemory: Memory Limit
+        requestCpu: CPU Request
+        requestEphemeralStorage: Ephemeral Storage Request
+        requestMemory: Memory Request
       containerSecurityContext:
         allowPrivilegeEscalation: Allow Privilege Escalation
         privileged: Run Container in Privileged Mode
@@ -7244,9 +7320,11 @@ verrazzano:
       jobSpec:
         activeDeadlineSeconds: Active Deadline Seconds
         backoffLimit: Backoff Limit
+        completionMode: Completion Mode
         completions: Completions
         manualSelector: Is Manual Selector
         parallelism: Parallelism
+        suspend: Suspend
         ttlSecondsAfterFinished: Time-to-Live Seconds After Finished
       kind: Kind
       loadBalancerIP: Load Balancer IP Address
@@ -7545,8 +7623,10 @@ verrazzano:
       container: Container
       containers: Containers
       containerSecurityContext: Container Security Context
+      dataSource: Data Source
       environmentVariables: Environment Variables
       ephemeralContainers: Ephemeral Containers
+      ephemeralVolumeClaimTemplate: Ephemeral Volume Claim Template
       executionEnvironment: Execution Environment
       general: General
       hostAlias: Host Alias
@@ -7554,6 +7634,9 @@ verrazzano:
       ingressTrait: Ingress Trait
       initContainer: Init Container
       initContainers: Init Containers
+      jobSpec: Job Spec
+      labelsAndAnnotations: Labels and Annotations
+      labelSelector: Label Selector
       lifecycleHandler:
         postStart: Post Start
         preStop: Pre Stop
@@ -7566,6 +7649,10 @@ verrazzano:
       nodeAffinity: Node Affinity
       nodePreferredSelectorTerm: Preferred {index}
       nodeRequiredSelectorTerm: Required {index}
+      ownerReferences: Owner References
+      persistentVolumeClaim: Persistent Volume Claim
+      persistentVolumeClaims: Persistent Volume Claims
+      persistentVolumeClaimTemplate: Persistent Volume Claim Template
       podAffinity: Pod Affinity
       podAntiAffinity: Pod Anti-Affinity
       podAntiPreferredSelectorTerm: Preferred {index}
@@ -7575,6 +7662,7 @@ verrazzano:
       podRequiredSelectorTerm: Required {index}
       podSecurityContext: Pod Security Context
       podSpec: Pod Spec
+      podTemplate: Pod Template
       ports: Ports
       preferredPrefix: Preferred Term
       readinessGates: Pod Readiness Gates
@@ -7621,6 +7709,7 @@ verrazzano:
       dnsResolverOptions: DNS Resolver Options
       envVars: Environment Variables
       hosts: Hosts
+      httpGet: HTTP Get Request
       httpGetHeaders: HTTP Get Request Headers
       labels: Labels
       labelsAndAnnotations: Labels and Annotations
@@ -7630,6 +7719,9 @@ verrazzano:
       matchLabels: Match Labels
       ownerReferences: Owner References
       paths: Paths
+      podAffinityTerm:
+        matchLabels: Pod Match Labels
+        matchExpressions: Pod Match Expressions
       podSecurityContext: Pod Security Context
       podSpec:
         affinity: Affinity-Related Settings
@@ -7682,6 +7774,9 @@ verrazzano:
         glusterfs: GlusterFS
         hostPath: Host Path
         iscsi: iSCSI Disk
+        jobSpec:
+          matchExpressions: Match Expressions
+          matchLabels: Match Labels
         nfs: NFS Mount
         photon: Photon Persistent Disk
         portworx: Portworx Volume
@@ -7724,6 +7819,9 @@ verrazzano:
           dedicated: Dedicated
           managed: Managed
           shared: Shared
+      completionMode:
+        indexed: Indexed
+        nonIndexed: Non-Indexed
       conditionType:
         containersReady: Containers Ready
         initialized: Initialized
@@ -7765,7 +7863,7 @@ verrazzano:
         socket: Socket
       imagePullPolicy:
         always: Always
-        ifNeeded: If Needed
+        ifNotPresent: If Not Present
         never: Never
       ipFamily:
         ipv4: IPv4

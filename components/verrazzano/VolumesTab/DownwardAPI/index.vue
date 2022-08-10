@@ -115,6 +115,7 @@ export default {
           <span v-else />
         </template>
         <template #default="props">
+          <div class="spacer-small" />
           <DownwardAPIVolumeFile
             v-model="props.row.value"
             :mode="mode"

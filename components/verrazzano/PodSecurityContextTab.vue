@@ -77,7 +77,7 @@ export default {
   <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #beside-header>
       <TabDeleteButton
-        :element-name="t('verrazzano.common.tabs.podSecurityContext')"
+        :element-name="treeTabLabel"
         :mode="mode"
         @click="deletePodSecurityContext()"
       />

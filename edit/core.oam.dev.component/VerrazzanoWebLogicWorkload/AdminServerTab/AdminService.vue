@@ -48,6 +48,7 @@ export default {
           <span v-else />
         </template>
         <template #default="props">
+          <div class="spacer-small" />
           <WebLogicChannel
             v-model="props.row.value"
             :mode="mode"

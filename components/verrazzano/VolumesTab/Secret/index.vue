@@ -184,6 +184,7 @@ export default {
           <span v-else />
         </template>
         <template #default="props">
+          <div class="spacer-small" />
           <SecretItem
             v-model="props.row.value"
             :secret="getSecret()"
