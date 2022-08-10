@@ -112,7 +112,7 @@ export default {
         @input="$emit('input', value)"
       />
       <CoherenceSpecTab
-        :value="getField('coherence')"
+        :value="getWorkloadSpecField('coherence')"
         :mode="mode"
         :namespaced-object="value"
         tab-name="coherence"
@@ -120,14 +120,14 @@ export default {
         @delete="setWorkloadSpecField('coherence', undefined)"
       />
       <ApplicationSpecTab
-        :value="getField('application')"
+        :value="getWorkloadSpecField('application')"
         :mode="mode"
         tab-name="application"
         @input="setWorkloadSpecFieldIfNotEmpty('application', $event)"
         @delete="setWorkloadSpecField('application', undefined)"
       />
       <JVMSpecTab
-        :value="getField('jvm')"
+        :value="getWorkloadSpecField('jvm')"
         :mode="mode"
         :namespaced-object="value"
         tab-name="jvm"

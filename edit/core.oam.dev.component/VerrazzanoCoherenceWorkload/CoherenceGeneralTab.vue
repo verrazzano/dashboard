@@ -44,9 +44,6 @@ export default {
   data() {
     const imagePullSecrets = this.getListField('imagePullSecrets').map(each => each.name);
 
-    // eslint-disable-next-line no-console
-    console.log('XXXXXXX data() transformed imagePullSecrets to: ', JSON.stringify(imagePullSecrets));
-
     return {
       treeTabName:        this.tabName,
       treeTabLabel:       this.tabLabel,
@@ -88,20 +85,12 @@ export default {
       }
     },
     setImagePullSecrets(value) {
-      // eslint-disable-next-line no-console
-      console.log('XXXXXX setImagePullSecrets() received value: ', JSON.stringify(value, null, 2));
-
       const imagePullSecrets = [];
       const selected = Array.isArray(value) ? value : [];
-
-      // eslint-disable-next-line no-console
-      console.log('XXXXXX setImagePullSecrets() selected: ', JSON.stringify(selected, null, 2));
 
       selected.forEach((secretName) => {
         imagePullSecrets.push({ name: secretName });
       });
-      // eslint-disable-next-line no-console
-      console.log('XXXXXX setImagePullSecrets() transformed imagePullSecrets: ', JSON.stringify(imagePullSecrets, null, 2));
 
       this.setFieldIfNotEmpty('imagePullSecrets', imagePullSecrets);
     },

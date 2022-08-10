@@ -50,6 +50,7 @@ export default {
   },
   data() {
     return {
+      isLoading:     true,
       treeTabName:   this.tabName,
       treeTabLabel:  this.treeTabLabel,
       allNamespaces: [],
@@ -73,6 +74,16 @@ export default {
     if (!this.treeTabLabel) {
       this.treeTabLabel = this.t('verrazzano.coherence.tabs.coherence');
     }
+  },
+  mounted() {
+    this.isLoading = false;
+  },
+  watch: {
+    excludeFromWKA(neu, old) {
+      if (!this.isLoading && neu === false) {
+        this.setField('wka', undefined);
+      }
+    },
   },
 };
 </script>
