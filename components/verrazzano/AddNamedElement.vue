@@ -28,7 +28,7 @@ export default {
       default: undefined,
     },
     keyFieldName: {
-      // the key in the new object to set
+      // the key in the new object to set, it can be a simple name or a dot-demarcated path to the field
       type:     String,
       required: true,
     },
@@ -59,13 +59,11 @@ export default {
       this.errorMessage = undefined;
 
       if (!this.newName) {
-        // this.errorMessage = this.t('verrazzano.common.messages.enterName');
-
         return false;
       }
 
       if (Array.isArray(this.value)) {
-        if (!this.value.every(node => this.newName !== node[this.keyFieldName])) {
+        if (!this.value.every(node => this.newName !== this.get(node, this.keyFieldName))) {
           this.errorMessage = this.t('verrazzano.common.messages.nameInUse', { name: this.newName });
 
           return false;

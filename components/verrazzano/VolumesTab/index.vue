@@ -4,7 +4,7 @@ import AddNamedElement from '@/components/verrazzano/AddNamedElement';
 import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
-import Volume from '@/components/verrazzano/VolumesTab/Volume';
+import VolumeTab from '@/components/verrazzano/VolumesTab/VolumeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
 
 export default {
@@ -13,7 +13,7 @@ export default {
     AddNamedElement,
     TabDeleteButton,
     TreeTab,
-    Volume,
+    VolumeTab,
   },
   mixins: [VerrazzanoHelper, DynamicListHelper],
   props:  {
@@ -70,7 +70,7 @@ export default {
   <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #beside-header>
       <TabDeleteButton
-        :element-name="t('verrazzano.common.tabs.volumes')"
+        :element-name="treeTabLabel"
         :mode="mode"
         @click="deleteVolumes()"
       />
@@ -86,28 +86,17 @@ export default {
       />
     </template>
     <template #nestedTabs>
-      <TreeTab
+      <VolumeTab
         v-for="(volume, idx) in dynamicListChildren"
         :key="volume._id"
-        :name="createTabName(treeTabName, volume.name)"
-        :label="volume.name"
-      >
-        <template #beside-header>
-          <TabDeleteButton
-            :element-name="t('verrazzano.common.tabs.volume')"
-            :mode="mode"
-            @click="removeVolume(idx)"
-          />
-        </template>
-        <template #default>
-          <Volume
-            :value="volume"
-            :mode="mode"
-            :namespaced-object="namespacedObject"
-            @input="dynamicListUpdate"
-          />
-        </template>
-      </TreeTab>
+        :value="volume"
+        :mode="mode"
+        :namespaced-object="namespacedObject"
+        :tab-name="createTabName(treeTabName, volume.name)"
+        :tab-label="volume.name"
+        @input="dynamicListUpdate()"
+        @delete="dynamicListDeleteChildByIndex(idx)"
+      />
     </template>
   </TreeTab>
 </template>

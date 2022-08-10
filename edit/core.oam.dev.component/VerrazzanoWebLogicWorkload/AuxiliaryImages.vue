@@ -61,6 +61,7 @@ export default {
         <span v-else />
       </template>
       <template #default="props">
+        <div class="spacer-small" />
         <AuxiliaryImage
           :value="props.row.value"
           :mode="mode"

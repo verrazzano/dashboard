@@ -187,6 +187,7 @@ export default {
           <span v-else />
         </template>
         <template #default="props">
+          <div class="spacer-small" />
           <div class="row mt-20 mb-20">
             <div class="col span-6">
               <LabeledSelect

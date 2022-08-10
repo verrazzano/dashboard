@@ -27,7 +27,7 @@ export default {
     imagePullPolicyOptions() {
       return [
         { value: 'Always', label: this.t('verrazzano.common.types.imagePullPolicy.always') },
-        { value: 'IfNeeded', label: this.t('verrazzano.common.types.imagePullPolicy.ifNeeded') },
+        { value: 'IfNotPresent', label: this.t('verrazzano.common.types.imagePullPolicy.ifNotPresent') },
         { value: 'Never', label: this.t('verrazzano.common.types.imagePullPolicy.never') },
       ];
     },
@@ -204,6 +204,23 @@ export default {
       this.set(this.value, fieldName, value);
       this.$emit('input', this.value);
     },
+    _clearObjectHierarchy(fieldName) {
+      if (fieldName.includes('.')) {
+        const parentFields = fieldName.split('.');
+        let fieldToCheck = parentFields[0];
+
+        for (let i = 0; i < parentFields.length - 1; i++) {
+          const parent = this.getField(fieldToCheck);
+
+          if (parent && this.isEmptyValue(fieldToCheck, parent)) {
+            this.setField(fieldToCheck, undefined);
+            break;
+          } else {
+            fieldToCheck += `.${ parentFields[i + 1] }`;
+          }
+        }
+      }
+    },
     setFieldIfNotEmpty(fieldName, neu) {
       let valueToSet = neu;
 
@@ -211,6 +228,9 @@ export default {
         valueToSet = undefined;
       }
       this.setField(fieldName, valueToSet);
+      if (typeof valueToSet === 'undefined') {
+        this._clearObjectHierarchy(fieldName);
+      }
     },
     sortObjectsByNamespace(sourceCollection, targetObject) {
       sourceCollection.forEach((item) => {

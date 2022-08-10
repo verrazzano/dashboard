@@ -27,6 +27,11 @@ export default {
       required: true
     }
   },
+  computed: {
+    showsSSLConfig() {
+      return this.getField('ssl.enabled');
+    }
+  }
 };
 </script>
 
@@ -34,11 +39,19 @@ export default {
   <div>
     <div class="row">
       <div class="col span-4">
+        <div class="spacer-tiny" />
         <Checkbox
           :value="getField('enabled')"
           :mode="mode"
           :label="t('verrazzano.coherence.fields.portEnabled')"
           @input="setBooleanField('enabled', $event)"
+        />
+        <div class="spacer-tiny" />
+        <Checkbox
+          :value="getField('ssl.enabled')"
+          :mode="mode"
+          :label="t('verrazzano.coherence.fields.sslEnabled')"
+          @input="setBooleanField('ssl.enabled', $event)"
         />
       </div>
       <div class="col span-4">
@@ -55,11 +68,12 @@ export default {
       </div>
     </div>
     <div class="spacer-small" />
-    <div>
+    <div v-if="showsSSLConfig">
       <SSLSpec
         :value="getField('ssl')"
         :mode="mode"
         :namespaced-object="namespacedObject"
+        hide-ssl-enabled
         @input="setFieldIfNotEmpty('ssl', $event)"
       />
     </div>
@@ -67,5 +81,5 @@ export default {
 </template>
 
 <style scoped>
-
+  @import '../verrazzano-styles.css';
 </style>
