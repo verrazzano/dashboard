@@ -17,6 +17,14 @@ export default {
       type:     String,
       required: true,
     },
+    suppressLabelsTitle: {
+      type:    Boolean,
+      default: false
+    },
+    suppressAnnotationsTitle: {
+      type:    Boolean,
+      default: false
+    },
     displaySideBySide: {
       type:    Boolean,
       default: false,
@@ -30,15 +38,19 @@ export default {
       default: '',
     }
   },
-
   computed: {
     containerClass() {
       return `${ this.displaySideBySide ? 'row' : '' } ${ this.defaultContainerClass }`.trim();
     },
-
     sectionClass() {
       return `${ this.displaySideBySide ? 'col span-6' : 'row' } ${ this.defaultSectionClass }`.trim();
-    }
+    },
+    annotationsTitle() {
+      return this.suppressAnnotationsTitle ? undefined : this.t('verrazzano.common.titles.annotations');
+    },
+    labelsTitle() {
+      return this.suppressLabelsTitle ? undefined : this.t('verrazzano.common.titles.labels');
+    },
   }
 };
 </script>
@@ -51,7 +63,7 @@ export default {
         :value="getListField('labels')"
         :add-label="t('verrazzano.common.buttons.addLabel')"
         :mode="mode"
-        :title="t('verrazzano.common.titles.labels')"
+        :title="labelsTitle"
         :read-allowed="false"
         :value-can-be-empty="true"
         @input="setFieldIfNotEmpty('labels', $event)"
@@ -64,7 +76,7 @@ export default {
         :value="getListField('annotations')"
         :add-label="t('verrazzano.common.buttons.addAnnotation')"
         :mode="mode"
-        :title="t('verrazzano.common.titles.annotations')"
+        :title="annotationsTitle"
         :read-allowed="false"
         :value-can-be-empty="true"
         @input="setFieldIfNotEmpty('annotations', $event)"

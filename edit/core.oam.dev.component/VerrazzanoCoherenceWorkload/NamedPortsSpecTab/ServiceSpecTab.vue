@@ -5,7 +5,7 @@ import CoherenceWorkloadHelper from '@/mixins/verrazzano/coherence-workload-help
 import LabeledArrayList from '@/components/verrazzano/LabeledArrayList';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
-import Labels from '@/components/form/Labels';
+import LabelsTab from '@/components/verrazzano/LabelsTab';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 
@@ -16,7 +16,7 @@ export default {
     LabeledArrayList,
     LabeledInput,
     LabeledSelect,
-    Labels,
+    LabelsTab,
     TabDeleteButton,
     TreeTab,
   },
@@ -80,7 +80,7 @@ export default {
       let result;
 
       if (Array.isArray(currentValue) && currentValue.length > 0) {
-        const tmp = this.ipFamiliesOptions.find(entry => entry.value === currentValue);
+        const tmp = this.ipFamiliesOptions.find(entry => this.arraysAreEquivalent(entry.realValue, currentValue));
 
         if (tmp) {
           result = tmp.label;
@@ -107,7 +107,19 @@ export default {
         this.clusterIPs = [];
         this.setField('clusterIPs', undefined);
       }
-    }
+    },
+    setIPFamilies(value) {
+      let valueToSet;
+
+      if (value) {
+        const entry = this.ipFamiliesOptions.find(entry => entry.value === value);
+
+        if (entry) {
+          valueToSet = entry.realValue;
+        }
+      }
+      this.setFieldIfNotEmpty('ipFamilies', valueToSet);
+    },
   },
   created() {
     if (!this.treeTabLabel) {
@@ -160,7 +172,7 @@ export default {
           <Checkbox
             :value="getField('publishNotReadyAddresses')"
             :mode="mode"
-            :label="t('verrazzano.coherence.fields.publishNotReadyAddresses')"
+            :label="t('verrazzano.common.fields.publishNotReadyAddresses')"
             @input="setBooleanField('publishNotReadyAddresses', $event)"
           />
         </div>
@@ -172,7 +184,7 @@ export default {
             :value="getField('name')"
             :mode="mode"
             :placeholder="getNotSetPlaceholder(value, 'name')"
-            :label="t('verrazzano.coherence.fields.serviceName')"
+            :label="t('verrazzano.common.fields.serviceName')"
             @input="setFieldIfNotEmpty('name', $event)"
           />
         </div>
@@ -184,7 +196,7 @@ export default {
             option-key="value"
             option-label="label"
             :placeholder="getNotSetPlaceholder(value, 'type')"
-            :label="t('verrazzano.coherence.fields.serviceType')"
+            :label="t('verrazzano.common.fields.serviceType')"
             @input="setFieldIfNotEmpty('type', $event)"
           />
         </div>
@@ -196,7 +208,7 @@ export default {
             :value="getField('portName')"
             :mode="mode"
             :placeholder="getNotSetPlaceholder(value, 'portName')"
-            :label="t('verrazzano.coherence.fields.servicePortName')"
+            :label="t('verrazzano.common.fields.servicePortName')"
             @input="setFieldIfNotEmpty('portName', $event)"
           />
         </div>
@@ -208,7 +220,7 @@ export default {
             :min="minPortNumber"
             :max="maxPortNumber"
             :placeholder="getNotSetPlaceholder(value, 'port')"
-            :label="t('verrazzano.coherence.fields.servicePort')"
+            :label="t('verrazzano.common.fields.servicePort')"
             @input="setNumberField('port', $event)"
           />
         </div>
@@ -266,19 +278,16 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab :name="createTabName(treeTabName, 'labels')" :label="t('verrazzano.common.tabs.labelsAndAnnotations')">
-        <template #default>
-          <Labels
-            :value="value"
-            :mode="mode"
-            @input="$emit('input', $event)"
-          />
-        </template>
-      </TreeTab>
+      <LabelsTab
+        :value="value"
+        :mode="mode"
+        :tab-name="createTabName(treeTabName, 'labels')"
+        @input="$emit('input', value)"
+      />
       <TreeTab
         v-if="isNotExternalNameType"
         :name="createTabName(treeTabName, 'ip')"
-        :label="t('verrazzano.coherence.tabs.ipSettings')"
+        :label="t('verrazzano.common.tabs.ipSettings')"
       >
         <template #default>
           <div class="row">
@@ -303,7 +312,7 @@ export default {
                 option-label="label"
                 :placeholder="getNotSetPlaceholder(value, 'ipFamilies')"
                 :label="t('verrazzano.common.fields.ipFamilies')"
-                @input="setFieldIfNotEmpty('ipFamilies', $event)"
+                @input="setIPFamilies($event)"
               />
             </div>
             <div class="col span-4">
@@ -317,7 +326,7 @@ export default {
             </div>
           </div>
           <div class="spacer" />
-          <h3>{{ t('verrazzano.coherence.titles.clusterIPs') }}</h3>
+          <h3>{{ t('verrazzano.common.titles.clusterIPs') }}</h3>
           <div class="row">
             <div class="col span-4">
               <LabeledArrayList
@@ -334,7 +343,7 @@ export default {
       <TreeTab
         v-if="isLoadBalancerType"
         :name="createTabName(treeTabName, 'loadBalancer')"
-        :label="t('verrazzano.coherence.tabs.loadBalancer')"
+        :label="t('verrazzano.common.tabs.loadBalancer')"
       >
         <template #default>
           <div class="row">
@@ -343,7 +352,7 @@ export default {
               <Checkbox
                 :value="getField('allocateLoadBalancerNodePorts')"
                 :mode="mode"
-                :label="t('verrazzano.coherence.fields.allocateLoadBalancerNodePorts')"
+                :label="t('verrazzano.common.fields.allocateLoadBalancerNodePorts')"
                 @input="setBooleanField('allocateLoadBalancerNodePorts', $event)"
               />
             </div>
@@ -374,7 +383,7 @@ export default {
       <TreeTab
         v-else-if="isExternalNameType"
         :name="createTabName(treeTabName, 'external')"
-        :label="t('verrazzano.coherence.tabs.externalName')"
+        :label="t('verrazzano.common.tabs.externalName')"
       >
         <template #default>
           <div class="row">

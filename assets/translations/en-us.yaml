@@ -6849,7 +6849,6 @@ verrazzano:
       actionName: Action Name
       actionProbeTimeoutSeconds: Probe Timeout Seconds
       activeDeadlineSeconds: Active Deadline Seconds
-      allocateLoadBalancerNodePorts: Allocate Node Ports for Load Balancer Service Type
       allowEndangeredForStatusHA: Allow Endangered for StatusHA Partitioned Cache Service Name
       appArg: Application Argument
       appLabel: App Label
@@ -6930,7 +6929,6 @@ verrazzano:
       preemptionPolicy: Preemption Policy
       priorityClassName: Priority Class Name
       probeTimeoutSeconds: Probe Timeout Seconds
-      publishNotReadyAddresses: Publish Not Ready Addresses
       role: Coherence Role Name
       rackLabel: Rack Label
       relabelConfig:
@@ -6977,10 +6975,6 @@ verrazzano:
         scheme: HTTP Scheme for Metric Scraping
         scrapeTimeout: Metrics Scrape Timeout
         targetLabel: Service Target Label
-      serviceName: Service Name
-      servicePort: Service Port
-      servicePortName: Service Port Name
-      serviceType: Service Type
       shareProcessNamespace: Share Process Namespace
       siteLabel: Site Label
       skipVersionCheck: Skip Version Check
@@ -7030,8 +7024,6 @@ verrazzano:
       diagnosticsVolume: Diagnostics Volume
       dnsConfig: DNS Configuration
       env: Environment
-      externalName: External Name Settings
-      ipSettings: IP Settings
       jvm: JVM Spec
       jvmDebug: Debug Settings
       jvmGC: Garbage Collector Settings
@@ -7039,7 +7031,6 @@ verrazzano:
       labels: Labels
       lifecycle: Lifecycle
       livenessProbe: Liveness Probe
-      loadBalancer: Load Balancer Settings
       metricsPublishing: Metric Publishing
       metricsRelabeling: Metrics Relabeling
       metricsRelabelings: Metrics Relabelings
@@ -7084,7 +7075,6 @@ verrazzano:
       basicAuth:
         password: Password Secret Settings
         username: Username Secret Settings
-      clusterIPs: Cluster IP Addresses
       configMapItems: ConfigMap Items
       debugSettings: Debug Settings
       diagnosticsVolume: Diagnostics Volume Settings
@@ -7236,6 +7226,8 @@ verrazzano:
     ################################
     fields:
       accessModes: Access Modes
+      allocateLoadBalancerNodePorts: Allocate Node Ports for Load Balancer Service Type
+      appProtocol: Application Protocol
       clusterIP: Cluster IP
       clusterIPs: Cluster IP
       componentName: Component Name
@@ -7344,6 +7336,7 @@ verrazzano:
         values: Values
       maxSkew: Maximum Distribution Skew
       metricsSecret: Metrics Endpoint Credentials Secret
+      minReadySeconds: Minimum Ready Seconds
       mountPropagationMode: Mount Propagation Mode
       name: Name
       namespace: Namespace
@@ -7354,6 +7347,7 @@ verrazzano:
       newIpAddress: IP Address for New Host Alias
       newSelectorTermType: New Affinity Selector Term Type
       newTraitType: New Trait Type
+      nodePort: Node Port
       nodeSelectorRequirementType: Node Selector Requirement Type
       ownerReference:
         apiVersion: Referent API Version
@@ -7364,6 +7358,7 @@ verrazzano:
         uid: Referent UID
       pathExpression: Path Expression
       pathType: Path Match Type
+      paused: Pause Deployment
       podSecurityContext:
         fsGroup: Filesystem Group
         fsGroupChangePolicy: Filesystem Group Change Policy
@@ -7395,6 +7390,7 @@ verrazzano:
         subdomain: Subdomain
         terminationGracePeriodSeconds: Termination Grace Period Seconds
       port: Port
+      portName: Port Name
       preferred: Preferred
       probeGrpc:
         port: Port
@@ -7402,9 +7398,13 @@ verrazzano:
       probeTcpSocket:
         host: Host
         port: Port
+      progressDeadlineSeconds: Progress Deadline Seconds
+      protocol: Protocol
+      publishNotReadyAddresses: Publish Not Ready Addresses
       replicaCount: Replica Count
       replicas: Replicas
       required: Required
+      revisionHistoryLimit: Revision History Limit
       scraper: Prometheus Scraper Deployment Name
       seccompProfile:
         localhostProfile: Profile File Name
@@ -7421,11 +7421,16 @@ verrazzano:
         role: Role
         type: Type
         user: User
+      serviceName: Service Name
+      servicePort: Service Port
+      servicePortName: Service Port Name
+      serviceType: Service Type
       sessionAffinity: Session Affinity
       sessionAffinityConfig:
         clientIP:
           timeoutSeconds: Session Affinity Client IP Timeout Seconds
       storageClassName: Storage Class Name
+      targetPort: Target Port
       tcpSocketPort: TCP Port
       toleration:
         effect: Effect
@@ -7623,6 +7628,7 @@ verrazzano:
       whenUnsatisfiable: When Unsatisfiable
       workingDir: Working Directory
       workloadConfigMapName: Workload ConfigMap Name
+      workloadDeploymentName: Workload Deployment Name
 
     ##################################
     ### verrazzano.common.messages ###
@@ -7638,21 +7644,25 @@ verrazzano:
     ##############################
     tabs:
       affinity: Affinity
+      clusterIPs: Cluster IP Addresses
       components: Components
       container: Container
       containers: Containers
       containerSecurityContext: Container Security Context
       dataSource: Data Source
+      deploymentStrategy: Deployment Strategy
       environmentVariables: Environment Variables
       ephemeralContainers: Ephemeral Containers
       ephemeralVolumeClaimTemplate: Ephemeral Volume Claim Template
       executionEnvironment: Execution Environment
+      externalName: External Name Settings
       general: General
       hostAlias: Host Alias
       hostAliases: Host Aliases
       ingressTrait: Ingress Trait
       initContainer: Init Container
       initContainers: Init Containers
+      ipSettings: IP Settings
       jobSpec: Job Spec
       labelsAndAnnotations: Labels and Annotations
       labelSelector: Label Selector
@@ -7661,6 +7671,7 @@ verrazzano:
         preStop: Pre Stop
       lifecycleHandlers: Lifecycle Handlers
       livenessProbe: Liveness Probe
+      loadBalancer: Load Balancer Settings
       loggingTrait: Logging Trait
       manualScalerTrait: Manual Scaler Trait
       metricsTrait: Metrics Trait
@@ -7682,6 +7693,7 @@ verrazzano:
       podSecurityContext: Pod Security Context
       podSpec: Pod Spec
       podTemplate: Pod Template
+      port: Port
       ports: Ports
       preferredPrefix: Preferred Term
       readinessGates: Readiness Gates

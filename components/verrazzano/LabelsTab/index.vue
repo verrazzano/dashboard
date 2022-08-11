@@ -1,22 +1,21 @@
 <script>
 // Added by Verrazzano
-import Checkbox from '@/components/form/Checkbox';
 import Labels from '@/components/verrazzano/LabelsTab/Labels';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
-import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
+import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
 
 export default {
-  name:       'ServerServiceTab',
+  name:       'LabelsTab',
   components: {
-    Checkbox,
     Labels,
     TabDeleteButton,
     TreeTab,
   },
-  mixins: [WeblogicWorkloadHelper],
+  mixins: [VerrazzanoHelper],
   props:  {
     value: {
+      // parent object (e.g., metadata object)
       type:    Object,
       default: () => ({})
     },
@@ -39,42 +38,36 @@ export default {
       treeTabLabel: this.tabLabel,
     };
   },
+  methods: {
+    clearLabelsAndAnnotations() {
+      this.setField('annotations', undefined);
+      this.setField('labels', undefined);
+    }
+  },
   created() {
     if (!this.treeTabLabel) {
-      this.treeTabLabel = this.t('verrazzano.weblogic.tabs.serverService');
+      this.treeTabLabel = this.t('verrazzano.common.tabs.labelsAndAnnotations');
     }
   },
 };
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab :name="treeTabName" :label="treeTabLabel" :title="t('verrazzano.common.titles.labels')">
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
         :mode="mode"
-        @click="$emit('delete', value)"
+        @click="clearLabelsAndAnnotations"
       />
     </template>
     <template #default>
-      <div class="row">
-        <div class="col span-4">
-          <Checkbox
-            :value="getField('precreateService')"
-            :mode="mode"
-            :label="t('verrazzano.weblogic.fields.preCreateService')"
-            @input="setBooleanField('precreateService', $event)"
-          />
-        </div>
-      </div>
-      <div class="spacer" />
-      <div>
-        <Labels
-          :value="value"
-          :mode="mode"
-          @input="$emit('input', value)"
-        />
-      </div>
+      <Labels
+        :value="value"
+        :mode="mode"
+        suppress-labels-title
+        @input="$emit('input', value)"
+      />
     </template>
   </TreeTab>
 </template>

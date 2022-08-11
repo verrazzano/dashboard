@@ -2,14 +2,14 @@
 // Added by Verrazzano
 import CoherenceWorkloadHelper from '@/mixins/verrazzano/coherence-workload-helper';
 import JobSpecTab from '@/components/verrazzano/JobSpecTab';
-import Labels from '@/components/verrazzano/Labels';
+import LabelsTab from '@/components/verrazzano/LabelsTab';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 
 export default {
   name:       'ActionJobTab',
   components: {
     JobSpecTab,
-    Labels,
+    LabelsTab,
     TreeTab,
   },
   mixins: [CoherenceWorkloadHelper],
@@ -52,13 +52,12 @@ export default {
 <template>
   <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #nestedTabs>
-      <TreeTab :name="createTabName(treeTabName, 'labels')" :label="t('verrazzano.common.tabs.labelsAndAnnotations')">
-        <Labels
-          :value="value"
-          :mode="mode"
-          @input="$emit('input', value)"
-        />
-      </TreeTab>
+      <LabelsTab
+        :value="value"
+        :mode="mode"
+        :tab-name="createTabName(treeTabName, 'labels')"
+        @input="$emit('input', value)"
+      />
       <JobSpecTab
         :value="getField('spec')"
         :mode="mode"

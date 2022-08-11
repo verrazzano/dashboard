@@ -21,15 +21,6 @@ export default {
       default: 'create'
     },
   },
-  computed: {
-    protocolOptions() {
-      return [
-        { value: 'TCP', label: this.t('verrazzano.common.types.portProtocol.tcp') },
-        { value: 'UDP', label: this.t('verrazzano.common.types.portProtocol.udp') },
-        { value: 'SCTP', label: this.t('verrazzano.common.types.portProtocol.sctp') },
-      ];
-    },
-  },
 };
 </script>
 

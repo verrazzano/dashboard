@@ -56,6 +56,13 @@ export default {
         { value: 'Never', label: this.t('verrazzano.common.types.preemptionPolicy.never') },
       ];
     },
+    protocolOptions() {
+      return [
+        { value: 'TCP', label: this.t('verrazzano.common.types.portProtocol.tcp') },
+        { value: 'UDP', label: this.t('verrazzano.common.types.portProtocol.udp') },
+        { value: 'SCTP', label: this.t('verrazzano.common.types.portProtocol.sctp') },
+      ];
+    },
     restartPolicyOptions() {
       return [
         { value: 'OnFailure', label: this.t('verrazzano.common.types.restartPolicy.onFailure') },
@@ -65,15 +72,31 @@ export default {
     },
     serviceIPFamiliesSingleStackOptions() {
       return [
-        { value: ['IPv4'], label: this.t('verrazzano.common.types.ipFamily.ipv4') },
-        { value: ['IPv6'], label: this.t('verrazzano.common.types.ipFamily.ipv6') },
+        {
+          value:     'IPv4',
+          label:     this.t('verrazzano.common.types.ipFamily.ipv4'),
+          realValue: ['IPv4']
+        },
+        {
+          value:     'IPv6',
+          label:     this.t('verrazzano.common.types.ipFamily.ipv6'),
+          realValue: ['IPv6']
+        },
       ];
     },
     serviceIPFamiliesDualStackOptions() {
       return [
         ...this.serviceIPFamiliesSingleStackOptions,
-        { value: ['IPv4', 'IPv6'], label: this.t('verrazzano.common.types.ipFamily.ipv4ipv6') },
-        { value: ['IPv6', 'IPv4'], label: this.t('verrazzano.common.types.ipFamily.ipv6ipv4') },
+        {
+          value:     'IPv4, IPv6',
+          label:     this.t('verrazzano.common.types.ipFamily.ipv4ipv6'),
+          realValue: ['IPv4', 'IPv6']
+        },
+        {
+          value:     'IPv6, IPv4',
+          label:     this.t('verrazzano.common.types.ipFamily.ipv6ipv4'),
+          realValue: ['IPv6', 'IPv4']
+        },
       ];
     },
     serviceIPFamilyPolicyOptions() {
@@ -98,6 +121,12 @@ export default {
       ];
     },
     configMapApiVersion() {
+      return 'v1';
+    },
+    deploymentApiVersion() {
+      return 'apps/v1';
+    },
+    serviceApiVersion() {
       return 'v1';
     },
     oamApplicationApiVersion() {
@@ -266,5 +295,8 @@ export default {
 
       return changed;
     },
+    arraysAreEquivalent(a, b) {
+      return a.length === b.length && a.every((v, i) => v === b[i]);
+    }
   },
 };
