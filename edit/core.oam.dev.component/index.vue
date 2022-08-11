@@ -94,7 +94,7 @@ export default {
 </script>
 
 <template>
-  <form>
+  <form class="tree-tabbed-form">
     <CruResource
       :mode="mode"
       :validation-passed="true"
@@ -137,5 +137,19 @@ export default {
 
 .next-dropdown{
   display: inline-block;
+}
+
+.tree-tabbed-form {
+  height: 10px;
+  flex: 1 1 auto;
+
+  .cru {
+    height: 100%;
+  }
+
+  .tree-tabbed {
+    height: 10px;
+    flex: 1 1 auto;
+  }
 }
 </style>

@@ -217,7 +217,7 @@ export default {
 
 <template>
   <Loading v-if="$fetchState.pending" />
-  <form v-else>
+  <form v-else class="tree-tabbed-form">
     <CruResource
       :validation-passed="true"
       :resource="value"
@@ -425,5 +425,19 @@ export default {
 
 .next-dropdown{
   display: inline-block;
+}
+
+.tree-tabbed-form {
+  height: 10px;
+  flex: 1 1 auto;
+
+  .cru {
+    height: 100%;
+  }
+
+  .tree-tabbed {
+    height: 10px;
+    flex: 1 1 auto;
+  }
 }
 </style>
