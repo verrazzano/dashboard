@@ -10,7 +10,7 @@ import HostAliasesTab from '@/components/verrazzano/HostAliasesTab';
 import KeyValue from '@/components/form/KeyValue';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
-import Labels from '@/components/verrazzano/Labels';
+import LabelsTab from '@/components/verrazzano/LabelsTab';
 import PodSecurityContextTab from '@/components/verrazzano/PodSecurityContextTab';
 import ProbeTuningTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab/ProbeTuningTab';
 import ReadinessGatesTab from '@/components/verrazzano/ReadinessGatesTab';
@@ -38,7 +38,7 @@ export default {
     KeyValue,
     LabeledInput,
     LabeledSelect,
-    Labels,
+    LabelsTab,
     PodSecurityContextTab,
     ProbeTuningTab,
     ReadinessGatesTab,
@@ -108,10 +108,6 @@ export default {
       if (!this.fetchInProgress) {
         this.serviceAccounts = this.allServiceAccounts[this.namespace] || [];
       }
-    },
-    clearLabelsAndAnnotations() {
-      this.setField('annotations', undefined);
-      this.setField('labels', undefined);
     },
   },
   created() {
@@ -211,22 +207,12 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab :name="createTabName(treeTabName, 'labels')" :label="t('verrazzano.common.tabs.labelsAndAnnotations')">
-        <template #beside-header>
-          <TabDeleteButton
-            :element-name="t('verrazzano.common.tabs.labelsAndAnnotations')"
-            :mode="mode"
-            @click="clearLabelsAndAnnotations()"
-          />
-        </template>
-        <template #default>
-          <Labels
-            :value="value"
-            :mode="mode"
-            @input="$emit('input', value)"
-          />
-        </template>
-      </TreeTab>
+      <LabelsTab
+        :value="value"
+        :mode="mode"
+        :tab-name="createTabName(treeTabName, 'labels')"
+        @input="$emit('input', value)"
+      />
 
       <TreeTab :name="createTabName(treeTabName, 'envVariables')" :label="t('verrazzano.common.tabs.environmentVariables')">
         <EnvironmentVariables

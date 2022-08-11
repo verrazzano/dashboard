@@ -2,7 +2,7 @@
 // Added by Verrazzano
 import CoherenceWorkloadHelper from '@/mixins/verrazzano/coherence-workload-helper';
 import LabeledInput from '@/components/form/LabeledInput';
-import Labels from '@/components/verrazzano/Labels';
+import Labels from '@/components/verrazzano/LabelsTab/Labels';
 import PersistentVolumeClaimTab from '@/components/verrazzano/PersistentVolumeClaimTab';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
@@ -80,7 +80,7 @@ export default {
         <Labels
           :value="getField('metadata')"
           :mode="mode"
-          @input="$emit('input', value)"
+          @input="setFieldIfNotEmpty('metadata', $event)"
         />
       </div>
     </template>

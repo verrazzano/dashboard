@@ -2,10 +2,10 @@
 // Added by Verrazzano
 import KeyValue from '@/components/form/KeyValue';
 import LabeledInput from '@/components/form/LabeledInput';
-import Labels from '@/components/verrazzano/Labels';
+import LabelsTab from '@/components/verrazzano/LabelsTab';
 import OamComponentHelper from '@/mixins/verrazzano/oam-component-helper';
-import Tab from '@/components/Tabbed/Tab';
-import Tabbed from '@/components/Tabbed';
+import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
+import TreeTabbed from '@/components/verrazzano/TreeTabbed';
 
 import { asciiLike } from '@/utils/string';
 import { base64Encode, base64Decode } from '@/utils/crypto';
@@ -15,9 +15,9 @@ export default {
   components: {
     KeyValue,
     LabeledInput,
-    Labels,
-    Tab,
-    Tabbed,
+    LabelsTab,
+    TreeTab,
+    TreeTabbed,
   },
   mixins: [OamComponentHelper],
   props:  {
@@ -86,47 +86,44 @@ export default {
 </script>
 
 <template>
-  <div>
-    <Tabbed side-tabs>
-      <Tab name="data" :label="t('configmap.tabs.data.label')" :weight="2">
-        <div class="row">
-          <div class="col span-6">
-            <LabeledInput
-              :value="getWorkloadField('metadata.name')"
-              :mode="mode"
-              required
-              :placeholder="getWorkloadMetadataNotSetPlaceholder('name')"
-              :label="t('verrazzano.common.fields.workloadConfigMapName')"
-              @input="setWorkloadMetadataFieldIfNotEmpty('name', $event)"
-            />
+  <TreeTabbed>
+    <template #nestedTabs>
+      <TreeTab name="data" :label="t('configmap.tabs.data.label')">
+        <template #default>
+          <div class="row">
+            <div class="col span-6">
+              <LabeledInput
+                :value="getWorkloadField('metadata.name')"
+                :mode="mode"
+                required
+                :placeholder="getWorkloadMetadataNotSetPlaceholder('name')"
+                :label="t('verrazzano.common.fields.workloadConfigMapName')"
+                @input="setWorkloadMetadataFieldIfNotEmpty('name', $event)"
+              />
+            </div>
           </div>
-        </div>
-        <div class="spacer-small" />
-        <KeyValue
-          key="data"
-          v-model="allData"
-          :mode="mode"
-          :protip="t('configmap.tabs.data.protip')"
-          :initial-empty-row="true"
-          :value-can-be-empty="true"
-          :read-multiple="true"
-          :read-accept="'*'"
-        />
-      </Tab>
-      <Tab
-        name="labels-and-annotations"
-        label-key="generic.labelsAndAnnotations"
-        :weight="-1"
-      >
-        <Labels
-          default-container-class="labels-and-annotations-container"
-          :value="value.spec.workload"
-          :mode="mode"
-          :display-side-by-side="false"
-        />
-      </Tab>
-    </Tabbed>
-  </div>
+          <div class="spacer-small" />
+          <KeyValue
+            key="data"
+            v-model="allData"
+            :mode="mode"
+            :protip="t('configmap.tabs.data.protip')"
+            :initial-empty-row="true"
+            :value-multiline="true"
+            :value-can-be-empty="true"
+            :read-multiple="true"
+            :read-accept="'*'"
+          />
+        </template>
+      </TreeTab>
+      <LabelsTab
+        :value="getWorkloadField('metadata')"
+        :mode="mode"
+        tab-name="labels"
+        @input="setWorkloadFieldIfNotEmpty('metadata', $event)"
+      />
+    </template>
+  </TreeTabbed>
 </template>
 
 <style scoped>

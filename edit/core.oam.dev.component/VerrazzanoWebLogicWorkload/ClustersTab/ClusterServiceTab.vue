@@ -1,7 +1,7 @@
 <script>
 // Added by Verrazzano
 import LabeledSelect from '@/components/form/LabeledSelect';
-import Labels from '@/components/verrazzano/Labels';
+import Labels from '@/components/verrazzano/LabelsTab/Labels';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';

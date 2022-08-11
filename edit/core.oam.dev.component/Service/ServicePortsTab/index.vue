@@ -2,26 +2,24 @@
 // Added by Verrazzano
 import ArrayListGrouped from '@/components/form/ArrayListGrouped';
 import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
-import Labels from '@/components/verrazzano/LabelsTab/Labels';
+import OamComponentHelper from '@/mixins/verrazzano/oam-component-helper';
+import ServicePort from '@/edit/core.oam.dev.component/Service/ServicePortsTab/ServicePort';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
-import WebLogicChannel from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServerTab/WebLogicChannel';
-import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
 export default {
-  name:       'AdminServiceTab',
+  name:       'ServicePortsTab',
   components: {
     ArrayListGrouped,
-    Labels,
+    ServicePort,
     TabDeleteButton,
     TreeTab,
-    WebLogicChannel,
   },
-  mixins: [WeblogicWorkloadHelper, DynamicListHelper],
+  mixins: [OamComponentHelper, DynamicListHelper],
   props:  {
     value: {
-      type:    Object,
-      default: () => ({})
+      type:    Array,
+      default: () => ([])
     },
     mode: {
       type:    String,
@@ -42,14 +40,9 @@ export default {
       treeTabLabel: this.tabLabel,
     };
   },
-  methods: {
-    getDynamicListRootFieldName() {
-      return 'channels';
-    },
-  },
   created() {
     if (!this.treeTabLabel) {
-      this.treeTabLabel = this.t('verrazzano.weblogic.tabs.adminService');
+      this.treeTabLabel = this.t('verrazzano.common.tabs.ports');
     }
   },
 };
@@ -61,7 +54,7 @@ export default {
       <TabDeleteButton
         :element-name="treeTabLabel"
         :mode="mode"
-        @click="$emit('delete', value)"
+        @click="dynamicListClearChildrenList"
       />
     </template>
     <template #default>
@@ -69,7 +62,7 @@ export default {
         :value="dynamicListChildren"
         :mode="mode"
         :default-add-value="{ }"
-        :add-label="t('verrazzano.weblogic.buttons.addChannel')"
+        :add-label="t('verrazzano.common.buttons.addPort')"
         @add="dynamicListAddChild()"
       >
         <template #remove-button="removeProps">
@@ -85,21 +78,13 @@ export default {
         </template>
         <template #default="props">
           <div class="spacer-small" />
-          <WebLogicChannel
+          <ServicePort
             :value="props.row.value"
             :mode="mode"
             @input="dynamicListUpdate"
           />
         </template>
       </ArrayListGrouped>
-      <div class="spacer" />
-      <div>
-        <Labels
-          :value="value"
-          :mode="mode"
-          @input="$emit('input', value)"
-        />
-      </div>
     </template>
   </TreeTab>
 </template>
