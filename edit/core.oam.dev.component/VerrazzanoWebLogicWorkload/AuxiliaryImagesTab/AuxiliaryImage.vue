@@ -2,8 +2,7 @@
 // Added by Verrazzano
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
-import NotSetPlaceholder from '@/mixins/verrazzano/not-set-placeholder';
-import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
+import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
 export default {
   name:       'AuxiliaryImage',
@@ -11,7 +10,7 @@ export default {
     LabeledInput,
     LabeledSelect
   },
-  mixins: [NotSetPlaceholder, VerrazzanoHelper],
+  mixins: [WeblogicWorkloadHelper],
   props:  {
     value: {
       type:    Object,
@@ -22,24 +21,6 @@ export default {
       default: 'create',
     },
   },
-  computed: {
-    imagePullPolicyOptions() {
-      return [
-        {
-          value: 'Always',
-          label: this.t('verrazzano.common.types.imagePullPolicy.always')
-        },
-        {
-          value: 'IfNeeded',
-          label: this.t('verrazzano.common.types.imagePullPolicy.ifNeeded')
-        },
-        {
-          value: 'Never',
-          label: this.t('verrazzano.common.types.imagePullPolicy.never')
-        },
-      ];
-    },
-  }
 };
 </script>
 
@@ -50,8 +31,8 @@ export default {
         <LabeledInput
           :value="getField('image')"
           :mode="mode"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImage')"
           :placeholder="getNotSetPlaceholder(value, 'image')"
+          :label="t('verrazzano.weblogic.fields.auxiliaryImage')"
           @input="setFieldIfNotEmpty('image', $event)"
         />
       </div>
@@ -59,10 +40,11 @@ export default {
         <LabeledSelect
           :value="getField('imagePullPolicy')"
           :mode="mode"
-          :label="t('verrazzano.components.config.fields.imagePullPolicy')"
           :options="imagePullPolicyOptions"
           option-key="value"
+          option-label="label"
           :placeholder="getNotSetPlaceholder(value, 'imagePullPolicy')"
+          :label="t('verrazzano.common.fields.imagePullPolicy')"
           @input="setFieldIfNotEmpty('imagePullPolicy', $event)"
         />
       </div>
@@ -73,8 +55,8 @@ export default {
         <LabeledInput
           :value="getField('volume')"
           :mode="mode"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImageVolumeReference')"
           :placeholder="getNotSetPlaceholder(value, 'volume')"
+          :label="t('verrazzano.weblogic.fields.auxiliaryImageVolumeReference')"
           @input="setFieldIfNotEmpty('volume', $event)"
         />
       </div>
@@ -82,8 +64,8 @@ export default {
         <LabeledInput
           :value="getField('command')"
           :mode="mode"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImageCommand')"
           :placeholder="getNotSetPlaceholder(value, 'command')"
+          :label="t('verrazzano.weblogic.fields.auxiliaryImageCommand')"
           @input="setFieldIfNotEmpty('command', $event)"
         />
       </div>

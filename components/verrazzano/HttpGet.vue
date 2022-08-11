@@ -31,7 +31,7 @@ export default {
         <LabeledInput
           :value="getField('scheme')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.httpGet.scheme')"
+          :label="t('verrazzano.common.fields.httpGet.scheme')"
           @input="setField('scheme', $event)"
         />
       </div>
@@ -39,7 +39,7 @@ export default {
         <LabeledInput
           :value="getField('host')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.httpGet.host')"
+          :label="t('verrazzano.common.fields.httpGet.host')"
           @input="setField('host', $event)"
         />
       </div>
@@ -47,7 +47,7 @@ export default {
         <LabeledInput
           :value="getField('port')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.httpGet.port')"
+          :label="t('verrazzano.common.fields.httpGet.port')"
           required
           @input="setField('port', $event)"
         />
@@ -56,7 +56,7 @@ export default {
         <LabeledInput
           :value="getField('path')"
           :mode="mode"
-          :label="t('verrazzano.config.fields.httpGet.path')"
+          :label="t('verrazzano.common.fields.httpGet.path')"
           @input="setField('path', $event)"
         />
       </div>
@@ -66,8 +66,8 @@ export default {
       <LabeledArrayList
         :value="getListField('httpHeaders')"
         :mode="mode"
-        :value-label="t('verrazzano.config.fields.httpGet.httpHeader')"
-        :add-label="t('verrazzano.config.buttons.addHttpHeader')"
+        :value-label="t('verrazzano.common.fields.httpGet.httpHeader')"
+        :add-label="t('verrazzano.common.buttons.addHttpHeader')"
         initial-empty-row
         @input="setFieldIfNotEmpty('httpHeaders', $event)"
       />

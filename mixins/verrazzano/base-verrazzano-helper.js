@@ -232,7 +232,7 @@ export default {
         this._clearObjectHierarchy(fieldName);
       }
     },
-    sortObjectsByNamespace(sourceCollection, targetObject) {
+    sortObjectsByNamespace(sourceCollection, targetObject, nameOnly = false) {
       sourceCollection.forEach((item) => {
         const namespace = item.metadata.namespace;
 
@@ -240,7 +240,11 @@ export default {
           targetObject[namespace] = [];
         }
 
-        targetObject[namespace].push(item);
+        if (nameOnly) {
+          targetObject[namespace].push(item.metadata.name);
+        } else {
+          targetObject[namespace].push(item);
+        }
       });
     },
     showListRemoveButton(fieldName) {

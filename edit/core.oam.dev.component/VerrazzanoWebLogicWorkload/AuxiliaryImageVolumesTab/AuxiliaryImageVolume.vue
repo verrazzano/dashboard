@@ -1,12 +1,12 @@
 <script>
 // Added by Verrazzano
 import LabeledInput from '@/components/form/LabeledInput';
-import NotSetPlaceholder from '@/mixins/verrazzano/not-set-placeholder';
+import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
 export default {
   name:       'AuxiliaryImageVolume',
   components: { LabeledInput },
-  mixins:     [NotSetPlaceholder],
+  mixins:     [WeblogicWorkloadHelper],
   props:      {
     value: {
       type:    Object,
@@ -15,7 +15,7 @@ export default {
     mode: {
       type:    String,
       default: 'create'
-    }
+    },
   },
 };
 </script>
@@ -24,35 +24,39 @@ export default {
   <div class="row">
     <div class="col span-3">
       <LabeledInput
-        v-model="value.name"
+        :value="getField('name')"
         :mode="mode"
         required
-        :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImageVolume.name')"
         :placeholder="getNotSetPlaceholder(value, 'name')"
+        :label="t('verrazzano.weblogic.fields.auxiliaryImageVolume.name')"
+        @input="setFieldIfNotEmpty('name', $event)"
       />
     </div>
     <div class="col span-3">
       <LabeledInput
-        v-model="value.mountPath"
+        :value="getField('mountPath')"
         :mode="mode"
-        :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImageVolume.mountPath')"
         :placeholder="getNotSetPlaceholder(value, 'mountPath')"
+        :label="t('verrazzano.weblogic.fields.auxiliaryImageVolume.mountPath')"
+        @input="setFieldIfNotEmpty('mountPath', $event)"
       />
     </div>
     <div class="col span-3">
       <LabeledInput
-        v-model="value.sizeLimit"
+        :value="getField('sizeLimit')"
         :mode="mode"
-        :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImageVolume.sizeLimit')"
         :placeholder="getNotSetPlaceholder(value, 'sizeLimit')"
+        :label="t('verrazzano.weblogic.fields.auxiliaryImageVolume.sizeLimit')"
+        @input="setFieldIfNotEmpty('sizeLimit', $event)"
       />
     </div>
     <div class="col span-3">
       <LabeledInput
-        v-model="value.medium"
+        :avlue="getField('medium')"
         :mode="mode"
-        :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.auxiliaryImageVolume.medium')"
         :placeholder="getNotSetPlaceholder(value, 'medium')"
+        :label="t('verrazzano.weblogic.fields.auxiliaryImageVolume.medium')"
+        @input="setFieldIfNotEmpty('medium', $event)"
       />
     </div>
   </div>
