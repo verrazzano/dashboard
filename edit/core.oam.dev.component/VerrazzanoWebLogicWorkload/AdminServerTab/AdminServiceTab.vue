@@ -46,10 +46,6 @@ export default {
     getDynamicListRootFieldName() {
       return 'channels';
     },
-    deleteLabelsAndAnnotations() {
-      this.setField('annotations', undefined);
-      this.setField('labels', undefined);
-    }
   },
   created() {
     if (!this.treeTabLabel) {
@@ -96,24 +92,14 @@ export default {
           />
         </template>
       </ArrayListGrouped>
-    </template>
-    <template #nestedTabs>
-      <TreeTab :name="createTabName(treeTabName, 'labels')" :label="t('verrazzano.common.tabs.labelsAndAnnotations')">
-        <template #beside-header>
-          <TabDeleteButton
-            :element-name="t('verrazzano.common.tabs.labelsAndAnnotations')"
-            :mode="mode"
-            @click="deleteLabelsAndAnnotations()"
-          />
-        </template>
-        <template #default>
-          <Labels
-            :value="value"
-            :mode="mode"
-            @input="$emit('input', value)"
-          />
-        </template>
-      </TreeTab>
+      <div class="spacer" />
+      <div>
+        <Labels
+          :value="value"
+          :mode="mode"
+          @input="$emit('input', value)"
+        />
+      </div>
     </template>
   </TreeTab>
 </template>
