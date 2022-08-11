@@ -28,20 +28,20 @@ export default {
         <Checkbox
           :value="getField('metricsNameSnakeCase')"
           :mode="mode"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.monitoringExporter.metricsNameSnakeCase')"
+          :label="t('verrazzano.weblogic.fields.monitoringExporter.metricsNameSnakeCase')"
           @input="setBooleanField('metricsNameSnakeCase', $event)"
         />
         <div class="spacer-tiny" />
         <Checkbox
           :value="getField('domainQualifier')"
           :mode="mode"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.monitoringExporter.domainQualifier')"
+          :label="t('verrazzano.weblogic.fields.monitoringExporter.domainQualifier')"
           @input="setBooleanField('domainQualifier', $event)"
         />
       </div>
     </div>
     <div class="spacer-small" />
-    <p>{{ t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.monitoringExporter.queries') }}</p>
+    <p>{{ t('verrazzano.weblogic.fields.monitoringExporter.queries') }}</p>
   </div>
 </template>
 

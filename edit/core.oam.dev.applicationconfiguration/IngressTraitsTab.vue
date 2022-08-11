@@ -4,6 +4,7 @@ import DynamicTabHelper from '@/mixins/verrazzano/dynamic-tab-helper';
 import LabeledArrayList from '@/components/verrazzano/LabeledArrayList';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
+import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
 
@@ -19,6 +20,7 @@ export default {
     LabeledArrayList,
     LabeledInput,
     LabeledSelect,
+    TabDeleteButton,
     TreeTab,
   },
   mixins: [VerrazzanoHelper, DynamicTabHelper],
@@ -149,23 +151,15 @@ export default {
 
 <template>
   <TreeTab :name="treeTabName" :label="treeTabLabel">
+    <template #beside-header>
+      <TabDeleteButton
+        :element-name="treeTabLabel"
+        :button-label="t('verrazzano.common.messages.removeTypeFromComponent', { type: 'IngressTrait' })"
+        :mode="mode"
+        @click="$emit('deleteTrait', 'IngressTrait')"
+      />
+    </template>
     <template #default>
-      <div v-if="!isView">
-        <div class="row">
-          <div class="col span-10" />
-          <div class="col span-2">
-            <button
-              type="button"
-              class="btn role-tertiary add"
-              data-testid="add-item"
-              @click="$emit('deleteTrait', 'IngressTrait')"
-            >
-              {{ t('verrazzano.common.buttons.deleteTrait') }}
-            </button>
-          </div>
-        </div>
-        <div class="spacer-small" />
-      </div>
       <div class="row">
         <div class="col span-4">
           <LabeledInput

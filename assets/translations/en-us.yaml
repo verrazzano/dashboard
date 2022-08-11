@@ -7190,18 +7190,20 @@ verrazzano:
       addDownwardApiVolumeFile: Add Downward API Volume File
       addElement: Add { type }
       addEnvVar: Add Environment Variable
+      addExecCommand: Add Command
       addExternalIP: Add External IP
       addFlexVolumeOption: Add Flex Volume Option
       addHost: Add Host
-      addIngressRule: Add Rule
-      addInitContainer: Add Init Container
       addHostAlias: Add Host Alias
       addHostName: Add Hostname
       addHttpHeader: Add HTTP Header
+      addIngressRule: Add Rule
+      addInitContainer: Add Init Container
       addLabel: Add Label
       addLoadBalancerSourceRange: Add Load Balancer Source Range
       addMatchExpression: Add Match Expression
       addMatchLabel: Add Match Label
+      addNodeSelector: Add Node Selector
       addNodeSelectorRequirement: Add Node Selector Requirement
       addNodeSelectorTerm: Add Node Selector Term
       addOwnerReference: Add Owner Reference
@@ -7211,6 +7213,7 @@ verrazzano:
       addPort: Add Port
       addReadinessGate: Add Pod Readiness Gate
       addSecretItem: Add Secret Item
+      addSysctl: Add Kernel Parameter
       addSupplementalGroup: Add Supplemental Group
       addTargetPortal: Add iSCSI Target Portal
       addTargetWwn: Add Target World Wide Name
@@ -7307,8 +7310,11 @@ verrazzano:
       httpCookiePath: HTTP Cookie Path
       httpCookieTTL: HTTP Cookie Time-To-Live Seconds
       httpGet:
+        host: HTTP Get Request Host
+        httpHeader: HTTP Get Request Header
         path: HTTP Get Request Path
         port: HTTP Get Request Port
+        scheme: HTTP Get Request Scheme
       httpPath: HTTP Path
       httpPort: HTTP Port
       image: Image
@@ -7390,6 +7396,13 @@ verrazzano:
         terminationGracePeriodSeconds: Termination Grace Period Seconds
       port: Port
       preferred: Preferred
+      probeGrpc:
+        port: Port
+        service: Service Name
+      probeTcpSocket:
+        host: Host
+        port: Port
+      replicaCount: Replica Count
       replicas: Replicas
       required: Required
       scraper: Prometheus Scraper Deployment Name
@@ -7424,6 +7437,10 @@ verrazzano:
       traits:
         kind: Trait Kind
         replicaCount: Replica Count
+      typedLocalObjectReference:
+        apiGroup: API Group
+        kind: Resource Kind
+        name: Resource Name
       value: Value
       version: Version
       volume:
@@ -7613,6 +7630,8 @@ verrazzano:
     messages:
       enterName: Enter an non-empty value
       nameInUse: '"{name}" already exists'
+      removeComponentFromApplication: Remove Component from Application
+      removeTypeFromComponent: 'Remove {type} from Component'
 
     ##############################
     ### verrazzano.common.tabs ###
@@ -7665,7 +7684,7 @@ verrazzano:
       podTemplate: Pod Template
       ports: Ports
       preferredPrefix: Preferred Term
-      readinessGates: Pod Readiness Gates
+      readinessGates: Readiness Gates
       readinessProbe: Readiness Probe
       resources: Resources
       seccompProfile: Secure Computing Profile
@@ -7690,12 +7709,8 @@ verrazzano:
       annotations: Annotations
       component: Component
       configFiles: Config Files
-      # TODO - Rename this to container once the other titles under the container element are deleted...
-      containerTitle: Container
-      container:
-        args: Container Arguments
-        cmd: Container Command
-        resources: Container Resources
+      containerArgs: Container Arguments
+      containerCmd: Container Command
       containerLifecycle: Container Lifecycle Hooks
       containerProbe:
         execCommands: Exec Commands
@@ -7711,6 +7726,7 @@ verrazzano:
       hosts: Hosts
       httpGet: HTTP Get Request
       httpGetHeaders: HTTP Get Request Headers
+      image: Image
       labels: Labels
       labelsAndAnnotations: Labels and Annotations
       labelSelector: Label Selector
@@ -7846,6 +7862,14 @@ verrazzano:
         medium:
           memory: Memory
           notSet: Default
+      envVars:
+        configMapKeyRef: ConfigMap Key
+        configMapRef: ConfigMap
+        fieldRef: Pod Field
+        keyValuePair: Key/Value Pair
+        resourceFieldRef: Resource
+        secretKeyRef: Secret Key
+        secretRef: Secret
       externalTrafficPolicy:
         cluster: Cluster
         local: Local
@@ -7996,6 +8020,13 @@ verrazzano:
     values:
       notSet: Not Set
 
+
+  #############################
+  ### verrazzano.components ###
+  #############################
+  components:
+    label: Verrazzano Components
+
   ################################
   ### verrazzano.containerized ###
   ################################
@@ -8101,146 +8132,9 @@ verrazzano:
   product:
     name: Verrazzano
 
-  ###########################
-  ### verrazzano.weblogic ###
-  ###########################
-  weblogic:
-
-    ###################################
-    ### verrazzano.weblogic.buttons ###
-    ###################################
-    buttons:
-      addAuxiliaryImage: Add Auxiliary Image
-      addAuxiliaryImageVolume: Add Auxiliary Image Volume
-      addChannel: Add Channel
-
-    ##################################
-    ### verrazzano.weblogic.fields ###
-    ##################################
-    fields:
-      clusters:
-        allowReplicasBelowMinDynClusterSize: Allow Replicas Below Minimum Cluster Size
-        clusterName: Cluster Name
-        maxConcurrentShutdown: Maximum Concurrent Shutdown
-        maxConcurrentStartup: Maximum Concurrent Startup
-        maxUnavailable: Maximum Unavailable
-        replicas: Replicas
-        sessionAffinity: Session Affinity
-      introspectorJobActiveDeadlineSeconds: Introspector Job Active Deadline Seconds
-      managedServers:
-        serverName: Server Name
-      overrideDistributionStrategy: Overrides Distribution Strategy
-      overridesConfigMap: Overrides Config Map Name
-      restartVersion: Restart Version
-      serverPod:
-        shutdown:
-          ignoreSession: Ignore Sessions
-          shutdownType: Shutdown Type
-          timeoutSeconds: Timeout Seconds
-          waitForAllSessions: Wait for All Sessions
-      serverStartPolicy: Server Start Policy
-      serverStartState: Server Start State
-
-    ####################################
-    ### verrazzano.weblogic.messages ###
-    ####################################
-    messages:
-      noAuxiliaryImages: No auxiliary images defined
-
-    ################################
-    ### verrazzano.weblogic.tabs ###
-    ################################
-    tabs:
-      adminServer: Admin Server
-      auxiliaryImage: Auxiliary Image
-      auxiliaryImages: Auxiliary Images
-      auxiliaryImageVolumes: Auxiliary Image Volumes
-      cluster: Cluster
-      clusters: Clusters
-      configuration: Configuration
-      envVariables: Environment Variables
-      fluentd: Fluentd Specification
-      general: General
-      initContainers: Init Containers
-      managedServer: Managed Server
-      managedServers: Managed Servers
-      monitoringExporter: Monitoring Exporter
-      serverPod: Server Pod
-      serverService: Server Service
-
-    ##################################
-    ### verrazzano.weblogic.titles ###
-    ##################################
-    titles:
-      clusters:
-        clusterService: Cluster Service
-      modelConfiguration: WebLogic Deploy Tooling Model-Related Settings
-      opss: OPSS-Related Settings
-      serverPod:
-        containers: Containers
-        initContainers: Init Containers
-        nodeSelector: Node Selectors
-        shutdown: WebLogic Server Shutdown
-        title: Server Pod
-
-    #################################
-    ### verrazzano.weblogic.types ###
-    #################################
-    types:
-      overrideDistributionStrategy:
-        dynamic: Dynamic
-        onRestart: On Restart
-      serverStartPolicy:
-        adminOnly: Admin Only
-        ifNeeded: If Needed
-        never: Never
-      serverStartState:
-        admin: Admin
-        running: Running
-
-  ########################################################
-  ### verrazzano.deprecated -- scheduled for migration ###
-  ########################################################
-  components:
-    label: Verrazzano Components
-    description: This is the Verrazzano Components page.
-    config:
-      labels:
-        addContainer: "Add Container"
-      titles:
-        deployment: "Deployment Strategy"
-        pod: "Pod"
-        containers: Containers
-        general: General
-        image: Image
-        scheduling: Scheduling
-      fields:
-        containerName: Container Name
-        image: Container Image
-        imagePullPolicy: Pull Policy
-        imagePullSecrets: Pull Secrets
-        keyLabel: Key
-        replicas: Replicas
-        valueLabel: Value
-    deploymentStrategyType: Deployment Strategy
-    placement: Target Clusters
-    version: Version
-  types:
-    VerrazzanoCoherenceWorkload: Verrazzano Coherence Workload
-    VerrazzanoHelidonWorkload: Verrazzano Helidon Workload
-    VerrazzanoWebLogicWorkload: Verrazzano WebLogic Workload
-    ContainerizedWorkload: Containerized Workload
-    ConfigMap: Config Map
-    Secret: Secret
-    Deployment: Deployment
-    Service: Service
-    LoggingTrait: Logging Trait
-    IngressTrait: Ingress Trait
-    MetricsTrait: Metrics Trait
-    ManualScalerTrait: Manual Scaler Trait
-    deploymentStrategyType:
-      Recreate: Recreate
-      Rolling: Rolling Update
+  ####################################
+  ### verrazzano.typeAbbreviations ###
+  ####################################
   typeAbbreviations:
     VerrazzanoCoherenceWorkload: COH
     VerrazzanoHelidonWorkload: HEL
@@ -8250,6 +8144,10 @@ verrazzano:
     Secret: SCR
     Deployment: DPL
     Service: SVC
+
+  ###################################
+  ### verrazzano.typeDescriptions ###
+  ###################################
   typeDescriptions:
     VerrazzanoCoherenceWorkload:
       description: Description for Verrazzano Coherence Workload
@@ -8276,543 +8174,211 @@ verrazzano:
       description: Description for Service
       docLink: https://www.oracle.com
 
-  config:
+  ########################
+  ### verrazzano.types ###
+  ########################
+  types:
+    VerrazzanoCoherenceWorkload: Verrazzano Coherence Workload
+    VerrazzanoHelidonWorkload: Verrazzano Helidon Workload
+    VerrazzanoWebLogicWorkload: Verrazzano WebLogic Workload
+    ContainerizedWorkload: Containerized Workload
+    ConfigMap: Config Map
+    Secret: Secret
+    Deployment: Deployment
+    Service: Service
+    LoggingTrait: Logging Trait
+    IngressTrait: Ingress Trait
+    MetricsTrait: Metrics Trait
+    ManualScalerTrait: Manual Scaler Trait
+    deploymentStrategyType:
+      Recreate: Recreate
+      Rolling: Rolling Update
+
+  ###########################
+  ### verrazzano.weblogic ###
+  ###########################
+  weblogic:
+
+    ###################################
+    ### verrazzano.weblogic.buttons ###
+    ###################################
     buttons:
-      addAnnotation: Add Annotation
-      addCephMonitor: Add Ceph Monitor
-      addCephfsMonitor: Add CephFS Monitor
-      addConfigMapItem: Add ConfigMap Item
-      addContainer: Add Container
-      addDownwardApiVolumeFile: Add Downward API Volume File
-      addExecCommand: Add Command
-      addFlexVolumeOption: Add Flex Volume Option
-      addGroupID: Add Group ID
-      addHostAlias: Add Host Alias
-      addHostName: Add Hostname
-      addHttpHeader: Add HTTP Header
-      addInitContainer: Add Init Container
-      addLabel: Add Label
-      addMatchLabel: Add Match Label
-      addMatchExpression: Add Match Expression
-      addNodeSelector: Add Node Selector
-      addNodeSelectorTerm: Add Node Selector Term
-      addPodAffinityTerm: Add Pod Affinity Term
-      addPort: Add Port
-      addReadinessGate: Add Readiness Gate
-      addSecretItem: Add Secret Item
-      addSysctl: Add Sysctl
-      addTargetPortal: Add iSCSI Target Portal
-      addTargetWwn: Add Target World Wide Name
-      addVolume: Add Volume
-      addVolumeAttribute: Add Volume Attribute
-      addVolumeProjectionSource: Add Volume Projection Source
-      addWwid: Add World Wide Identifier
+      addAuxiliaryImage: Add Auxiliary Image
+      addAuxiliaryImageVolume: Add Auxiliary Image Volume
+      addChannel: Add Channel
+
+    ##################################
+    ### verrazzano.weblogic.fields ###
+    ##################################
     fields:
-      containerResources:
-        limitCpu: CPU Limit
-        limitEphemeralStorage: Ephemeral Storage Limit
-        limitMemory: Memory Limit
-        requestCpu: CPU Request
-        requestEphemeralStorage: Ephemeral Storage Request
-        requestMemory: Memory Request
-      containerSecurityContext:
-        allowPrivilegeEscalation: Allow Privilege Escalation
-        privileged: Run Container in Privileged Mode
-        procMount: Proc Mount
-        readOnlyRootFilesystem: Read-Only Root Filesystem
-        runAsGroup: Run As Group
-        runAsNonRoot: Containers Must Run as Non-Root User
-        runAsUser: Run As User
-      hostAliases:
-        hostname: Hostname
-        ip: IP Address
-      httpGet:
-        host: Host
-        httpHeader: HTTP Header
-        path: Path
-        port: Port
-        scheme: Scheme
-      nodeSelectorType: Node Selector Type
-      podScheduler:
-        nodeName: Node Name
-        schedulerName: Scheduler Name
-      podSecurityContext:
-        fsGroupChangePolicy: File System Group Change Policy
-        runAsNonRoot: Containers Must Run as Non-Root User
-      probeGrpc:
-        port: Port
-        service: Service Name
-      probeTcpSocket:
-        host: Host
-        port: Port
-      readinessGates:
-        conditionType: Condition Type
-      typedLocalObjectReference:
-        apiGroup: API Group
-        kind: Resource Kind
-        name: Resource Name
-      volumes:
-        awsElasticBlockStore:
-          fsType: Filesystem Type
-          partition: Partition Number
-          readOnly: Mount Read-Only
-          volumeId: Volume ID
-        azureDisk:
-          cachingMode: Caching Mode
-          diskName: Disk Name
-          diskUri: Disk URI
-          fsType: Filesystem Type
-          kind: Kind
-          readOnly: Mount Read-Only
-        cephfs:
-          monitor: Ceph Monitor
-          path: Path
-          readOnly: Mount Read-Only
-          secretFile: Secret File
-          secretRefName: Secret Name
-          user: Rados User Name
-        cinder:
-          fsType: Filesystem Type
-          readOnly: Mount Read-Only
-          secretRef: Secret Ref
-          volumeId: Volume ID
-        configMap:
-          defaultMode: Default File Permissions Mode
-          items:
-            key: ConfigMap Key
-            mode: File Permissions Mode
-            path: Relative File Path
-          name: ConfigMap Name
-          optional: ConfigMap and Keys are Optional
-        csi:
-          driver: CSI Driver Name
-          fsType: Filesystem Type
-          nodePublishSecretName: Node Publish Secret Name
-          readOnly: Read-Only
-        downwardApi:
-          apiVersion: API Version
-          containerName: Container Name
-          defaultMode: Default File Permission Mode
-          divisor: Divisor
-          fieldPath: Field Path
-          mode: File Permission Mode
-          path: Relative File Path
-          resource: Resource
-        emptyDir:
-          medium: Medium
-          sizeLimit: Size Limit
-        ephemeral:
-          accessModes: Access Modes
-          storageClassName: Storage Class Name
-          volumeMode: Volume Mode
-          volumeName: Volume Name
-        fc:
-          fsType: Filesystem Type
-          lun: LUN
-          readOnly: Mount Read-Only
-          targetWwn: Target World Wide Name
-          wwid: World Wide ID
-        flex:
-          driver: Driver
-          fsType: Filesystem Type
-          option: Option
-          readOnly: Mount Read-Only
-          secretRefName: Secret Name
-        flocker:
-          datasetName: Dataset Name
-          datasetUuid: Dataset UUID
-        gce:
-          fsType: Filesystem Type
-          partition: Partition
-          pdName: PD Resource Name
-          readOnly: Mount Read-Only
-        glusterfs:
-          endpoints: Endpoints Name
-          path: Path
-          readOnly: Mount Read-Only
-        hostPath:
-          path: Host Path
-          type: Volume Type
-        iscsi:
-          chapAuthDiscovery: Use Discovery CHAP Authentication
-          chapAuthSession: Use Session CHAP Authentication
-          fsType: Filesystem Type
-          initiatorName: Custom iSCSI Initiator Name
-          iqn: Target iSCSI Qualified Name
-          iscsiInterface: iSCSI Interface Name
-          lun: iSCSI Target LUN
-          portal: iSCSI Target Portal
-          readOnly: Mount Read-Only
-          secretRefName: CHAP Secret Name
-          targetPortal: Target Portal
-        name: Volume Name
-        nfs:
-          path: Path
-          readOnly: Mount Read-Only
-          server: NFS Server
-        photon:
-          fsType: Filesystem Type
-          pdId: Persistent Disk ID
-        portworx:
-          fsType: Filesystem Type
-          readOnly: Mount Read-Only
-          volumeId: Volume ID
-        projected:
-          audience: Audience
-          defaultMode: Default File Permission Mode
-          expirationSeconds: Token Expiration Seconds
-          path: Relative File Path
-          sourceType: Projection Source Type
-        pvc:
-          claimName: Persistent Volume Claim Name
-          readOnly: Mount Read-Only
-        quobyte:
-          group: Group
-          readOnly: Mount Read-Only
-          registry: Quobyte Registry Services
-          tenant: Tenant
-          user: User
-          volume: Volume Name
-        rbd:
-          fsType: Filesystem Type
-          image: Rados Image Name
-          keyring: RBD User Keyring File
-          monitor: Ceph Monitor
-          pool: Rados Pool Name
-          readOnly: Mount Read-Only
-          secretRefName: Secret Name
-          user: Rados User Name
-        secret:
-          defaultMode: Default File Permissions Mode
-          items:
-            key: Secret Key
-            mode: File Permissions Mode
-            path: Relative File Path
-          name: Secret Name
-          optional: Secret and Keys are Optional
-        scaleIO:
-          fsType: Filesystem Type
-          gateway: ScaleIO API Gateway
-          protectionDomain: ScaleIO Protection Domain
-          readOnly: Mount Read-Only
-          secretRefName: Secret Name
-          sslEnabled: Enable SSL
-          storageMode: Storage Mode
-          storagePool: ScaleIO Storage Pool
-          system: Storage System Name
-          volumeName: ScaleIO Volume Name
-        storageOS:
-          fsType: Filesystem Type
-          readOnly: Mount Read-Only
-          secretRefName: Secret Name
-          volumeName: StorageOS Volume Name
-          volumeNamespace: StorageOS Volume Namespace
-        type: Volume Type
-        vsphere:
-          fsType: Filesystem Type
-          storagePolicyID: Storage Policy ID
-          storagePolicyName: Storage Policy Name
-          volumePath: vSphere Volume VMDK Path
-    titles:
-      annotations: Annotations
-      container:
-        lifecycle:
-          execCommands: Exec Commands
-          postStart: Post-Start
-          preStop: Pre-Stop
-        livenessProbe: Liveness Probe
-        readinessProbe: Readiness Probe
-        resources: Resources
-        startupProbe: StartupProbe
-        volumeDevices: Volume Devices
-        volumeMounts: Volume Mounts
-      containerSecurityContext:
-        seLinuxOptions: SE Linux Options
-        seccompProfile: Secure Computing Mode Profile Settings
-      httpGet: HTTP Get
-      labels: Labels
-      podAffinity:
-        labelSelector: Label Selector
-        namespaceSelector: Namespace Selector
-      podAffinityTerm:
-        matchLabels: Pod Match Labels
-        matchExpressions: Pod Match Expressions
-      podScheduler:
-        nodeAffinity: Node Affinity
-        nodeSelector: Node Selector
-        podAffinity: Pod Affinity
-      podSecurityContext:
-        seLinuxOptions: SE Linux Options
-        seccompProfile: Secure Computing Mode Profile Settings
-      volumes:
-        awsElasticBlockStore: AWS Elastic Block Store
-        azureDisk: Azure Disk
-        cephfs: CephFS
-        cinder: Cinder
-        configMap: ConfigMap
-        csi: Container Storage Interface (CSI)
-        csiVolumeAttributes: Volume Attributes
-        downwardApi:
-          fieldRef: Pod Field Reference
-          resourceFieldRef: Container Resource Reference
-          title: Downward API
-        emptyDir: EmptyDir
-        ephemeral:
-          dataSource: Data Source
-          dataSourceRef: Data Source Reference
-          metadata: Labels and Annotations
-          resources: Resources
-          selector: Label Selector
-          title: Ephemeral Volume Claim Template
-        fc: Fibre Channel
-        flex: Flex Volume
-        flocker: Flocker Volume
-        gce: GCE Persistent Disk
-        glusterfs: GlusterFS
-        hostPath: Host Path
-        iscsi: iSCSI Disk
-        nfs: NFS Mount
-        photon: Photon Persistent Disk
-        portworx: Portworx Volume
-        projected:
-          configMap: Projected ConfigMap
-          downwardApi: Projected Downward API
-          secret: Projected Secret
-          serviceAccountToken: Projected Service Account Token
-          title: Projected Volume
-        pvc: Persistent Volume Claim Volume Source
-        quobyte: Quobyte Volume
-        rbd: Rados Block Device
-        scaleIO: ScaleIO Volume
-        storageOS: StorageOS Volume
-        secret: Secret
-        vsphere: vSphere Volume
-
-    values:
-      types:
-        azureDisk:
-          cachingMode:
-            none: None
-            readOnly: Read-Only
-            readWrite: Read-Write
-          kind:
-            dedicated: Dedicated
-            managed: Managed
-            shared: Shared
-        envVars:
-          configMapKeyRef: ConfigMap Key
-          configMapRef: ConfigMap
-          fieldRef: Pod Field
-          keyValuePair: Key/Value Pair
-          resourceFieldRef: Resource
-          secretKeyRef: Secret Key
-          secretRef: Secret
-        fsGroupChangePolicy:
-          always: Always
-          onRootMismatch: On Root Mismatch
-        imagePullPolicy:
-          never: Never
-          ifNeeded: If Needed
-          always: Always
-        procMount:
-          defaultProcMount: Default Proc Mount
-          unmaskedProcMount: Unmasked Proc Mount
-        protocol:
-          sctp: SCTP
-          tcp: TCP
-          udp: UDP
-        seccompProfile:
-          type:
-            localhost: Localhost
-            runtimeDefault: Runtime Default
-            unconfined: Unconfined
-        volumeType:
-          aws: AWS Elastic Block Store
-          azure: Azure Disk
-          cephfs: CephFS
-          cinder: Cinder
-          configMap: ConfigMap
-          csi: Container Storage Interface
-          downwardApi: Downward API
-          emptyDir: EmptyDir
-          ephemeral: Ephemeral
-          fc: Fibre Channel
-          flex: Flex Volume
-          flocker: Flocker
-          gce: GCE Persistent Disk
-          glusterfs: GlusterFS
-          hostPath: Host Path
-          iscsi: iSCSI
-          nfs: NFS
-          pvc: Persistent Volume Claim
-          photon: Photon Persistent Disk
-          postworx: Postworx
-          projected: Projected Volume
-          quobyte: Quobyte
-          rbd: Rados Block Device
-          scaleIO: ScaleIO
-          secret: Secret
-          storageOS: StorageOS
-          vsphere: vSphere
-        volumes:
-          accessModes:
-            roMany: Read-Only Many
-            rwMany: Read-Write Many
-            rwOnce: Read-Write Once
-            rwOncePod: Read-Write Once Pod
-          downwardApi:
-            cpuLimits: CPU Limits
-            cpuRequests: CPU Requests
-            memoryLimits: Memory Limits
-            memoryRequests: Memory Requests
-          emptyDir:
-            medium:
-              memory: Memory
-              notSet: Default
-          hostPath:
-            blockDevice: Block Device
-            charDevice: Character Device
-            default: Default
-            directory: Directory
-            directoryOrCreate: Directory or Create
-            file: File
-            fileOrCreate: File or Create
-            socket: Socket
-          projected:
-            configMap: Projected ConfigMap
-            downwardApi: Projected Downward API
-            secret: Projected Secret
-            serviceAccountToken: Projected Service Account Token
-          scaleIO:
-            storageMode:
-              thick: Thick Provisioned
-              thin: Thin Provisioned
-
-  VerrazzanoWebLogicWorkload:
-    config:
-      fields:
-        adminChannelPortForwardingEnabled: Enable Admin Channel Port Forwarding
-        adminServer:
-          channelName: Channel Name
-          nodePort: Node Port
-        allowReplicasBelowMinDynClusterSize: Allow Replicas Count Below Minimum Dynamic Cluster Size
-        auxiliaryImage: Auxiliary Image
-        auxiliaryImageVolumeReference: Volume Name
-        auxiliaryImageCommand: Command
-        auxiliaryImageVolume:
-          name: Name
-          mountPath: Mount Path
-          medium: Medium
-          sizeLimit: Volume Size Limit
-        configuration:
-          model:
-            configMap: WDT Model Config Map Name
-            domainType: Domain Type
-            modelHome: WDT Model Home
-            onlineUpdates:
-              enabled: Online Updates Enabled
-              onNonDynamicChanges: Online Updates on Non-Dynamic Changes
-              wdtTimeouts:
-                activateTimeoutMillis: Activate Timeout (in milliseconds)
-                connectTimeoutMillis: Connect Timeout (in milliseconds)
-                deployTimeoutMillis: Deploy Timeout (in milliseconds)
-                redeployTimeoutMillis: Redeploy Timeout (in milliseconds)
-                setServerGroupsTimeoutMillis: Set Server Groups Timeout (in milliseconds)
-                startApplicationTimeoutMillis: Start Application Timeout (in milliseconds)
-                stopApplicationTimeoutMillis: Stop Application Timeout (in milliseconds)
-                undeployTimeoutMillis: Undeploy Timeout (in milliseconds)
-            runtimeEncryptionSecret: Runtime Encryption Secret
-            wdtInstallHome: WDT Install Home
-          opss:
-            walletFileSecret: Wallet File Secret
-            walletPasswordSecret: Wallet Password Secret
-        dataHome: Data Home
-        domainHome: WebLogic Domain Home
-        domainHomeSourceType: Domain Home Source Location
-        domainUID: Domain UID
-        fluentd:
-          elasticSearchCredentials: Elasticsearch Credentials Secret
-          fluentdConfiguration: Fluentd Configuration
-          image: Image
-          imagePullPolicy: Image Pull Policy
-          watchIntrospectorLogs: Watch Introspector Logs
-        httpAccessLogInLogHome: HTTP Access Log in Log Home
-        includeServerOutInPodLog: Include Server Out in Pod Log
-        introspectVersion: Introspect Version
-        istio:
-          enabled: Enabled
-          localhostBindingsEnabled: Localhost Bindings Enabled
-          readinessPort: Readiness Port
-          replicationChannelPort: Replication Channel Port
-        livenessProbeCustomScript: Liveness Probe Custom Script Path
-        logHome: Log Home
-        logHomeEnabled: Log Home Enabled
-        maxClusterConcurrentShutdown: Maximum Cluster Concurrent Shutdown
-        maxClusterConcurrentStartup: Maximum Cluster Concurrent Startup
-        monitoringExporter:
-          domainQualifier: Include Domain Name Qualifier in Metrics
-          image: Image
-          imagePullPolicy: Image Pull Policy
-          metricsNameSnakeCase: Convert Metrics Names to Snake Case
-          port: Port
-          queries: Please use the Edit YAML screen to create and edit queries.
-        name: Domain Resource Name
-        namespace: Domain Resource Namespace
-        precreateService: Pre-Create Services
-        restartVersion: Restart Version
+      adminChannelPortForwardingEnabled: Enable Admin Channel Port Forwarding
+      adminServer:
+        channelName: Channel Name
+        nodePort: Node Port
+      allowReplicasBelowMinDynClusterSize: Allow Replicas Count Below Minimum Dynamic Cluster Size
+      auxiliaryImage: Auxiliary Image
+      auxiliaryImageVolumeReference: Volume Name
+      auxiliaryImageCommand: Command
+      auxiliaryImageVolume:
+        name: Name
+        mountPath: Mount Path
+        medium: Medium
+        sizeLimit: Volume Size Limit
+      clusters:
+        allowReplicasBelowMinDynClusterSize: Allow Replicas Below Minimum Cluster Size
+        clusterName: Cluster Name
+        maxConcurrentShutdown: Maximum Concurrent Shutdown
+        maxConcurrentStartup: Maximum Concurrent Startup
+        maxUnavailable: Maximum Unavailable
+        replicas: Replicas
+        sessionAffinity: Session Affinity
+      configuration:
+        model:
+          configMap: WDT Model Config Map Name
+          domainType: Domain Type
+          modelHome: WDT Model Home
+          onlineUpdates:
+            enabled: Online Updates Enabled
+            onNonDynamicChanges: Online Updates on Non-Dynamic Changes
+            wdtTimeouts:
+              activateTimeoutMillis: Activate Timeout (in milliseconds)
+              connectTimeoutMillis: Connect Timeout (in milliseconds)
+              deployTimeoutMillis: Deploy Timeout (in milliseconds)
+              redeployTimeoutMillis: Redeploy Timeout (in milliseconds)
+              setServerGroupsTimeoutMillis: Set Server Groups Timeout (in milliseconds)
+              startApplicationTimeoutMillis: Start Application Timeout (in milliseconds)
+              stopApplicationTimeoutMillis: Stop Application Timeout (in milliseconds)
+              undeployTimeoutMillis: Undeploy Timeout (in milliseconds)
+          runtimeEncryptionSecret: Runtime Encryption Secret
+          wdtInstallHome: WDT Install Home
+        opss:
+          walletFileSecret: Wallet File Secret
+          walletPasswordSecret: Wallet Password Secret
+      dataHome: Data Home
+      domainHome: WebLogic Domain Home
+      domainHomeSourceType: Domain Home Source Location
+      domainUID: Domain UID
+      fluentd:
+        elasticSearchCredentials: Elasticsearch Credentials Secret
+        fluentdConfiguration: Fluentd Configuration
+        image: Image
+        imagePullPolicy: Image Pull Policy
+        watchIntrospectorLogs: Watch Introspector Logs
+      httpAccessLogInLogHome: HTTP Access Log in Log Home
+      includeServerOutInPodLog: Include Server Out in Pod Log
+      introspectorJobActiveDeadlineSeconds: Introspector Job Active Deadline Seconds
+      introspectVersion: Introspect Version
+      istio:
+        enabled: Enabled
+        localhostBindingsEnabled: Localhost Bindings Enabled
+        readinessPort: Readiness Port
+        replicationChannelPort: Replication Channel Port
+      livenessProbeCustomScript: Liveness Probe Custom Script Path
+      logHome: Log Home
+      logHomeEnabled: Log Home Enabled
+      managedServers:
         serverName: Server Name
-        serverStartPolicy: Server Start Policy
-        serverStartState: Server Start State
-        webLogicCredentialsSecret: WebLogic Domain Credentials Secret
-      placeholders:
-        domainReplicas: Replicas should be set at the cluster-level
-      titles:
-        adminService: Admin Service
-        channels: Channels
-        advanced: Advanced Settings
-        auxiliaryImages: Auxiliary Images
-        domainLifecycleSettings: Domain Lifecycle Configuration
-        domainLogSettings: Domain Logging Configuration
-        domainSettings: Domain-Related Settings
-        envVars: Environment Variables
-        monitoringExporter:
-          configuration: Configuration
-        onlineUpdates: Online Update Settings
-        resources: Resource Requirements
-        serverService: Server Service
-        volumeMounts: Volume Mounts
-        wdtTimeouts: WebLogic Deploy Tooling Online Timeouts
-      values:
-        types:
-          domainHomeSourceType:
-            domainInPV: Domain in Persistent Volume
-            modelInImage: Model in Image
-          domainType:
-            wls: WebLogic Server (WLS)
-            jrf: FMW Infrastructure (JRF)
-          onNonDynamicChanges:
-            commitUpdateOnly: Commit Update Only
-            commitUpdateAndRoll: Commit Update and Roll
-          shutdown:
-            graceful: Graceful
-            forced: Forced
-  VerrazzanoHelidonWorkload:
-    config:
-      labels:
-        pod:
-          setHostnameAsFQDN: Set Hostname as FQDN
-          automountServiceAccountToken: Automount Service Account Token
-          enableServiceLinks: Enable Service Links
-      fields:
-        container:
-          kind: Kind
-      titles:
-        pod:
-          setHostnameAsFQDN: Set Hostname as FQDN
-      types:
-        containerKind:
-          standard: Standard
-          ephemeral: Ephemeral
-          init: Init
+      maxClusterConcurrentShutdown: Maximum Cluster Concurrent Shutdown
+      maxClusterConcurrentStartup: Maximum Cluster Concurrent Startup
+      monitoringExporter:
+        domainQualifier: Include Domain Name Qualifier in Metrics
+        image: Image
+        imagePullPolicy: Image Pull Policy
+        metricsNameSnakeCase: Convert Metrics Names to Snake Case
+        port: Port
+        queries: Please use the Edit YAML screen to create and edit queries.
+      overrideDistributionStrategy: Overrides Distribution Strategy
+      overridesConfigMap: Overrides Config Map Name
+      preCreateService: Pre-Create Services
+      restartVersion: Restart Version
+      shutdown:
+        ignoreSession: Ignore Sessions
+        shutdownType: Shutdown Type
+        timeoutSeconds: Timeout Seconds
+        waitForAllSessions: Wait for All Sessions
+      serverStartPolicy: Server Start Policy
+      serverStartState: Server Start State
+      webLogicCredentialsSecret: WebLogic Domain Credentials Secret
+
+    ####################################
+    ### verrazzano.weblogic.messages ###
+    ####################################
+    messages:
+      noAuxiliaryImages: No auxiliary images defined
+
+    ################################
+    ### verrazzano.weblogic.tabs ###
+    ################################
+    tabs:
+      adminServer: Admin Server
+      adminService: Admin Service
+      auxiliaryImage: Auxiliary Image
+      auxiliaryImages: Auxiliary Images
+      auxiliaryImageVolumes: Auxiliary Image Volumes
+      cluster: Cluster
+      clusters: Clusters
+      clusterService: Cluster Service
+      configuration: Configuration
+      fluentd: Fluentd Specification
+      general: General
+      initContainers: Init Containers
+      istio: Istio Settings
+      managedServer: Managed Server
+      managedServers: Managed Servers
+      monitoringExporter: Monitoring Exporter
+      nodeSelector: Node Selector
+      onlineUpdates: Online Updates
+      opss: OPSS
+      serverPod: Server Pod
+      serverService: Server Service
+      serverShutdown: Server Shutdown Settings
+      wdtTimeouts: WDT Timeouts
+
+    ##################################
+    ### verrazzano.weblogic.titles ###
+    ##################################
+    titles:
+      advanced: Advanced Settings
+      clusters:
+        clusterService: Cluster Service
+      domainLifecycleSettings: Domain Lifecycle Configuration
+      domainSettings: Domain-Related Settings
+      modelConfiguration: WebLogic Deploy Tooling Model-Related Settings
+      monitoringExporterConfiguration: Configuration
+      opss: OPSS-Related Settings
+      serverPod:
+        containers: Containers
+        initContainers: Init Containers
+        nodeSelector: Node Selectors
+        shutdown: WebLogic Server Shutdown
+        title: Server Pod
+
+    #################################
+    ### verrazzano.weblogic.types ###
+    #################################
+    types:
+      domainHomeSourceType:
+        domainOnPV: Domain on Persistent Volume
+        image: Domain in Image
+        modelInImage: Model in Image
+      domainType:
+        wls: WebLogic Server (WLS)
+        jrf: FMW Infrastructure (JRF)
+      onNonDynamicChanges:
+        commitUpdateOnly: Commit Update Only
+        commitUpdateAndRoll: Commit Update and Roll
+      overrideDistributionStrategy:
+        dynamic: Dynamic
+        onRestart: On Restart
+      serverStartPolicy:
+        adminOnly: Admin Only
+        ifNeeded: If Needed
+        never: Never
+      serverStartState:
+        admin: Admin
+        running: Running
+      shutdown:
+        graceful: Graceful
+        forced: Forced
 
 # Added by Verrazzano End

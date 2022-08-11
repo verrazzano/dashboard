@@ -2,17 +2,19 @@
 // Added by Verrazzano
 import Checkbox from '@/components/form/Checkbox';
 import CoherenceWorkloadHelper from '@/mixins/verrazzano/coherence-workload-helper';
+import ImagePullSecrets from '@/components/verrazzano/ImagePullSecrets';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 
-import { NAMESPACE, SECRET } from '@/config/types';
+import { NAMESPACE } from '@/config/types';
 import { allHash } from '@/utils/promise';
 
 export default {
   name:       'CoherenceGeneralTab',
   components: {
     Checkbox,
+    ImagePullSecrets,
     LabeledInput,
     LabeledSelect,
     TreeTab,
@@ -42,71 +44,21 @@ export default {
     },
   },
   data() {
-    const imagePullSecrets = this.getListField('imagePullSecrets').map(each => each.name);
-
     return {
       treeTabName:        this.tabName,
       treeTabLabel:       this.tabLabel,
-      fetchInProgress:    true,
-      namespace:          this.namespacedObject.metadata?.namespace,
       allNamespaces:      [],
-      allSecrets:         {},
-      secrets:            [],
-      imagePullSecrets,
     };
   },
   async fetch() {
-    this.allSecrets = {};
-
     const requests = { namespaces: this.$store.dispatch('cluster/findAll', { type: NAMESPACE }) };
-
-    if (this.$store.getters['cluster/schemaFor'](SECRET)) {
-      requests.secrets = this.$store.dispatch('cluster/findAll', { type: SECRET });
-    }
-
     const hash = await allHash(requests);
 
     this.allNamespaces = hash.namespaces;
-
-    if (hash.secrets) {
-      this.sortObjectsByNamespace(hash.secrets, this.allSecrets);
-    }
-    this.fetchInProgress = false;
-  },
-  computed: {
-    secretNames() {
-      return this.secrets.map(secret => secret.metadata.name);
-    }
-  },
-  methods: {
-    resetSecrets() {
-      if (!this.fetchInProgress) {
-        this.secrets = this.allSecrets[this.namespace] || [];
-      }
-    },
-    setImagePullSecrets(value) {
-      const imagePullSecrets = [];
-      const selected = Array.isArray(value) ? value : [];
-
-      selected.forEach((secretName) => {
-        imagePullSecrets.push({ name: secretName });
-      });
-
-      this.setFieldIfNotEmpty('imagePullSecrets', imagePullSecrets);
-    },
   },
   created() {
     if (!this.treeTabLabel) {
       this.treeTabLabel = this.t('verrazzano.common.tabs.general');
-    }
-  },
-  watch: {
-    fetchInProgress() {
-      this.resetSecrets();
-    },
-    'namespacedObject.metadata.namespace'(neu, old) {
-      this.namespace = neu;
-      this.resetSecrets();
     }
   },
 };
@@ -166,14 +118,11 @@ export default {
       <div class="spacer-small" />
       <div class="row">
         <div class="col span-9">
-          <LabeledSelect
-            v-model="imagePullSecrets"
+          <ImagePullSecrets
+            :value="getListField('imagePullSecrets')"
             :mode="mode"
-            multiple
-            :options="secretNames"
-            :placeholder="getNotSetPlaceholder(value, 'imagePullSecrets')"
-            :label="t('verrazzano.common.fields.imagePullSecrets')"
-            @input="setImagePullSecrets($event)"
+            :namespaced-object="namespacedObject"
+            @input="setFieldIfNotEmpty('imagePullSecrets', $event)"
           />
         </div>
         <div class="col span-3">

@@ -1,0 +1,123 @@
+<script>
+// Added by Verrazzano
+import ArrayListGrouped from '@/components/form/ArrayListGrouped';
+import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
+import Labels from '@/components/verrazzano/Labels';
+import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
+import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
+import WebLogicChannel from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServerTab/WebLogicChannel';
+import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
+
+export default {
+  name:       'AdminServiceTab',
+  components: {
+    ArrayListGrouped,
+    Labels,
+    TabDeleteButton,
+    TreeTab,
+    WebLogicChannel,
+  },
+  mixins: [WeblogicWorkloadHelper, DynamicListHelper],
+  props:  {
+    value: {
+      type:    Object,
+      default: () => ({})
+    },
+    mode: {
+      type:    String,
+      default: 'create'
+    },
+    tabName: {
+      type:     String,
+      required: true
+    },
+    tabLabel: {
+      type:    String,
+      default: ''
+    },
+  },
+  data() {
+    return {
+      treeTabName:  this.tabName,
+      treeTabLabel: this.tabLabel,
+    };
+  },
+  methods: {
+    getDynamicListRootFieldName() {
+      return 'channels';
+    },
+    deleteLabelsAndAnnotations() {
+      this.setField('annotations', undefined);
+      this.setField('labels', undefined);
+    }
+  },
+  created() {
+    if (!this.treeTabLabel) {
+      this.treeTabLabel = this.t('verrazzano.weblogic.tabs.adminService');
+    }
+  },
+};
+</script>
+
+<template>
+  <TreeTab :name="treeTabName" :label="treeTabLabel">
+    <template #beside-header>
+      <TabDeleteButton
+        :element-name="treeTabLabel"
+        :mode="mode"
+        @click="$emit('delete', value)"
+      />
+    </template>
+    <template #default>
+      <ArrayListGrouped
+        :value="dynamicListChildren"
+        :mode="mode"
+        :default-add-value="{ }"
+        :add-label="t('verrazzano.weblogic.buttons.addChannel')"
+        @add="dynamicListAddChild()"
+      >
+        <template #remove-button="removeProps">
+          <button
+            v-if="dynamicListShowRemoveButton"
+            type="button"
+            class="btn role-link close btn-sm"
+            @click="dynamicListDeleteChildByIndex(removeProps.i)"
+          >
+            <i class="icon icon-2x icon-x" />
+          </button>
+          <span v-else />
+        </template>
+        <template #default="props">
+          <div class="spacer-small" />
+          <WebLogicChannel
+            :value="props.row.value"
+            :mode="mode"
+            @input="dynamicListUpdate"
+          />
+        </template>
+      </ArrayListGrouped>
+    </template>
+    <template #nestedTabs>
+      <TreeTab :name="createTabName(treeTabName, 'labels')" :label="t('verrazzano.common.tabs.labelsAndAnnotations')">
+        <template #beside-header>
+          <TabDeleteButton
+            :element-name="t('verrazzano.common.tabs.labelsAndAnnotations')"
+            :mode="mode"
+            @click="deleteLabelsAndAnnotations()"
+          />
+        </template>
+        <template #default>
+          <Labels
+            :value="value"
+            :mode="mode"
+            @input="$emit('input', value)"
+          />
+        </template>
+      </TreeTab>
+    </template>
+  </TreeTab>
+</template>
+
+<style scoped>
+
+</style>

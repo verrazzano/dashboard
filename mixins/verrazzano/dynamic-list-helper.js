@@ -104,6 +104,9 @@ export default {
     dynamicListShowRemoveButton() {
       return !this.isView && this.dynamicListChildren.length > 0;
     },
+    dynamicListShowEmptyListMessage() {
+      return this.dynamicListChildren.length === 0;
+    },
     dynamicListUpdate() {
       this.queueUpdate();
     },

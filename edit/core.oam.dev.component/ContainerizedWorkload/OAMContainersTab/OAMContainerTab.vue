@@ -145,7 +145,7 @@ export default {
       <div class="spacer" />
       <div class="row">
         <div class="col span-6">
-          <h3>{{ t('verrazzano.common.titles.container.cmd') }}</h3>
+          <h3>{{ t('verrazzano.common.titles.containerCmd') }}</h3>
           <LabeledArrayList
             :value="getListField('cmd')"
             :mode="mode"
@@ -155,7 +155,7 @@ export default {
           />
         </div>
         <div class="col span-6">
-          <h3>{{ t('verrazzano.common.titles.container.args') }}</h3>
+          <h3>{{ t('verrazzano.common.titles.containerArgs') }}</h3>
           <LabeledArrayList
             :value="getListField('args')"
             :mode="mode"

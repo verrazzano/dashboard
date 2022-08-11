@@ -1,17 +1,18 @@
 <script>
 // Added by Verrazzano
-import AddNamedElement from '@/components/verrazzano/AddNamedElement';
+import ArrayListGrouped from '@/components/form/ArrayListGrouped';
+import AuxiliaryImageVolume
+  from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImageVolumesTab/AuxiliaryImageVolume';
 import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
-import ManagedServerTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ManagedServersTab/ManagedServerTab';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
 export default {
-  name:       'ManagedServersTab',
+  name:       'AuxiliaryImageVolumesTab',
   components: {
-    AddNamedElement,
-    ManagedServerTab,
+    ArrayListGrouped,
+    AuxiliaryImageVolume,
     TabDeleteButton,
     TreeTab,
   },
@@ -24,10 +25,6 @@ export default {
     mode: {
       type:    String,
       default: 'create'
-    },
-    namespacedObject: {
-      type:     Object,
-      required: true
     },
     tabName: {
       type:     String,
@@ -44,14 +41,9 @@ export default {
       treeTabLabel: this.tabLabel,
     };
   },
-  methods: {
-    getDynamicListTabName(child) {
-      return this.createTabName(this.tabName, child?.serverName);
-    },
-  },
   created() {
     if (!this.treeTabLabel) {
-      this.treeTabLabel = this.t('verrazzano.weblogic.tabs.managedServers');
+      this.treeTabLabel = this.t('verrazzano.weblogic.tabs.auxiliaryImageVolumes');
     }
   },
 };
@@ -67,25 +59,37 @@ export default {
       />
     </template>
     <template #default>
-      <AddNamedElement
+      <ArrayListGrouped
         :value="dynamicListChildren"
-        :add-type="t('verrazzano.weblogic.tabs.managedServer')"
-        key-field-name="serverName"
         :mode="mode"
-        @input="dynamicListAddChild({ serverName: $event })"
-      />
-    </template>
-    <template #nestedTabs>
-      <ManagedServerTab
-        v-for="(server, idx) in dynamicListChildren"
-        :key="server._id"
-        :value="server"
-        :mode="mode"
-        :namespaced-object="namespacedObject"
-        :tab-name="createTabName(treeTabName, server.serverName)"
-        @input="dynamicListUpdate"
-        @delete="dynamicListDeleteChildByIndex(idx)"
-      />
+        :default-add-value="{ }"
+        :add-label="t('verrazzano.weblogic.buttons.addAuxiliaryImageVolume')"
+        @add="dynamicListAddChild({})"
+      >
+        <template #remove-button="removeProps">
+          <button
+            v-if="dynamicListShowRemoveButton()"
+            type="button"
+            class="btn role-link close btn-sm"
+            @click="dynamicListDeleteChildByIndex(removeProps.i)"
+          >
+            <i class="icon icon-2x icon-x" />
+          </button>
+          <span v-else />
+        </template>
+        <template #default="props">
+          <div class="spacer-small" />
+          <AuxiliaryImageVolume
+            :value="props.row.value"
+            :mode="mode"
+            @input="dynamicListUpdate"
+          />
+        </template>
+      </ArrayListGrouped>
     </template>
   </TreeTab>
 </template>
+
+<style scoped>
+
+</style>

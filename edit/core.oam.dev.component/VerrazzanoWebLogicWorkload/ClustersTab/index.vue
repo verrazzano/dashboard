@@ -3,6 +3,7 @@
 import AddNamedElement from '@/components/verrazzano/AddNamedElement';
 import ClusterTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab/ClusterTab';
 import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
+import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
@@ -11,14 +12,14 @@ export default {
   components: {
     AddNamedElement,
     ClusterTab,
+    TabDeleteButton,
     TreeTab
   },
   mixins: [WeblogicWorkloadHelper, DynamicListHelper],
   props:  {
-    // the parent node of clusters
     value: {
-      type:    Object,
-      default: () => ({})
+      type:    Array,
+      default: () => ([])
     },
     mode: {
       type:    String,
@@ -29,47 +30,61 @@ export default {
       required: true
     },
     tabName: {
+      type:     String,
+      required: true
+    },
+    tabLabel: {
       type:    String,
-      default: 'clusters'
+      default: ''
     },
   },
-
+  data() {
+    return {
+      treeTabName:  this.tabName,
+      treeTabLabel: this.tabLabel,
+    };
+  },
   methods: {
-    getDynamicListRootFieldName() {
-      return 'clusters';
-    },
     getDynamicListTabName(child) {
-      return this.createTabName(this.tabName, child?.clusterName);
+      return this.createTabName(this.treeTabName, child?.clusterName);
     },
+  },
+  created() {
+    if (!this.treeTabLabel) {
+      this.treeTabLabel = this.t('verrazzano.weblogic.tabs.clusters');
+    }
   },
 };
 </script>
 
 <template>
-  <TreeTab
-    :label="t('verrazzano.weblogic.tabs.clusters')"
-    :name="getDynamicListTabName()"
-  >
+  <TreeTab :name="treeTabName" :label="treeTabLabel">
+    <template #beside-header>
+      <TabDeleteButton
+        :element-name="treeTabLabel"
+        :mode="mode"
+        @click="dynamicListClearChildrenList"
+      />
+    </template>
     <template #default>
       <AddNamedElement
         :value="dynamicListChildren"
-        :add-type="t('verrazzano.weblogic.tabs.cluster')"
-        key-field-name="clusterName"
         :mode="mode"
-        name-prefix="cluster"
+        key-field-name="clusterName"
+        :add-type="t('verrazzano.weblogic.tabs.cluster')"
         @input="dynamicListAddChild({ clusterName: $event })"
       />
     </template>
     <template #nestedTabs>
       <ClusterTab
-        v-for="cluster in dynamicListChildren"
+        v-for="(cluster, idx) in dynamicListChildren"
         :key="cluster._id"
+        :value="cluster"
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-name="getDynamicListTabName(cluster)"
-        :value="cluster"
         @input="dynamicListUpdate"
-        @delete="dynamicListDeleteChild($event)"
+        @delete="dynamicListDeleteChildByIndex(idx)"
       />
     </template>
   </TreeTab>

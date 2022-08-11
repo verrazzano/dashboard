@@ -26,7 +26,7 @@ export default {
       <LabeledInput
         :value="getField('host')"
         :mode="mode"
-        :label="t('verrazzano.config.fields.probeTcpSocket.host')"
+        :label="t('verrazzano.common.fields.probeTcpSocket.host')"
         @input="setField('host', $event)"
       />
     </div>
@@ -35,7 +35,7 @@ export default {
         :value="getField('port')"
         :mode="mode"
         required
-        :label="t('verrazzano.config.fields.probeTcpSocket.port')"
+        :label="t('verrazzano.common.fields.probeTcpSocket.port')"
         @input="setField('port', $event)"
       />
     </div>

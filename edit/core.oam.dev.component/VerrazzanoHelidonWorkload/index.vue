@@ -9,7 +9,7 @@ import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import TreeTabbed from '@/components/verrazzano/TreeTabbed';
 
 export default {
-  name:       'CruVerrazzanoHelidonWorkload',
+  name:       'VerrazzanoHelidonWorkload',
   components: {
     DeploymentStrategy,
     LabeledInput,
