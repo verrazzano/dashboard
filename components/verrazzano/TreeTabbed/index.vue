@@ -279,6 +279,7 @@ export default {
       min-width: 200px;
       max-width: 50%;
       overflow: auto;
+      flex: 0 0 auto;
     }
 
     .tab-container {

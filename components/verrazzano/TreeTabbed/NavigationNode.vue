@@ -37,6 +37,10 @@ export default {
     },
 
     select(navNode, event) {
+      if (this.isActive(navNode)) {
+        this.toggleChildren(navNode);
+      }
+
       this.navigator.select(navNode.name, event);
     },
 
@@ -68,15 +72,16 @@ export default {
         :class="{active: isActive(navNode), disabled: false}"
         @click.prevent="select(navNode, $event)"
       >
-        {{ navNode.label }}
+        <div>
+          {{ navNode.label }}
+        </div>
+        <div
+          v-if="hasChildren"
+          :class="{'fold-button': true, open: navNode.showChildren}"
+        >
+          <Indicator></Indicator>
+        </div>
       </a>
-      <div
-        v-if="hasChildren"
-        :class="{'fold-button': true, open: navNode.showChildren}"
-        @click.prevent="toggleChildren(navNode)"
-      >
-        <Indicator></Indicator>
-      </div>
     </div>
     <ul
       v-if="navNode.showChildren"
@@ -111,6 +116,9 @@ export default {
   .tree-tabbed {
     & .tab-nav {
       > .tab-set {
+        width: fit-content;
+        min-width: 100%;
+
         > .tabs {
           margin-left: 0;
         }
@@ -138,11 +146,10 @@ export default {
         width: 100%;
         position: relative;
         float: left;
-        margin: 0 8px 0 0;
         cursor: pointer;
 
         .tab-row {
-          display: flex;
+          display: block;
           align-items: center;
           border-left: solid 5px transparent;
         }
@@ -154,10 +161,9 @@ export default {
 
         .fold-button {
           display: flex;
-          width: 25px;
-          height: 30px;
-          margin: 0 0 0 -10px;
-          padding: 0 10px 0 5px;
+          width: 10px;
+          margin: 0 0 0 10px;
+          flex: 0 0 auto;
         }
 
         .fold-button svg {
@@ -170,7 +176,7 @@ export default {
         }
 
         A {
-          display: block;
+          display: flex;
           padding: 10px 15px 10px 15px;
           color: var(--primary);
           white-space: nowrap;
