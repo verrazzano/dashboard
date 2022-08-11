@@ -37,7 +37,7 @@ export default {
     },
 
     select(navNode, event) {
-      if (this.isActive(navNode)) {
+      if (this.isActive(navNode) || (!this.isActive(navNode) && !navNode.showChildren)) {
         this.toggleChildren(navNode);
       }
 
@@ -78,6 +78,7 @@ export default {
         <div
           v-if="hasChildren"
           :class="{'fold-button': true, open: navNode.showChildren}"
+          @click.stop.prevent="toggleChildren(navNode, $event)"
         >
           <Indicator></Indicator>
         </div>
