@@ -4,6 +4,14 @@ import BaseVerrazzanoHelper from '~/mixins/verrazzano/base-verrazzano-helper';
 export default {
   mixins:   [BaseVerrazzanoHelper],
   computed: {
+    workloadTemplate: {
+      get() {
+        return this.get(this.value, 'spec.workload.spec.template');
+      },
+      set(neu) {
+        this.set(this.value, 'spec.workload.spec.template', neu);
+      },
+    },
     workloadTemplateSpec: {
       get() {
         return this.get(this.value, 'spec.workload.spec.template.spec');

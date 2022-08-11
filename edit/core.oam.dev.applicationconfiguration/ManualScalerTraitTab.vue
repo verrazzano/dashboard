@@ -1,5 +1,6 @@
 <script>
 import LabeledInput from '@/components/form/LabeledInput';
+import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
 
@@ -7,6 +8,7 @@ export default {
   name:       'ManualScalerTraitTab',
   components: {
     LabeledInput,
+    TabDeleteButton,
     TreeTab,
   },
   mixins: [VerrazzanoHelper],
@@ -44,23 +46,15 @@ export default {
 
 <template>
   <TreeTab :name="treeTabName" :label="treeTabLabel">
+    <template #beside-header>
+      <TabDeleteButton
+        :element-name="treeTabLabel"
+        :button-label="t('verrazzano.common.messages.removeTypeFromComponent', { type: 'ManualScalerTrait' })"
+        :mode="mode"
+        @click="$emit('deleteTrait', 'ManualScalerTrait')"
+      />
+    </template>
     <template #default>
-      <div v-if="!isView">
-        <div class="row">
-          <div class="col span-10" />
-          <div class="col span-2">
-            <button
-              type="button"
-              class="btn role-tertiary add"
-              data-testid="add-item"
-              @click="$emit('deleteTrait', 'ManualScalerTrait')"
-            >
-              {{ t('verrazzano.common.buttons.deleteTrait') }}
-            </button>
-          </div>
-        </div>
-        <div class="spacer-small" />
-      </div>
       <div class="row">
         <div class="col span-4">
           <LabeledInput

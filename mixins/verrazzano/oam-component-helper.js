@@ -80,6 +80,16 @@ export default {
 
       this.setFieldIfNotEmpty(pathName, neu);
     },
+    setWorkloadSpecBooleanField(fieldName, neu) {
+      const pathName = fieldName ? `spec.workload.spec.${ fieldName }` : 'spec.workload.spec';
+
+      this.setBooleanField(pathName, neu);
+    },
+    setWorkloadSpecNumberField(fieldName, neu) {
+      const pathName = fieldName ? `spec.workload.spec.${ fieldName }` : 'spec.workload.spec';
+
+      this.setNumberField(pathName, neu);
+    },
     setWorkloadFieldIfNotEmpty(fieldName, neu) {
       const pathName = fieldName ? `spec.workload.${ fieldName }` : 'spec.workload';
 

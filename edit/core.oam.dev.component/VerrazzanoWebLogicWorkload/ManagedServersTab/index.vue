@@ -3,6 +3,7 @@
 import AddNamedElement from '@/components/verrazzano/AddNamedElement';
 import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
 import ManagedServerTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ManagedServersTab/ManagedServerTab';
+import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
@@ -11,13 +12,14 @@ export default {
   components: {
     AddNamedElement,
     ManagedServerTab,
+    TabDeleteButton,
     TreeTab,
   },
   mixins: [WeblogicWorkloadHelper, DynamicListHelper],
   props:  {
     value: {
-      type:    Object,
-      default: () => ({})
+      type:    Array,
+      default: () => ([])
     },
     mode: {
       type:    String,
@@ -28,48 +30,61 @@ export default {
       required: true
     },
     tabName: {
+      type:     String,
+      required: true
+    },
+    tabLabel: {
       type:    String,
-      default: 'managedServers'
+      default: ''
     },
   },
-
+  data() {
+    return {
+      treeTabName:  this.tabName,
+      treeTabLabel: this.tabLabel,
+    };
+  },
   methods: {
-    getDynamicListRootFieldName() {
-      return 'managedServers';
-    },
     getDynamicListTabName(child) {
       return this.createTabName(this.tabName, child?.serverName);
     },
+  },
+  created() {
+    if (!this.treeTabLabel) {
+      this.treeTabLabel = this.t('verrazzano.weblogic.tabs.managedServers');
+    }
   },
 };
 </script>
 
 <template>
-  <TreeTab
-    :label="t('verrazzano.weblogic.tabs.managedServers')"
-    :name="getDynamicListTabName()"
-  >
+  <TreeTab :name="treeTabName" :label="treeTabLabel">
+    <template #beside-header>
+      <TabDeleteButton
+        :element-name="treeTabLabel"
+        :mode="mode"
+        @click="dynamicListClearChildrenList"
+      />
+    </template>
     <template #default>
       <AddNamedElement
         :value="dynamicListChildren"
         :add-type="t('verrazzano.weblogic.tabs.managedServer')"
         key-field-name="serverName"
         :mode="mode"
-        name-prefix="server"
         @input="dynamicListAddChild({ serverName: $event })"
       />
     </template>
-
     <template #nestedTabs>
       <ManagedServerTab
-        v-for="server in dynamicListChildren"
+        v-for="(server, idx) in dynamicListChildren"
         :key="server._id"
+        :value="server"
         :mode="mode"
         :namespaced-object="namespacedObject"
-        :tab-name="getDynamicListTabName(server)"
-        :value="server"
+        :tab-name="createTabName(treeTabName, server.serverName)"
         @input="dynamicListUpdate"
-        @delete="dynamicListDeleteChild($event)"
+        @delete="dynamicListDeleteChildByIndex(idx)"
       />
     </template>
   </TreeTab>

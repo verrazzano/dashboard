@@ -2,7 +2,7 @@
 // Added by Verrazzano
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
-import Labels from '@/components/verrazzano/Labels';
+import LabelsTab from '@/components/verrazzano/LabelsTab';
 import OwnerReferencesTab from '@/components/verrazzano/ObjectMetadataTab/OwnerReferencesTab';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
@@ -16,7 +16,7 @@ export default {
   components: {
     LabeledInput,
     LabeledSelect,
-    Labels,
+    LabelsTab,
     OwnerReferencesTab,
     TabDeleteButton,
     TreeTab,
@@ -102,13 +102,12 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab :name="createTabName(treeTabName, 'labels')" :label="t('verrazzano.common.tabs.labelsAndAnnotations')">
-        <Labels
-          :value="value"
-          :mode="mode"
-          @input="$emit('input', value)"
-        />
-      </TreeTab>
+      <LabelsTab
+        :value="value"
+        :mode="mode"
+        :tab-name="createTabName(treeTabName, 'labels')"
+        @input="$emit('input', value)"
+      />
       <OwnerReferencesTab
         :value="getListField('ownerReferences')"
         :mode="mode"

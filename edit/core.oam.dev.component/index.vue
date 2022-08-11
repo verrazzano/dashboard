@@ -1,12 +1,14 @@
 <script>
 // Added by Verrazzano
 import ConfigMap from '@/edit/core.oam.dev.component/ConfigMap';
+import Deployment from '@/edit/core.oam.dev.component/Deployment';
 import ContainerizedWorkload from '@/edit/core.oam.dev.component/ContainerizedWorkload';
 import CruResource from '@/components/CruResource';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import Loading from '@/components/Loading';
 import NameNsDescription from '@/components/form/NameNsDescription';
+import Service from '@/edit/core.oam.dev.component/Service';
 import Tab from '@/components/Tabbed/Tab';
 import Tabbed from '@/components/Tabbed';
 import VerrazzanoCoherenceWorkload from '@/edit/core.oam.dev.component/VerrazzanoCoherenceWorkload';
@@ -36,10 +38,12 @@ export default {
     ConfigMap,
     ContainerizedWorkload,
     CruResource,
+    Deployment,
     LabeledInput,
     LabeledSelect,
     Loading,
     NameNsDescription,
+    Service,
     Tab,
     Tabbed,
     VerrazzanoCoherenceWorkload,

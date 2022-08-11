@@ -27,7 +27,7 @@ export default {
         :value="getField('kind')"
         :mode="mode"
         required
-        :label="t('verrazzano.config.fields.typedLocalObjectReference.kind')"
+        :label="t('verrazzano.common.fields.typedLocalObjectReference.kind')"
         @input="setField('kind', $event)"
       />
     </div>
@@ -36,7 +36,7 @@ export default {
         :value="getField('name')"
         :mode="mode"
         required
-        :label="t('verrazzano.config.fields.typedLocalObjectReference.name')"
+        :label="t('verrazzano.common.fields.typedLocalObjectReference.name')"
         @input="setField('name', $event)"
       />
     </div>
@@ -44,7 +44,7 @@ export default {
       <LabeledInput
         :value="getField('apiGroup')"
         :mode="mode"
-        :label="t('verrazzano.config.fields.typedLocalObjectReference.apiGroup')"
+        :label="t('verrazzano.common.fields.typedLocalObjectReference.apiGroup')"
         @input="setField('apiGroup', $event)"
       />
     </div>

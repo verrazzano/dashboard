@@ -1,11 +1,11 @@
 <script>
 // Added by Verrazzano
 import Checkbox from '@/components/form/Checkbox';
-import ClusterService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab/ClusterService';
+import ClusterServiceTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab/ClusterServiceTab';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import ServerPodTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
-import ServerService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerService';
+import ServerServiceTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerServiceTab';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
@@ -14,17 +14,16 @@ export default {
   name:       'ClusterTab',
   components: {
     Checkbox,
-    ClusterService,
+    ClusterServiceTab,
     LabeledInput,
     LabeledSelect,
     ServerPodTab,
-    ServerService,
+    ServerServiceTab,
     TabDeleteButton,
     TreeTab
   },
   mixins: [WeblogicWorkloadHelper],
   props:  {
-    // the cluster object
     value: {
       type:    Object,
       default: () => ({})
@@ -40,26 +39,46 @@ export default {
     tabName: {
       type:     String,
       required: true
+    },
+    tabLabel: {
+      type:    String,
+      default: ''
+    },
+  },
+  data() {
+    return {
+      treeTabName:  this.tabName,
+      treeTabLabel: this.tabLabel,
+    };
+  },
+  created() {
+    if (!this.treeTabLabel) {
+      this.treeTabLabel = this.value.clusterName || this.t('verrazzano.weblogic.tabs.cluster');
     }
   },
 };
 </script>
 
 <template>
-  <TreeTab
-    :name="tabName"
-    :label="value.clusterName"
-    :title="t('verrazzano.weblogic.tabs.cluster')"
-  >
+  <TreeTab :name="treeTabName" :label="treeTabLabel" :title="t('verrazzano.weblogic.tabs.cluster')">
+    <template #beside-header>
+      <TabDeleteButton
+        :mode="mode"
+        :element-name="t('verrazzano.weblogic.tabs.cluster')"
+        @click="$emit('delete', value)"
+      />
+    </template>
     <template #default>
       <div class="row">
         <div class="col span-4">
           <LabeledInput
             :value="getField('clusterName')"
-            :disabled="true"
+            :mode="mode"
             required
+            disabled
+            :placeholder="getNotSetPlaceholder(value, 'clusterName')"
             :label="t('verrazzano.weblogic.fields.clusters.clusterName')"
-            @input="setField('clusterName', $event)"
+            @input="setFieldIfNotEmpty('clusterName', $event)"
           />
         </div>
         <div class="col span-4">
@@ -68,8 +87,9 @@ export default {
             :mode="mode"
             type="Number"
             min="0"
+            :placeholder="getNotSetPlaceholder(value, 'replicas')"
             :label="t('verrazzano.weblogic.fields.clusters.replicas')"
-            @input="setField('replicas', $event)"
+            @input="setNumberField('replicas', $event)"
           />
         </div>
         <div class="col span-4">
@@ -79,8 +99,9 @@ export default {
             :options="serverStartPolicyOptions"
             option-key="value"
             option-label="label"
+            :placeholder="getNotSetPlaceholder(value, 'serverStartPolicy')"
             :label="t('verrazzano.weblogic.fields.serverStartPolicy')"
-            @input="setField('serverStartPolicy', $event)"
+            @input="setFieldIfNotEmpty('serverStartPolicy', $event)"
           />
         </div>
       </div>
@@ -92,8 +113,9 @@ export default {
             :mode="mode"
             type="Number"
             min="0"
+            :placeholder="getNotSetPlaceholder(value, 'maxConcurrentStartup')"
             :label="t('verrazzano.weblogic.fields.clusters.maxConcurrentStartup')"
-            @input="setField('maxConcurrentStartup', $event)"
+            @input="setNumberField('maxConcurrentStartup', $event)"
           />
         </div>
         <div class="col span-4">
@@ -102,8 +124,9 @@ export default {
             :mode="mode"
             type="Number"
             min="0"
+            :placeholder="getNotSetPlaceholder(value, 'maxConcurrentShutdown')"
             :label="t('verrazzano.weblogic.fields.clusters.maxConcurrentShutdown')"
-            @input="setField('maxConcurrentShutdown', $event)"
+            @input="setNumberField('maxConcurrentShutdown', $event)"
           />
         </div>
         <div class="col span-4">
@@ -112,8 +135,9 @@ export default {
             :mode="mode"
             type="Number"
             min="0"
+            :placeholder="getNotSetPlaceholder(value, 'maxUnavailable')"
             :label="t('verrazzano.weblogic.fields.clusters.maxUnavailable')"
-            @input="setField('maxUnavailable', $event)"
+            @input="setNumberField('maxUnavailable', $event)"
           />
         </div>
       </div>
@@ -123,10 +147,9 @@ export default {
           <LabeledInput
             :value="getField('restartVersion')"
             :mode="mode"
-            type="Number"
-            min="0"
+            :placeholder="getNotSetPlaceholder(value, 'restartVersion')"
             :label="t('verrazzano.weblogic.fields.restartVersion')"
-            @input="setField('restartVersion', $event)"
+            @input="setFieldIfNotEmpty('restartVersion', $event)"
           />
         </div>
         <div class="col span-4">
@@ -136,54 +159,44 @@ export default {
             :options="serverStartStateOptions"
             option-key="value"
             option-label="label"
+            :placeholder="getNotSetPlaceholder(value, 'serverStartState')"
             :label="t('verrazzano.weblogic.fields.serverStartState')"
-            @input="setField('serverStartState', $event)"
+            @input="setFieldIfNotEmpty('serverStartState', $event)"
           />
         </div>
-        <div class="col span-1" />
-        <div class="col span-3">
+        <div class="col span-4">
           <div class="spacer-small" />
           <Checkbox
             :value="getField('allowReplicasBelowMinDynClusterSize')"
             :mode="mode"
             :label="t('verrazzano.weblogic.fields.clusters.allowReplicasBelowMinDynClusterSize')"
-            @input="setField('allowReplicasBelowMinDynClusterSize', $event)"
+            @input="setBooleanField('allowReplicasBelowMinDynClusterSize', $event)"
           />
         </div>
       </div>
-      <div class="spacer-small" />
-      <div>
-        <h3>{{ t('verrazzano.weblogic.titles.clusters.clusterService') }}</h3>
-        <ClusterService
-          :value="getField('clusterService')"
-          :mode="mode"
-          @input="setFieldIfNotEmpty('clusterService', $event)"
-        />
-      </div>
-      <div class="spacer-small" />
-      <div>
-        <h3>{{ t('verrazzano.weblogic.tabs.serverService') }}</h3>
-        <ServerService
-          :value="getField('serverService')"
-          :mode="mode"
-          @input="setFieldIfNotEmpty('serverService', $event)"
-        />
-      </div>
-    </template>
-    <template #beside-header>
-      <TabDeleteButton
-        :mode="mode"
-        :element-name="t('verrazzano.weblogic.tabs.cluster')"
-        @click="$emit('delete', value)"
-      />
     </template>
     <template #nestedTabs>
       <ServerPodTab
         :value="getField('serverPod')"
         :mode="mode"
         :namespaced-object="value"
-        :tab-name="tabName"
+        :tab-name="createTabName(treeTabName, 'serverPod')"
         @input="setFieldIfNotEmpty('serverPod', $event)"
+        @delete="setField('serverPod', undefined)"
+      />
+      <ClusterServiceTab
+        :value="getField('clusterService')"
+        :mode="mode"
+        :tab-name="createTabName(treeTabName, 'clusterService')"
+        @input="setFieldIfNotEmpty('clusterService', $event)"
+        @delete="setField('clusterService', undefined)"
+      />
+      <ServerServiceTab
+        :value="getField('serverService')"
+        :mode="mode"
+        :tab-name="createTabName(treeTabName, 'serverService')"
+        @input="setFieldIfNotEmpty('serverService', $event)"
+        @delete="setField('serverService', undefined)"
       />
     </template>
   </TreeTab>

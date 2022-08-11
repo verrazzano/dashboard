@@ -12,7 +12,7 @@ import ContainerSecurityContextTab from '@/components/verrazzano/ContainerSecuri
 import ContainersTab from '@/components/verrazzano/ContainersTab';
 import EnvironmentVariables from '@/components/verrazzano/EnvironmentVariables';
 import JVMSpecTab from '@/edit/core.oam.dev.component/VerrazzanoCoherenceWorkload/JVMSpecTab';
-import Labels from '@/components/verrazzano/Labels';
+import LabelsTab from '@/components/verrazzano/LabelsTab';
 import NamedPortsSpecTab from '@/edit/core.oam.dev.component/VerrazzanoCoherenceWorkload/NamedPortsSpecTab';
 import NetworkSpecTab from '@/edit/core.oam.dev.component/VerrazzanoCoherenceWorkload/NetworkSpecTab';
 import NodeSelector from '@/components/verrazzano/NodeSelector';
@@ -47,7 +47,7 @@ export default {
     ContainersTab,
     EnvironmentVariables,
     JVMSpecTab,
-    Labels,
+    LabelsTab,
     NamedPortsSpecTab,
     NetworkSpecTab,
     NodeSelector,
@@ -91,6 +91,10 @@ export default {
           }
         }
       });
+    },
+    deleteLabelsAndAnnotations() {
+      this.setWorkloadMetadataField('annotations', undefined);
+      this.setWorkloadMetadataField('labels', undefined);
     },
   },
   created() {
@@ -163,7 +167,7 @@ export default {
         tab-name="startQuorum"
         @input="setWorkloadSpecFieldIfNotEmpty('startQuorum', $event)"
       />
-      <TreeTab name="envVars" :label="t('verrazzano.common.tabs.environmentVariables')" :show-header="false">
+      <TreeTab name="envVars" :label="t('verrazzano.common.tabs.environmentVariables')">
         <template #default>
           <EnvironmentVariables
             :value="workloadTemplateSpec"
@@ -174,15 +178,12 @@ export default {
           />
         </template>
       </TreeTab>
-      <TreeTab name="labels" :label="t('verrazzano.common.tabs.labelsAndAnnotations')">
-        <template #default>
-          <Labels
-            :value="workloadTemplateSpec"
-            :mode="mode"
-            @input="$emit('input', value)"
-          />
-        </template>
-      </TreeTab>
+      <LabelsTab
+        :value="workloadTemplateSpec"
+        :mode="mode"
+        tab-name="labels"
+        @input="$emit('input', value)"
+      />
       <ContainersTab
         :value="getWorkloadSpecListField('initContainers')"
         :mode="mode"
