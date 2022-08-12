@@ -64,6 +64,12 @@ export default {
       this[k] = res[k];
     }
 
+    if (this.allPods) {
+      const componentName = this.value.metadata.name;
+
+      this.value.pods = this.allPods.filter(pod => pod.metadata.labels['app.oam.dev/component'] === componentName);
+    }
+
     const isMetricsSupportedKind = METRICS_SUPPORTED_KINDS.includes(this.value.type);
 
     this.showMetrics = isMetricsSupportedKind && await allDashboardsExist(this.$store, this.currentCluster.id, [WORKLOAD_METRICS_DETAIL_URL, WORKLOAD_METRICS_SUMMARY_URL]);
