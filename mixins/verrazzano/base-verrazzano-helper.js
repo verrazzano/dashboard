@@ -100,6 +100,9 @@ export default {
     configMapApiVersion() {
       return 'v1';
     },
+    secretApiVersion() {
+      return 'v1';
+    },
     oamApplicationApiVersion() {
       return 'core.oam.dev/v1alpha2';
     },
