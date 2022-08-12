@@ -26,7 +26,7 @@ export default {
       <LabeledInput
         :value="getField('level')"
         :mode="mode"
-        :label="t('verrazzano.config.fields.seLinuxOptions.level')"
+        :label="t('verrazzano.common.fields.seLinuxOptions.level')"
         @input="setField('level', $event)"
       />
     </div>
@@ -34,7 +34,7 @@ export default {
       <LabeledInput
         :value="getField('role')"
         :mode="mode"
-        :label="t('verrazzano.config.fields.seLinuxOptions.role')"
+        :label="t('verrazzano.common.fields.seLinuxOptions.role')"
         @input="setField('role', $event)"
       />
     </div>
@@ -42,7 +42,7 @@ export default {
       <LabeledInput
         :value="getField('type')"
         :mode="mode"
-        :label="t('verrazzano.config.fields.seLinuxOptions.type')"
+        :label="t('verrazzano.common.fields.seLinuxOptions.type')"
         @input="setField('type', $event)"
       />
     </div>
@@ -50,7 +50,7 @@ export default {
       <LabeledInput
         :value="getField('user')"
         :mode="mode"
-        :label="t('verrazzano.config.fields.seLinuxOptions.user')"
+        :label="t('verrazzano.common.fields.seLinuxOptions.user')"
         @input="setField('user', $event)"
       />
     </div>

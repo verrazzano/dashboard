@@ -78,7 +78,7 @@ export default {
   <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #beside-header>
       <TabDeleteButton
-        :element-name="t('verrazzano.common.tabs.readinessGates')"
+        :element-name="treeTabLabel"
         :mode="mode"
         @click="deleteReadinessGates()"
       />
@@ -102,6 +102,7 @@ export default {
           </button>
         </template>
         <template #default="props">
+          <div class="spacer-small" />
           <LabeledSelect
             :value="getDynamicTabField(props.row.value, 'conditionType')"
             :mode="mode"

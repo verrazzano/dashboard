@@ -115,7 +115,7 @@ export default {
       <TabDeleteButton
         :element-name="treeTabLabel"
         :mode="mode"
-        @click="$emit('delete', $event)"
+        @click="$emit('delete', value)"
       />
     </template>
     <template #default>

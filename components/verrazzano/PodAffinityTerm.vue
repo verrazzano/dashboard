@@ -106,13 +106,13 @@ export default {
     if (this.matchExpressionsTitle) {
       this.matchExprTitle = this.matchExpressionsTitle;
     } else {
-      this.matchExprTitle = this.t('verrazzano.config.titles.podAffinityTerm.matchExpressions');
+      this.matchExprTitle = this.t('verrazzano.common.titles.podAffinityTerm.matchExpressions');
     }
 
     if (this.matchLabelsTitle) {
       this.matchLblsTitle = this.matchLabelsTitle;
     } else {
-      this.matchLblsTitle = this.t('verrazzano.config.titles.podAffinityTerm.matchLabels');
+      this.matchLblsTitle = this.t('verrazzano.common.titles.podAffinityTerm.matchLabels');
     }
     this.queueUpdate = debounce(this.update, 500);
   }
@@ -130,7 +130,7 @@ export default {
         v-model="matchExpressions"
         :mode="mode"
         :default-add-value="{ }"
-        :add-label="t('verrazzano.config.buttons.addMatchExpression')"
+        :add-label="t('verrazzano.common.buttons.addMatchExpression')"
         @add="addMatchExpression()"
       >
         <template #remove-button="removeProps">
@@ -145,6 +145,7 @@ export default {
           <span v-else />
         </template>
         <template #default="props">
+          <div class="spacer-small" />
           <div>
             <PodMatchExpression
               v-model="props.row.value"

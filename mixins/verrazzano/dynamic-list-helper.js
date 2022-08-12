@@ -1,6 +1,6 @@
 // Added by Verrazzano
 
-import { isEmpty } from '@/utils/object';
+import { get, isEmpty } from '@/utils/object';
 import { randomStr } from '~/utils/string';
 import debounce from 'lodash/debounce';
 import CreateEditView from '~/mixins/create-edit-view';
@@ -17,7 +17,8 @@ export default {
     if ((valueType === 'object' || valueType === 'undefined') && typeof this.getDynamicListRootFieldName === 'function') {
       const rootFieldName = this.getDynamicListRootFieldName();
 
-      list = this.value[rootFieldName] || [];
+      // rootFieldName may be a dot-demarcated path...
+      list = get(this.value, rootFieldName) || [];
       dynamicListHelperRootType = 'object';
     } else if (Array.isArray(this.value) || (valueType === 'undefined' && typeof this.getDynamicListRootFieldName === 'undefined')) {
       list = this.value || [];
@@ -102,6 +103,9 @@ export default {
     // Useful for ArrayListGrouped component using dynamic lists.
     dynamicListShowRemoveButton() {
       return !this.isView && this.dynamicListChildren.length > 0;
+    },
+    dynamicListShowEmptyListMessage() {
+      return this.dynamicListChildren.length === 0;
     },
     dynamicListUpdate() {
       this.queueUpdate();

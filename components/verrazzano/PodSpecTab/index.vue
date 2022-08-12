@@ -10,7 +10,7 @@ import PodDNSConfig from '@/components/verrazzano/PodSpecTab/PodDNSConfig';
 import PodSecurityContextTab from '@/components/verrazzano/PodSecurityContextTab';
 import ReadinessGatesTab from '@/components/verrazzano/ReadinessGatesTab';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
-import Tolerations from '@/components/verrazzano/Tolerations';
+import TolerationsTab from '@/components/verrazzano/TolerationsTab';
 import TopologySpreadConstraintsTab from '@/components/verrazzano/TopologySpreadConstraintsTab';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
@@ -32,7 +32,7 @@ export default {
     PodSecurityContextTab,
     ReadinessGatesTab,
     TabDeleteButton,
-    Tolerations,
+    TolerationsTab,
     TopologySpreadConstraintsTab,
     TreeTab,
     VolumesTab,
@@ -87,9 +87,6 @@ export default {
         this.serviceAccounts = this.allServiceAccounts[this.namespace] || [];
       }
     },
-    deleteTolerations() {
-      this.setField('tolerations', undefined);
-    },
     deletePodDNSConfig() {
       this.setField('dnsConfig', undefined);
     }
@@ -126,6 +123,13 @@ export default {
 
 <template>
   <TreeTab :name="treeTabName" :label="treeTabLabel">
+    <template #beside-header>
+      <TabDeleteButton
+        :element-name="treeTabLabel"
+        :mode="mode"
+        @click="$emit('delete', value)"
+      />
+    </template>
     <template #default>
       <div class="row">
         <div class="col span-4">
@@ -320,30 +324,30 @@ export default {
     </template>
     <template #nestedTabs>
       <ContainersTab
-        v-model="value"
+        :value="getListField('containers')"
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-name="createTabName(treeTabName, 'containers')"
-        @input="$emit('input', value)"
+        @input="setFieldIfNotEmpty('containers', $event)"
       />
       <ContainersTab
-        v-model="value"
+        :value="getListField('initContainers')"
         :mode="mode"
         :namespaced-object="namespacedObject"
         root-field-name="initContainers"
         :tab-name="createTabName(treeTabName, 'initContainers')"
         :tab-label="t('verrazzano.common.tabs.initContainers')"
-        @input="$emit('input', value)"
+        @input="setFieldIfNotEmpty('initContainers', $event)"
       />
       <ContainersTab
-        v-model="value"
+        :value="getListField('ephemeralContainers')"
         :mode="mode"
         root-field-name="ephemeralContainers"
         use-ephemeral-containers
         :namespaced-object="namespacedObject"
         :tab-name="createTabName(treeTabName, 'ephemeralContainers')"
         :tab-label="t('verrazzano.common.tabs.ephemeralContainers')"
-        @input="$emit('input', value)"
+        @input="setFieldIfNotEmpty('ephemeralContainers', $event)"
       />
       <VolumesTab
         :value="getListField('volumes')"
@@ -370,22 +374,12 @@ export default {
         :tab-name="createTabName(treeTabName, 'readinessGates')"
         @input="setFieldIfNotEmpty('readinessGates', $event)"
       />
-      <TreeTab :name="createTabName(treeTabName, 'tolerations')" :label="t('verrazzano.common.tabs.tolerations')">
-        <template #beside-header>
-          <TabDeleteButton
-            :element-name="t('verrazzano.common.tabs.tolerations')"
-            :mode="mode"
-            @click="deleteTolerations()"
-          />
-        </template>
-        <template #default>
-          <Tolerations
-            v-model="value"
-            :mode="mode"
-            @input="$emit('input', value)"
-          />
-        </template>
-      </TreeTab>
+      <TolerationsTab
+        :value="getListField('tolerations')"
+        :mode="mode"
+        :tab-name="createTabName(treeTabName, 'tolerations')"
+        @input="setFieldIfNotEmpty('tolerations', $event)"
+      />
       <PodSecurityContextTab
         :value="getField('securityContext')"
         :mode="mode"

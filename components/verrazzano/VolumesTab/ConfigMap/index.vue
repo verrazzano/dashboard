@@ -180,6 +180,7 @@ export default {
             <span v-else />
           </template>
           <template #default="props">
+            <div class="spacer-small" />
             <ConfigMapItem
               v-model="props.row.value"
               :config-map="getConfigMap()"

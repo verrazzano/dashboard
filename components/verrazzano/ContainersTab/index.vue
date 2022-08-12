@@ -3,6 +3,7 @@
 import AddNamedElement from '@/components/verrazzano/AddNamedElement';
 import ContainerTab from '@/components/verrazzano/ContainersTab/ContainerTab';
 import DynamicListHelper from '@/mixins/verrazzano/dynamic-list-helper';
+import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
 
@@ -11,22 +12,18 @@ export default {
   components: {
     AddNamedElement,
     ContainerTab,
+    TabDeleteButton,
     TreeTab,
   },
   mixins: [VerrazzanoHelper, DynamicListHelper],
   props:  {
     value: {
-      // parent object (e.g., pod spec)
-      type:    Object,
-      default: () => ({})
+      type:    Array,
+      default: () => ([])
     },
     mode: {
       type:    String,
       default: 'create'
-    },
-    rootFieldName: {
-      type:    String,
-      default: 'containers'
     },
     useEphemeralContainers: {
       type:    Boolean,
@@ -49,40 +46,50 @@ export default {
       default: ''
     },
   },
+  data() {
+    return {
+      treeTabName:        this.tabName,
+      treeTabLabel:       this.tabLabel,
+      containerTypeLabel: this.typeLabel,
+    };
+  },
   methods: {
-    getDynamicListRootFieldName() {
-      return this.rootFieldName;
-    },
     getDynamicListTabName(child) {
       return this.createTabName(this.tabName, child?.name);
     },
   },
-  computed: {
-    treeTabLabel() {
-      return this.tabLabel ? this.tabLabel : this.t('verrazzano.common.tabs.containers');
-    },
-    containerTypeLabel() {
-      return this.typeLabel ? this.typeLabel : this.t('verrazzano.common.tabs.container');
+  created() {
+    if (!this.treeTabLabel) {
+      this.treeTabLabel = this.t('verrazzano.common.tabs.containers');
     }
-  },
+    if (!this.containerTypeLabel) {
+      this.containerTypeLabel = this.t('verrazzano.common.tabs.container');
+    }
+  }
 };
 </script>
 
 <template>
   <TreeTab :name="tabName" :label="treeTabLabel">
+    <template #beside-header>
+      <TabDeleteButton
+        :element-name="treeTabLabel"
+        :mode="mode"
+        @click="dynamicListClearChildrenList"
+      />
+    </template>
     <template #default>
       <AddNamedElement
         :value="dynamicListChildren"
+        :mode="mode"
         :add-type="containerTypeLabel"
         key-field-name="name"
-        :mode="mode"
-        name-prefix="container"
         @input="dynamicListAddChild({ name: $event })"
       />
     </template>
     <template #nestedTabs>
       <ContainerTab
-        v-for="container in dynamicListChildren"
+        v-for="(container, idx) in dynamicListChildren"
         :key="container._id"
         :value="container"
         :mode="mode"
@@ -91,7 +98,7 @@ export default {
         :tab-name="getDynamicListTabName(container)"
         :type-label="containerTypeLabel"
         @input="dynamicListUpdate"
-        @delete="dynamicListDeleteChild($event)"
+        @delete="dynamicListDeleteChildByIndex(idx)"
       />
     </template>
   </TreeTab>

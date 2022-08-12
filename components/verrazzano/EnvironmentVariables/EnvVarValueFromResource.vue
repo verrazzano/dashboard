@@ -152,17 +152,17 @@ export default {
     },
     typeOptions() {
       const typeOpts = [
-        { value: 'simple', label: this.t('verrazzano.config.values.types.envVars.keyValuePair') },
-        { value: 'resourceFieldRef', label: this.t('verrazzano.config.values.types.envVars.resourceFieldRef') },
-        { value: 'configMapKeyRef', label: this.t('verrazzano.config.values.types.envVars.configMapKeyRef') },
-        { value: 'secretKeyRef', label: this.t('verrazzano.config.values.types.envVars.secretKeyRef') },
-        { value: 'fieldRef', label: this.t('verrazzano.config.values.types.envVars.fieldRef') },
+        { value: 'simple', label: this.t('verrazzano.common.types.envVars.keyValuePair') },
+        { value: 'resourceFieldRef', label: this.t('verrazzano.common.types.envVars.resourceFieldRef') },
+        { value: 'configMapKeyRef', label: this.t('verrazzano.common.types.envVars.configMapKeyRef') },
+        { value: 'secretKeyRef', label: this.t('verrazzano.common.types.envVars.secretKeyRef') },
+        { value: 'fieldRef', label: this.t('verrazzano.common.types.envVars.fieldRef') },
       ];
 
       if (this.enableEnvFromOptions) {
         typeOpts.push(
-          { value: 'secretRef', label: this.t('verrazzano.config.values.types.envVars.secretRef') },
-          { value: 'configMapRef', label: this.t('verrazzano.config.values.types.envVars.configMapRef') }
+          { value: 'secretRef', label: this.t('verrazzano.common.types.envVars.secretRef') },
+          { value: 'configMapRef', label: this.t('verrazzano.common.types.envVars.configMapRef') }
         );
       }
 
