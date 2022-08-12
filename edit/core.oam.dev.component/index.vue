@@ -15,6 +15,7 @@ import VerrazzanoCoherenceWorkload from '@/edit/core.oam.dev.component/Verrazzan
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
 import VerrazzanoHelidonWorkload from './VerrazzanoHelidonWorkload';
 import VerrazzanoWebLogicWorkload from './VerrazzanoWebLogicWorkload';
+import Secret from './Secret';
 
 const TAB_WEIGHT_MAP = {
   general:              99,
@@ -49,6 +50,7 @@ export default {
     VerrazzanoCoherenceWorkload,
     VerrazzanoHelidonWorkload,
     VerrazzanoWebLogicWorkload,
+    Secret,
   },
   mixins: [VerrazzanoHelper],
   props:  {
