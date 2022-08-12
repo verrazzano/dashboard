@@ -49,7 +49,11 @@ export default {
   mixins: [CreateEditView, V1WorkloadMetrics],
   data() {
     return {
-      allPods: null, allJobs: [], WORKLOAD_METRICS_DETAIL_URL, WORKLOAD_METRICS_SUMMARY_URL, showMetrics: false
+      allPods:     [],
+      allJobs:     [],
+      showMetrics: false,
+      WORKLOAD_METRICS_DETAIL_URL,
+      WORKLOAD_METRICS_SUMMARY_URL,
     };
   },
   async fetch() {
@@ -62,6 +66,12 @@ export default {
 
     for ( const k in res ) {
       this[k] = res[k];
+    }
+
+    if (this.allPods) {
+      const appName = this.value.metadata.name;
+
+      this.value.pods = this.allPods.filter(pod => pod.metadata.labels['app.oam.dev/name'] === appName);
     }
 
     const isMetricsSupportedKind = METRICS_SUPPORTED_KINDS.includes(this.value.type);
@@ -158,6 +168,10 @@ export default {
       return !jobGauges.find(jg => jg.count === total);
     }
   },
+  mounted() {
+    // eslint-disable-next-line no-console
+    console.log('XXXXXX mounted() see value: ', JSON.stringify(this.value, null, 2));
+  }
 };
 </script>
 
