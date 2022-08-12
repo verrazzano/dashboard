@@ -10,6 +10,7 @@ import LoggingTraitTab from '@/edit/core.oam.dev.applicationconfiguration/Loggin
 import ManualScalerTraitTab from '@/edit/core.oam.dev.applicationconfiguration/ManualScalerTraitTab';
 import MetricsTraitTab from '@/edit/core.oam.dev.applicationconfiguration/MetricsTraitTab';
 import NameNsDescription from '@/components/form/NameNsDescription';
+import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import TreeTabbed from '@/components/verrazzano/TreeTabbed';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
@@ -32,6 +33,7 @@ export default {
     ManualScalerTraitTab,
     MetricsTraitTab,
     NameNsDescription,
+    TabDeleteButton,
     TreeTab,
     TreeTabbed,
   },
@@ -215,7 +217,7 @@ export default {
 
 <template>
   <Loading v-if="$fetchState.pending" />
-  <form v-else>
+  <form v-else class="tree-tabbed-form">
     <CruResource
       :validation-passed="true"
       :resource="value"
@@ -306,22 +308,16 @@ export default {
                 :title="t('verrazzano.common.titles.component')"
                 :name="componentKey(component)"
               >
+                <template #beside-header>
+                  <TabDeleteButton
+                    :element-name="t('verrazzano.common.titles.component')"
+                    :button-label="t('verrazzano.common.messages.removeComponentFromApplication')"
+                    :mode="mode"
+                    @click="deleteComponent(component)"
+                  />
+                </template>
                 <template #default>
                   <div>
-                    <div v-if="!isView" class="row">
-                      <div class="col span-10" />
-                      <div class="col span-2">
-                        <button
-                          type="button"
-                          class="btn role-tertiary add"
-                          data-testid="add-item"
-                          @click="deleteComponent(component)"
-                        >
-                          {{ t('verrazzano.common.buttons.deleteComponent') }}
-                        </button>
-                      </div>
-                    </div>
-                    <div class="spacer-small" />
                     <div class="row">
                       <div class="col span-6">
                         <LabeledInput
@@ -429,5 +425,19 @@ export default {
 
 .next-dropdown{
   display: inline-block;
+}
+
+.tree-tabbed-form {
+  height: 10px;
+  flex: 1 1 auto;
+
+  .cru {
+    height: 100%;
+  }
+
+  .tree-tabbed {
+    height: 10px;
+    flex: 1 1 auto;
+  }
 }
 </style>

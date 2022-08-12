@@ -90,6 +90,7 @@ export default {
         <span v-else />
       </template>
       <template #default="props">
+        <div class="spacer-small" />
         <NodeSelectorTerm
           v-model="props.row.value"
           :mode="mode"

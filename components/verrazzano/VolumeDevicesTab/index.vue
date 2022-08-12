@@ -57,13 +57,12 @@ export default {
   <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #beside-header>
       <TabDeleteButton
-        :element-name="t('verrazzano.common.tabs.volumeDevices')"
+        :element-name="treeTabLabel"
         :mode="mode"
         @click="dynamicListClearChildrenList"
       />
     </template>
     <template #default>
-      <div class="spacer" />
       <ArrayListGrouped
         :value="dynamicListChildren"
         :mode="mode"
@@ -83,6 +82,7 @@ export default {
           <span v-else />
         </template>
         <template #default="props">
+          <div class="spacer-small" />
           <VolumeDevice
             :value="props.row.value"
             :mode="mode"

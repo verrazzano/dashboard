@@ -29,7 +29,7 @@ export default {
         type="Number"
         min="1"
         required
-        :label="t('verrazzano.config.fields.probeGrpc.port')"
+        :label="t('verrazzano.common.fields.probeGrpc.port')"
         @input="setNumberField('port', $event)"
       />
     </div>
@@ -37,7 +37,7 @@ export default {
       <LabeledInput
         :value="getField('service')"
         :mode="mode"
-        :label="t('verrazzano.config.fields.probeGrpc.service')"
+        :label="t('verrazzano.common.fields.probeGrpc.service')"
         @input="setField('service', $event)"
       />
     </div>

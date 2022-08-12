@@ -43,7 +43,7 @@ export default {
     tabLabel: {
       type:     String,
       required: true,
-    }
+    },
   },
   data() {
     const {

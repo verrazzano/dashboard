@@ -28,6 +28,10 @@ export default {
     namespacedObject: {
       type:     Object,
       required: true
+    },
+    hideSslEnabled: {
+      type:    Boolean,
+      default: false,
     }
   },
   data() {
@@ -57,6 +61,11 @@ export default {
     }
     this.fetchInProgress = false;
   },
+  computed: {
+    showSSLEnabled() {
+      return !this.hideSslEnabled;
+    }
+  },
   methods: {
     resetSecrets() {
       if (!this.fetchInProgress) {
@@ -81,6 +90,7 @@ export default {
     <div class="row">
       <div class="col span-4">
         <Checkbox
+          v-if="showSSLEnabled"
           :value="getField('enabled')"
           :mode="mode"
           :label="t('verrazzano.coherence.fields.sslEnabled')"

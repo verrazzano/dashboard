@@ -1,17 +1,15 @@
 <script>
 // Added by Verrazzano
 import AdminServerTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServerTab';
-import ArrayListGrouped from '@/components/form/ArrayListGrouped';
-import AuxiliaryImageVolume from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImageVolume';
+import AuxiliaryImageVolumesTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImageVolumesTab';
 import ClustersTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab';
-import ConfigurationData from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ConfigurationData';
-import FluentdSpecification from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/FluentdSpecification';
-import WebLogicGeneralData from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/WebLogicGeneralData';
+import ConfigurationDataTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ConfigurationDataTab';
+import FluentdSpecificationTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/FluentdSpecificationTab';
+import WebLogicGeneralDataTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/WebLogicGeneralDataTab';
 import ManagedServersTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ManagedServersTab';
-import MonitoringExporter from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/MonitoringExporter';
-import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
+import MonitoringExporterTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/MonitoringExporterTab';
 import ServerPodTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
-import ServerService from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerService';
+import ServerServiceTab from '@/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerServiceTab';
 import TreeTabbed from '@/components/verrazzano/TreeTabbed';
 import WeblogicWorkloadHelper from '@/mixins/verrazzano/weblogic-workload-helper';
 
@@ -21,18 +19,16 @@ export default {
   name:       'VerrazzanoWebLogicWorkload',
   components: {
     AdminServerTab,
-    ArrayListGrouped,
-    AuxiliaryImageVolume,
+    AuxiliaryImageVolumesTab,
     ClustersTab,
-    ConfigurationData,
-    FluentdSpecification,
+    ConfigurationDataTab,
+    FluentdSpecificationTab,
     ManagedServersTab,
-    MonitoringExporter,
+    MonitoringExporterTab,
     ServerPodTab,
-    ServerService,
-    TreeTab,
+    ServerServiceTab,
     TreeTabbed,
-    WebLogicGeneralData,
+    WebLogicGeneralDataTab,
   },
   mixins: [WeblogicWorkloadHelper],
   props:  {
@@ -83,54 +79,36 @@ export default {
 <template>
   <TreeTabbed>
     <template #nestedTabs>
-      <TreeTab :label="t('verrazzano.weblogic.tabs.general')" name="general">
-        <WebLogicGeneralData :value="value" :mode="mode" />
-      </TreeTab>
-
+      <WebLogicGeneralDataTab
+        :value="workloadTemplate"
+        :mode="mode"
+        :namespaced-object="value"
+        tab-name="general"
+      />
       <!-------------------------------------------------------------------------------------------------------
        |                                  Auxiliary Image Volumes Tab                                         |
        -------------------------------------------------------------------------------------------------------->
 
-      <TreeTab :label="t('verrazzano.weblogic.tabs.auxiliaryImageVolumes')" name="auxiliaryImageVolumes">
-        <ArrayListGrouped
-          :value="getWorkloadSpecListField('auxiliaryImageVolumes')"
-          :default-add-value="{ }"
-          :mode="mode"
-          :add-label="t('verrazzano.weblogic.buttons.addAuxiliaryImageVolume')"
-          @input="setWorkloadSpecFieldIfNotEmpty('auxiliaryImageVolumes', $event)"
-        >
-          <template #remove-button="removeProps">
-            <button
-              v-if="showWorkloadSpecListRemoveButton('auxiliaryImageVolumes')"
-              type="button"
-              class="btn role-link close btn-sm"
-              @click="removeProps.remove"
-            >
-              <i class="icon icon-2x icon-x" />
-            </button>
-            <span v-else />
-          </template>
-          <template #default="props">
-            <AuxiliaryImageVolume
-              v-model="props.row.value"
-              :mode="mode"
-            />
-          </template>
-        </ArrayListGrouped>
-      </TreeTab>
+      <AuxiliaryImageVolumesTab
+        :value="getWorkloadSpecListField('auxiliaryImageVolumes')"
+        :mode="mode"
+        tab-name="auxiliaryImageVolumes"
+        @input="setWorkloadSpecFieldIfNotEmpty('auxiliaryImageVolumes', $event)"
+      />
 
       <!-------------------------------------------------------------------------------------------------------
        |                                       Configuration Tab                                              |
        -------------------------------------------------------------------------------------------------------->
-      <TreeTab :label="t('verrazzano.weblogic.tabs.configuration')" name="configuration">
-        <ConfigurationData
-          :value="getWorkloadSpecField('configuration')"
-          :mode="mode"
-          :is-model-in-image="isModelInImage"
-          :namespaced-object="value"
-          @input="setWorkloadSpecFieldIfNotEmpty('configuration', $event)"
-        />
-      </TreeTab>
+
+      <ConfigurationDataTab
+        :value="getWorkloadSpecField('configuration')"
+        :mode="mode"
+        :namespaced-object="value"
+        :is-model-in-image="isModelInImage"
+        tab-name="configuration"
+        @input="setWorkloadSpecFieldIfNotEmpty('configuration', $event)"
+        @delete="setWorkloadSpecField('configuration', undefined)"
+      />
 
       <!-------------------------------------------------------------------------------------------------------
        |                                         Server Pod Tabs                                              |
@@ -140,29 +118,33 @@ export default {
         :value="getWorkloadSpecField('serverPod')"
         :mode="mode"
         :namespaced-object="value"
+        tab-name="serverPod"
         @input="setWorkloadSpecFieldIfNotEmpty('serverPod', $event)"
+        @delete="setWorkloadSpecField('serverPod', undefined)"
       />
 
       <!-------------------------------------------------------------------------------------------------------
        |                                       Server Service Tab                                             |
        -------------------------------------------------------------------------------------------------------->
 
-      <TreeTab :label="t('verrazzano.weblogic.tabs.serverService')" name="serverService">
-        <ServerService
-          :value="getWorkloadSpecField('serverService')"
-          :mode="mode"
-          @input="setWorkloadSpecFieldIfNotEmpty('serverService', $event)"
-        />
-      </TreeTab>
+      <ServerServiceTab
+        :value="getWorkloadSpecField('serverService')"
+        :mode="mode"
+        tab-name="serverService"
+        @input="setWorkloadSpecFieldIfNotEmpty('serverService', $event)"
+        @delete="setWorkloadSpecField('serverService', undefined)"
+      />
 
       <!-------------------------------------------------------------------------------------------------------
        |                                          Clusters Tab                                                |
        -------------------------------------------------------------------------------------------------------->
 
       <ClustersTab
-        :value="workloadTemplateSpec"
+        :value="getWorkloadSpecListField('clusters')"
         :mode="mode"
         :namespaced-object="value"
+        tab-name="clusters"
+        @input="setWorkloadSpecFieldIfNotEmpty('clusters', $event)"
       />
 
       <!-------------------------------------------------------------------------------------------------------
@@ -170,9 +152,12 @@ export default {
        -------------------------------------------------------------------------------------------------------->
 
       <AdminServerTab
-        :value="workloadTemplateSpec"
+        :value="getWorkloadSpecField('adminServer')"
         :mode="mode"
         :namespaced-object="value"
+        tab-name="adminServer"
+        @input="setWorkloadSpecFieldIfNotEmpty('serverService', $event)"
+        @delete="setWorkloadSpecField('serverService', undefined)"
       />
 
       <!-------------------------------------------------------------------------------------------------------
@@ -180,35 +165,37 @@ export default {
        -------------------------------------------------------------------------------------------------------->
 
       <ManagedServersTab
-        :value="workloadTemplateSpec"
+        :value="getWorkloadSpecListField('managedServers')"
         :mode="mode"
         :namespaced-object="value"
+        tab-name="managedServers"
+        @input="setWorkloadSpecFieldIfNotEmpty('managedServers', $event)"
       />
 
       <!-------------------------------------------------------------------------------------------------------
        |                                          Fluentd Tab                                                 |
        -------------------------------------------------------------------------------------------------------->
 
-      <TreeTab :label="t('verrazzano.weblogic.tabs.fluentd')" name="fluentd">
-        <FluentdSpecification
-          :value="getWorkloadSpecField('fluentdSpecification')"
-          :mode="mode"
-          :namespaced-object="value"
-          @input="setWorkloadSpecFieldIfNotEmpty('fluentdSpecification', $event)"
-        />
-      </TreeTab>
+      <FluentdSpecificationTab
+        :value="getWorkloadSpecField('fluentdSpecification')"
+        :mode="mode"
+        :namespaced-object="value"
+        tab-name="fluentd"
+        @input="setWorkloadSpecFieldIfNotEmpty('fluentdSpecification', $event)"
+        @delete="setWorkloadSpecField('fluentdSpecification', undefined)"
+      />
 
       <!-------------------------------------------------------------------------------------------------------
        |                                    Monitoring Exporter Tab                                           |
        -------------------------------------------------------------------------------------------------------->
 
-      <TreeTab :label="t('verrazzano.weblogic.tabs.monitoringExporter')" name="monitoringExporter">
-        <MonitoringExporter
-          :value="getWorkloadSpecField('monitoringExporter')"
-          :mode="mode"
-          @input="setWorkloadSpecFieldIfNotEmpty('monitoringExporter', $event)"
-        />
-      </TreeTab>
+      <MonitoringExporterTab
+        :value="getWorkloadSpecField('monitoringExporter')"
+        :mode="mode"
+        tab-name="monitoringExporter"
+        @input="setWorkloadSpecFieldIfNotEmpty('monitoringExporter', $event)"
+        @delete="setWorkloadSpecField('monitoringExporter', undefined)"
+      />
     </template>
   </TreeTabbed>
 </template>

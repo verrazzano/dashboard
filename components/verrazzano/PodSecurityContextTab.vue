@@ -58,9 +58,6 @@ export default {
     }
   },
   methods: {
-    deletePodSecurityContext() {
-      this.$emit('delete');
-    },
     deleteSysctls() {
       this.setField('sysctls', undefined);
     }
@@ -77,9 +74,9 @@ export default {
   <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #beside-header>
       <TabDeleteButton
-        :element-name="t('verrazzano.common.tabs.podSecurityContext')"
+        :element-name="treeTabLabel"
         :mode="mode"
-        @click="deletePodSecurityContext()"
+        @click="$emit('delete', value)"
       />
     </template>
     <template #default>
@@ -173,7 +170,7 @@ export default {
                 :mode="mode"
                 :key-label="t('verrazzano.common.fields.podSecurityContext.sysctl.key')"
                 :value-label="t('verrazzano.common.fields.podSecurityContext.sysctl.value')"
-                :add-label="t('verrazzano.config.buttons.addSysctl')"
+                :add-label="t('verrazzano.common.buttons.addSysctl')"
                 :read-allowed="false"
                 @input="setFieldIfNotEmpty('sysctls', $event)"
               />

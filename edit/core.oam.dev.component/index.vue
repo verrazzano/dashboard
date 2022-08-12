@@ -1,12 +1,14 @@
 <script>
 // Added by Verrazzano
 import ConfigMap from '@/edit/core.oam.dev.component/ConfigMap';
+import Deployment from '@/edit/core.oam.dev.component/Deployment';
 import ContainerizedWorkload from '@/edit/core.oam.dev.component/ContainerizedWorkload';
 import CruResource from '@/components/CruResource';
 import LabeledInput from '@/components/form/LabeledInput';
 import LabeledSelect from '@/components/form/LabeledSelect';
 import Loading from '@/components/Loading';
 import NameNsDescription from '@/components/form/NameNsDescription';
+import Service from '@/edit/core.oam.dev.component/Service';
 import Tab from '@/components/Tabbed/Tab';
 import Tabbed from '@/components/Tabbed';
 import VerrazzanoCoherenceWorkload from '@/edit/core.oam.dev.component/VerrazzanoCoherenceWorkload';
@@ -37,10 +39,12 @@ export default {
     ConfigMap,
     ContainerizedWorkload,
     CruResource,
+    Deployment,
     LabeledInput,
     LabeledSelect,
     Loading,
     NameNsDescription,
+    Service,
     Tab,
     Tabbed,
     VerrazzanoCoherenceWorkload,
@@ -92,7 +96,7 @@ export default {
 </script>
 
 <template>
-  <form>
+  <form class="tree-tabbed-form">
     <CruResource
       :mode="mode"
       :validation-passed="true"
@@ -135,5 +139,19 @@ export default {
 
 .next-dropdown{
   display: inline-block;
+}
+
+.tree-tabbed-form {
+  height: 10px;
+  flex: 1 1 auto;
+
+  .cru {
+    height: 100%;
+  }
+
+  .tree-tabbed {
+    height: 10px;
+    flex: 1 1 auto;
+  }
 }
 </style>

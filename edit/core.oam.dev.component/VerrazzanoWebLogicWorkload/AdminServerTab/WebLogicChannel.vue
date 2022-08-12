@@ -27,7 +27,7 @@ export default {
         <LabeledInput
           :value="getField('channelName')"
           :mode="mode"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.adminServer.channelName')"
+          :label="t('verrazzano.weblogic.fields.adminServer.channelName')"
           @input="setFieldIfNotEmpty('channelName', $event)"
         />
       </div>
@@ -35,7 +35,7 @@ export default {
         <LabeledInput
           :value="getField('nodePort')"
           :mode="mode"
-          :label="t('verrazzano.VerrazzanoWebLogicWorkload.config.fields.adminServer.nodePort')"
+          :label="t('verrazzano.weblogic.fields.adminServer.nodePort')"
           @input="setNumberField('nodePort', $event)"
         />
       </div>

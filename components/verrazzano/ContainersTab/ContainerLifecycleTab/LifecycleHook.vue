@@ -84,17 +84,17 @@ export default {
     <div class="spacer-small" />
     <div>
       <div v-if="isExecAction">
-        <h4>{{ t('verrazzano.config.titles.container.lifecycle.execCommands') }}</h4>
+        <h4>{{ t('verrazzano.common.titles.containerProbe.execCommands') }}</h4>
         <LabeledArrayList
           :value="getListField('exec.command')"
           :mode="mode"
-          :value-label="t('verrazzano.config.fields.container.lifecycle.command')"
-          :add-label="t('verrazzano.config.buttons.addExecCommand')"
+          :value-label="t('verrazzano.common.fields.container.lifecycle.command')"
+          :add-label="t('verrazzano.common.buttons.addExecCommand')"
           @input="setFieldIfNotEmpty('exec.command', $event)"
         />
       </div>
       <div v-else-if="isHttpGetAction">
-        <h4>{{ t('verrazzano.config.titles.httpGet') }}</h4>
+        <h4>{{ t('verrazzano.common.titles.containerProbe.httpGet') }}</h4>
         <HttpGet
           :value="getField('httpGet')"
           :mode="mode"

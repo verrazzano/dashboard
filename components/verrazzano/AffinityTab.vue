@@ -447,7 +447,7 @@ export default {
   <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #beside-header>
       <TabDeleteButton
-        :element-name="t('verrazzano.common.tabs.affinity')"
+        :element-name="treeTabLabel"
         :mode="mode"
         @click="removeAffinity()"
       />
@@ -473,7 +473,7 @@ export default {
             :options="selectorTermTypeOptions"
             option-key="value"
             option-label="label"
-            :label="t('verrazzano.common.fields.newAffinityType')"
+            :label="t('verrazzano.common.fields.newSelectorTermType')"
           />
         </div>
       </div>
@@ -510,7 +510,7 @@ export default {
                 :options="selectorTermTypeOptions"
                 option-key="value"
                 option-label="label"
-                :label="t('verrazzano.common.fields.newAffinityType')"
+                :label="t('verrazzano.common.fields.newSelectorTermType')"
               />
             </div>
           </div>
@@ -570,7 +570,7 @@ export default {
                 :options="selectorTermTypeOptions"
                 option-key="value"
                 option-label="label"
-                :label="t('verrazzano.common.fields.newAffinityType')"
+                :label="t('verrazzano.common.fields.newSelectorTermType')"
               />
             </div>
           </div>
@@ -630,7 +630,7 @@ export default {
                 :options="selectorTermTypeOptions"
                 option-key="value"
                 option-label="label"
-                :label="t('verrazzano.common.fields.newAffinityType')"
+                :label="t('verrazzano.common.fields.newSelectorTermType')"
               />
             </div>
           </div>
