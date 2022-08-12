@@ -7629,6 +7629,8 @@ verrazzano:
       workingDir: Working Directory
       workloadConfigMapName: Workload ConfigMap Name
       workloadDeploymentName: Workload Deployment Name
+      workloadSecretName: Workload Secret Name
+      workloadSecretType: Workload Secret Type
 
     ##################################
     ### verrazzano.common.messages ###
