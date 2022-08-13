@@ -1,74 +1,76 @@
-// Added by Verrazzano
 <script>
+// Added by Verrazzano
 import LabeledInput from '@/components/form/LabeledInput';
 import RadioGroup from '@/components/form/RadioGroup';
-import SecretHelper from './secret-helper';
+import SecretHelper from '@/mixins/verrazzano/secret-helper';
+
+const KNOWN_REGISTRY_PROVIDERS_MAP = {
+  'Oracle Container Registry': 'container-registry.oracle.com',
+  'Docker Hub':                'index.docker.io/v1/',
+  'Quay.io':                   'quay.io',
+};
+
 export default {
-  components: { LabeledInput, RadioGroup },
-
+  name:       'RegistrySecret',
+  components: {
+    LabeledInput,
+    RadioGroup,
+  },
   mixins: [SecretHelper],
-
-  props: {
+  props:  {
     value: {
       type:     Object,
       required: true,
     },
-
     mode: {
-      type:     String,
-      required: true,
-    }
+      type:    String,
+      default: 'create'
+    },
   },
-
   data() {
-    let registryProvider = 'Custom';
-
     let auths;
 
     try {
-      const parsed = JSON.parse(this.value.decodedData['.dockerconfigjson']);
+      // Cannot use computed property decodeData from inside the data() function...
+      const parsed = JSON.parse(this.getDecodedData()['.dockerconfigjson']);
 
       auths = parsed.auths;
-    } catch (e) {}
-
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to parse registry secret type: ', e);
+    }
     auths = auths || {};
-
     const registryUrl = Object.keys(auths)[0] || '';
+    let registryProvider = 'Custom';
 
-    if (registryUrl === 'index.docker.io/v1/') {
-      registryProvider = 'DockerHub';
-    } else if (registryUrl === 'quay.io') {
-      registryProvider = 'Quay.io';
-    } else if (registryUrl.includes('artifactory')) {
-      registryProvider = 'Artifactory';
+    for (const [key, value] of Object.entries(KNOWN_REGISTRY_PROVIDERS_MAP)) {
+      if (registryUrl === value) {
+        registryProvider = key;
+        break;
+      }
     }
 
     const username = auths[registryUrl]?.username || '';
     const password = auths[registryUrl]?.password || '';
+    const email = auths[registryUrl]?.email || '';
 
     return {
       registryProvider,
       username,
       password,
+      email,
       registryUrl,
     };
   },
-
   computed: {
     registryAddresses() {
-      return ['Custom', 'DockerHub', 'Quay.io', 'Artifactory'];
+      return ['Custom', ...Object.keys(KNOWN_REGISTRY_PROVIDERS_MAP)];
     },
-
     needsDockerServer() {
-      return this.registryProvider === 'Artifactory' || this.registryProvider === 'Custom';
+      return this.registryProvider === 'Custom';
     },
-
     dockerconfigjson() {
-      let dockerServer = this.registryProvider === 'DockerHub' ? 'index.docker.io/v1/' : 'quay.io';
-
-      if (this.needsDockerServer) {
-        dockerServer = this.registryUrl;
-      }
+      const dockerServer = this.needsDockerServer ? this.registryUrl : KNOWN_REGISTRY_PROVIDERS_MAP[this.registryProvider];
 
       if (dockerServer) {
         const config = {
@@ -76,30 +78,29 @@ export default {
             [dockerServer]: {
               username: this.username,
               password: this.password,
+              email:    this.email,
             }
           }
         };
-        const json = JSON.stringify(config);
 
-        return json;
+        return JSON.stringify(config);
       } else {
         return null;
       }
     },
   },
-
+  methods: {
+    update() {
+      this.setData('.dockerconfigjson', this.dockerconfigjson);
+    },
+  },
   watch: {
     registryProvider: 'update',
     registryUrl:      'update',
     username:         'update',
     password:         'update',
+    email:            'update',
   },
-
-  methods: {
-    update() {
-      this.setData('.dockerconfigjson', this.dockerconfigjson);
-    },
-  }
 };
 </script>
 
@@ -109,9 +110,10 @@ export default {
       <div class="col span-12">
         <RadioGroup
           v-model="registryProvider"
-          name="registryProvider"
           :mode="mode"
+          name="registryProvider"
           :options="registryAddresses"
+          :label="t('verrazzano.common.fields.registryProvider')"
         />
       </div>
     </div>
@@ -119,11 +121,14 @@ export default {
       <LabeledInput v-model="registryUrl" required :label="t('secret.registry.domainName')" placeholder="e.g. index.docker.io" :mode="mode" />
     </div>
     <div class="row mb-20">
-      <div class="col span-6">
+      <div class="col span-4">
         <LabeledInput v-model="username" :label="t('secret.registry.username')" :mode="mode" />
       </div>
-      <div class="col span-6">
+      <div class="col span-4">
         <LabeledInput v-model="password" :label="t('secret.registry.password')" :mode="mode" type="password" />
+      </div>
+      <div class="col span-4">
+        <LabeledInput v-model="email" :label="t('verrazzano.common.fields.registrySecretEmail')" :mode="mode" />
       </div>
     </div>
   </div>

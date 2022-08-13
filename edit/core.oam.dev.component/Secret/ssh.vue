@@ -1,63 +1,58 @@
-// Added by Verrazzano
 <script>
-import LabeledInput from '@/components/form/LabeledInput';
+// Added by Verrazzano
 import FileSelector, { createOnSelected } from '@/components/form/FileSelector';
-import SecretHelper from './secret-helper';
+import LabeledInput from '@/components/form/LabeledInput';
+import SecretHelper from '@/mixins/verrazzano/secret-helper';
+
 export default {
-  components: { LabeledInput, FileSelector },
-
+  name:       'SSHSecret',
+  components: {
+    FileSelector,
+    LabeledInput,
+  },
   mixins: [SecretHelper],
-
-  props: {
+  props:  {
     value: {
       type:     Object,
       required: true,
     },
-
     mode: {
-      type:     String,
-      required: true,
-    }
+      type:    String,
+      default: 'create'
+    },
   },
-
   data() {
     return {
-      username: '',
-      password: ''
+      publicKey:  '',
+      privateKey: '',
     };
   },
-
-  watch: {
-    username() {
-      this.setData('ssh-publickey', this.username);
-    },
-    password() {
-      this.setData('ssh-privatekey', this.password);
-    },
-  },
-
-  created() {
-    if (this.username === '') {
-      this.username = this.getUsername();
-    }
-
-    if (this.password === '') {
-      this.password = this.getPassword();
-    }
-  },
   methods: {
-    onUsernameSelected: createOnSelected('username'),
-    onPasswordSelected: createOnSelected('password'),
-
-    getUsername() {
+    onPublicKeySelected:  createOnSelected('publicKey'),
+    onPrivateKeySelected: createOnSelected('privateKey'),
+    getPublicKey() {
       return this.decodedData['ssh-publickey'] || '';
     },
-
-    getPassword() {
+    getPrivateKey() {
       return this.decodedData['ssh-privatekey'] || '';
     },
   },
-
+  created() {
+    if (!this.publicKey) {
+      this.publicKey = this.getPublicKey();
+    }
+    if (!this.password) {
+      this.privateKey = this.getPrivateKey();
+    }
+  },
+  watch: {
+    publicKey() {
+      this.setData('ssh-publickey', this.publicKey);
+    },
+    password() {
+      this.setData('ssh-privatekey', this.privateKey);
+    },
+  },
 };
 </script>
 
@@ -66,25 +61,25 @@ export default {
     <div class="row mb-20">
       <div class="col span-6">
         <LabeledInput
-          v-model="username"
+          v-model="publicKey"
           type="multiline"
           :label="t('secret.ssh.public')"
           :mode="mode"
           required
           :placeholder="t('secret.ssh.publicPlaceholder')"
         />
-        <FileSelector class="btn btn-sm bg-primary mt-10" :label="t('generic.readFromFile')" @selected="onUsernameSelected" />
+        <FileSelector class="btn btn-sm bg-primary mt-10" :label="t('generic.readFromFile')" @selected="onPublicKeySelected" />
       </div>
       <div class="col span-6">
         <LabeledInput
-          v-model="password"
+          v-model="privateKey"
           type="multiline"
           :label="t('secret.ssh.private')"
           :mode="mode"
           required
           :placeholder="t('secret.ssh.privatePlaceholder')"
         />
-        <FileSelector class="btn btn-sm bg-primary mt-10" :label="t('generic.readFromFile')" @selected="onPasswordSelected" />
+        <FileSelector class="btn btn-sm bg-primary mt-10" :label="t('generic.readFromFile')" @selected="onPrivateKeySelected" />
       </div>
     </div>
   </div>

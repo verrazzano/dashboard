@@ -1,33 +1,28 @@
-// Added by Verrazzano
 <script>
+// Added by Verrazzano
 import KeyValue from '@/components/form/KeyValue';
-import { _VIEW } from '@/config/query-params';
-import OamComponentHelper from '@/mixins/verrazzano/oam-component-helper';
+import SecretHelper from '@/mixins/verrazzano/secret-helper';
 
 const VALID_DATA_KEY = /^[-._a-zA-Z0-9]*$/;
 
 export default {
+  name:       'GenericSecret',
   components: { KeyValue },
-
-  mixins: [OamComponentHelper],
-
-  props: {
+  mixins:     [SecretHelper],
+  props:      {
     value: {
       type:     Object,
       required: true,
     },
-
     mode: {
-      type:     String,
-      required: true,
+      type:    String,
+      default: 'create'
     },
-
     hideSensitiveData: {
       type:    Boolean,
       default: true,
     }
   },
-
   computed: {
     specData: {
       get() {
@@ -37,12 +32,7 @@ export default {
         this.setWorkloadFieldIfNotEmpty('data', neu);
       }
     },
-
-    isView() {
-      return this.mode === _VIEW;
-    },
   },
-
   methods: {
     fileModifier(name, value) {
       if (!VALID_DATA_KEY.test(name)) {
@@ -54,7 +44,7 @@ export default {
 
       return { name, value };
     },
-  }
+  },
 };
 </script>
 
