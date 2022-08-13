@@ -1,26 +1,26 @@
-// Added by Verrazzano
 <script>
-import { _EDIT } from '@/config/query-params';
-import LabeledInput from '@/components/form/LabeledInput';
+// Added by Verrazzano
 import FileSelector, { createOnSelected } from '@/components/form/FileSelector';
-import SecretHelper from './secret-helper';
+import LabeledInput from '@/components/form/LabeledInput';
+import SecretHelper from '@/mixins/verrazzano/secret-helper';
+
 export default {
-  components: { LabeledInput, FileSelector },
-
+  name:       'TLSSecret',
+  components: {
+    FileSelector,
+    LabeledInput,
+  },
   mixins: [SecretHelper],
-
-  props: {
+  props:  {
     value: {
       type:     Object,
       required: true,
     },
-
     mode: {
-      type:     String,
-      required: true,
-    }
+      type:    String,
+      default: 'create'
+    },
   },
-
   data() {
     return {
       originalKey: '',
@@ -28,36 +28,14 @@ export default {
       crt:         '',
     };
   },
-
-  created() {
-    if (this.originalKey === '') {
-      this.originalKey = this.decodedData['tls.key'] || '';
-    }
-
-    if (this.key === '') {
-    // do not show existing key when editing
-      this.key = this.mode === _EDIT ? '' : this.originalKey;
-    }
-
-    if (this.crt === '') {
-      this.crt = this.decodedData['tls.crt'] || '';
-    }
-  },
-
-  watch: {
-    key: 'update',
-    crt: 'update',
-  },
-
   methods: {
     onKeySelected: createOnSelected('key'),
     onCrtSelected: createOnSelected('crt'),
-
     update() {
       let keyToSave;
 
       // use preexisting key if no new one was provided while editing
-      if (this.mode === _EDIT && !this.key.length) {
+      if (this.isEdit && !this.key.length) {
         keyToSave = this.originalKey;
       } else {
         keyToSave = this.key;
@@ -66,6 +44,22 @@ export default {
       this.setData('tls.crt', this.crt);
       this.setData('tls.key', keyToSave);
     }
+  },
+  created() {
+    if (!this.originalKey) {
+      this.originalKey = this.decodedData['tls.key'] || '';
+    }
+    if (!this.key) {
+      // do not show existing key when editing
+      this.key = this.isEdit ? '' : this.originalKey;
+    }
+    if (!this.crt) {
+      this.crt = this.decodedData['tls.crt'] || '';
+    }
+  },
+  watch: {
+    key: 'update',
+    crt: 'update',
   },
 };
 </script>

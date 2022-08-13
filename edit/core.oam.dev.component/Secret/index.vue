@@ -1,32 +1,42 @@
 // Added by Verrazzano
 <script>
-import NameNsDescription from '@/components/form/NameNsDescription';
-import Labels from '@/components/form/Labels';
-import { HIDE_SENSITIVE } from '@/store/prefs';
-import { sortBy } from '@/utils/sort';
 import LabeledSelect from '@/components/form/LabeledSelect.vue';
 import LabeledInput from '~/components/form/LabeledInput.vue';
-import OamComponentHelper from '@/mixins/verrazzano/oam-component-helper';
-import { TYPES } from './secret-helper';
+import LabelsTab from '@/components/verrazzano/LabelsTab';
+import SecretHelper from '@/mixins/verrazzano/secret-helper';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import TreeTabbed from '@/components/verrazzano/TreeTabbed';
-import LabelsTab from '@/components/verrazzano/LabelsTab';
+
+import { HIDE_SENSITIVE } from '@/store/prefs';
+import { sortBy } from '@/utils/sort';
+
+// For now, support these 5 basic types of secrets.
+const TYPES = {
+  OPAQUE:           'Opaque',
+  // SERVICE_ACCT:     'kubernetes.io/service-account-token',
+  DOCKER:           'kubernetes.io/dockercfg',
+  // DOCKER_JSON:      'kubernetes.io/dockerconfigjson',
+  BASIC:            'kubernetes.io/basic-auth',
+  SSH:              'kubernetes.io/ssh-auth',
+  TLS:              'kubernetes.io/tls',
+  // BOOTSTRAP:        'bootstrap.kubernetes.io/token',
+  // ISTIO_TLS:        'istio.io/key-and-cert',
+  // HELM_RELEASE:     'helm.sh/release.v1',
+  // FLEET_CLUSTER:    'fleet.cattle.io/cluster-registration-values',
+  // CLOUD_CREDENTIAL: 'provisioning.cattle.io/cloud-credential',
+  // RKE_AUTH_CONFIG:  'rke.cattle.io/auth-config'
+};
 
 export default {
-  name: 'Secret',
-
+  name:       'Secret',
   components: {
-    NameNsDescription,
-    Labels,
     LabeledSelect,
     LabeledInput,
+    LabelsTab,
     TreeTab,
     TreeTabbed,
-    LabelsTab,
   },
-
-  mixins: [OamComponentHelper],
-
+  mixins: [SecretHelper],
   props:  {
     value: {
       type:    Object,
@@ -37,7 +47,9 @@ export default {
       default: 'create'
     },
   },
-
+  data() {
+    return { dataLabel: '' };
+  },
   computed: {
     type: {
       get() {
@@ -48,44 +60,46 @@ export default {
       }
     },
     typeKey() {
-      switch ( this.type) {
+      switch (this.type) {
       case TYPES.TLS: return 'tls';
       case TYPES.BASIC: return 'basic';
-      case TYPES.DOCKER_JSON: return 'registry';
+      case TYPES.DOCKER: return 'registry';
       case TYPES.SSH: return 'ssh';
       case TYPES.OPAQUE: return 'generic';
       default: return undefined;
       }
     },
     dataComponent() {
+      // eslint-disable-next-line no-console
+      console.log(`XXXXXX dataComponent() requiring ${ this.typeKey }`);
+
       return require(`@/edit/core.oam.dev.component/Secret/${ this.typeKey }`).default;
     },
-
-    // array of value/labels of secret types
     secretOptions() {
-      const out = [];
-
-      [
-        TYPES.OPAQUE,
-        TYPES.DOCKER_JSON,
-        TYPES.TLS,
-        TYPES.SSH,
-        TYPES.BASIC,
-      ].forEach((secretType) => {
-        out.push({
-          value:       secretType,
-          label:       this.typeDisplay(secretType),
-        });
+      const out = Object.values(TYPES).map((secretType) => {
+        return {
+          value: secretType,
+          label: this.typeDisplay(secretType)
+        };
       });
 
       return sortBy(out, 'label');
     },
-
     hideSensitiveData() {
       return this.$store.getters['prefs/get'](HIDE_SENSITIVE);
     },
+  },
+  methods: {
+    initSpec() {
+      const newSecret = {
+        apiVersion: this.secretApiVersion,
+        kind:       'Secret',
+        metadata:   { namespace: this.value.metadata.namespace },
+      };
 
-    dataLabel() {
+      this.setField('spec.workload', newSecret );
+    },
+    getDataLabel() {
       switch (this.type) {
       case TYPES.TLS:
         return this.t('secret.certificate.certificate');
@@ -97,36 +111,24 @@ export default {
         return this.t('secret.data');
       }
     },
+    typeDisplay(type) {
+      const fallback = type.replace(/^kubernetes.io\//, '');
 
-  },
-
-  watch: {
-    type(neu, old) {
-      if (neu !== old) {
-        this.setWorkloadFieldIfNotEmpty('data', undefined);
-      }
-    }
+      return this.$store.getters['i18n/withFallback'](`secret.types."${ type }"`, null, fallback);
+    },
   },
   created() {
     if (!this.value.spec?.workload) {
       this.initSpec();
     }
+    this.dataLabel = this.getDataLabel();
   },
-  methods: {
-    initSpec() {
-      const newSecret = {
-        apiVersion: this.secretApiVersion,
-        kind:       'Secret',
-        metadata:   { namespace: this.value.metadata.namespace },
-      };
-
-      this.setField('spec', newSecret );
-    },
-
-    typeDisplay(type, driver) {
-      const fallback = type.replace(/^kubernetes.io\//, '');
-
-      return this.$store.getters['i18n/withFallback'](`secret.types."${ type }"`, null, fallback);
+  watch: {
+    type(neu, old) {
+      if (neu !== old) {
+        this.setWorkloadFieldIfNotEmpty('data', undefined);
+        this.dataLabel = this.getDataLabel();
+      }
     },
   },
 };
@@ -134,16 +136,18 @@ export default {
 
 <template>
   <form class="filled-height">
-    <div class="spacer"></div>
-
-    <LabeledSelect
-      v-model="type"
-      :options="secretOptions"
-      :label="t('verrazzano.common.fields.workloadSecretType')"
-      :placeholder="getNotSetPlaceholder(value,'spec.workload.type')"
-      :required="true"
-    />
-
+    <div class="row">
+      <div class="col span-6">
+        <LabeledSelect
+          v-model="type"
+          :options="secretOptions"
+          :label="t('verrazzano.common.fields.workloadSecretType')"
+          :placeholder="getNotSetPlaceholder(value,'spec.workload.type')"
+          :required="true"
+        />
+      </div>
+    </div>
+    <div class="spacer-small" />
     <TreeTabbed>
       <template #nestedTabs>
         <TreeTab name="data" :label="dataLabel">

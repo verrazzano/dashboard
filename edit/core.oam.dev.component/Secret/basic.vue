@@ -1,39 +1,44 @@
-// Added by Verrazzano
 <script>
+// Added by Verrazzano
 import LabeledInput from '@/components/form/LabeledInput';
-import SecretHelper from '@/edit/core.oam.dev.component/Secret/secret-helper';
+import SecretHelper from '@/mixins/verrazzano/secret-helper';
 
 export default {
+  name:       'BasicAuthSecret',
   components: { LabeledInput },
-
-  mixins: [SecretHelper],
-
-  props: {
+  mixins:     [SecretHelper],
+  props:      {
     value: {
       type:     Object,
       required: true,
     },
-
     mode: {
-      type:     String,
-      required: true,
-    }
+      type:    String,
+      default: 'create'
+    },
   },
-
   data() {
-    return { username: '', password: '' };
+    return {
+      username: '',
+      password: '',
+    };
   },
-
+  methods: {
+    getUsername() {
+      return this.decodedData['username'] || '';
+    },
+    getPassword() {
+      return this.decodedData['password'] || '';
+    },
+  },
   created() {
     if (this.username === '') {
       this.username = this.getUsername();
     }
-
     if (this.password === '') {
       this.password = this.getPassword();
     }
   },
-
   watch: {
     username() {
       this.setData('username', this.username);
@@ -42,18 +47,6 @@ export default {
       this.setData('password', this.password);
     },
   },
-
-  methods: {
-
-    getUsername() {
-      return this.decodedData['username'] || '';
-    },
-
-    getPassword() {
-      return this.decodedData['password'] || '';
-    },
-  },
-
 };
 </script>
 

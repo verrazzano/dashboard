@@ -6652,7 +6652,7 @@ notifications:
   menuLabel: 'Custom Notifications'
   loginError:
     header: Login Failed Banner
-    showCheckboxLabel: Show custom login error 
+    showCheckboxLabel: Show custom login error
     messageLabel: Text to display
 resourceQuota:
   label: Resource Quotas
@@ -7401,6 +7401,8 @@ verrazzano:
       progressDeadlineSeconds: Progress Deadline Seconds
       protocol: Protocol
       publishNotReadyAddresses: Publish Not Ready Addresses
+      registryProvider: Registry Provider
+      registrySecretEmail: Email Address
       replicaCount: Replica Count
       replicas: Replicas
       required: Required
