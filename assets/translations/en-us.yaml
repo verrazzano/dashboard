@@ -7218,7 +7218,6 @@ verrazzano:
       deleteComponent: Delete Component
       deleteContainer: Delete Container
       deleteElement: Delete { element }
-      deleteIngressRule: Delete Ingress Rule
       deleteTrait: Delete Trait
 
     ################################
@@ -7664,6 +7663,7 @@ verrazzano:
       hostAlias: Host Alias
       hostAliases: Host Aliases
       ingressTrait: Ingress Trait
+      ingressTraitRule: Ingress Rule
       initContainer: Init Container
       initContainers: Init Containers
       ipSettings: IP Settings

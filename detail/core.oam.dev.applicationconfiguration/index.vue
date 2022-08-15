@@ -168,10 +168,6 @@ export default {
       return !jobGauges.find(jg => jg.count === total);
     }
   },
-  mounted() {
-    // eslint-disable-next-line no-console
-    console.log('XXXXXX mounted() see value: ', JSON.stringify(this.value, null, 2));
-  }
 };
 </script>
 

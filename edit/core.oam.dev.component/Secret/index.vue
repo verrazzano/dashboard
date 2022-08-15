@@ -70,9 +70,6 @@ export default {
       }
     },
     dataComponent() {
-      // eslint-disable-next-line no-console
-      console.log(`XXXXXX dataComponent() requiring ${ this.typeKey }`);
-
       return require(`@/edit/core.oam.dev.component/Secret/${ this.typeKey }`).default;
     },
     secretOptions() {

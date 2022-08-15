@@ -5,7 +5,7 @@ import RadioGroup from '@/components/form/RadioGroup';
 import SecretHelper from '@/mixins/verrazzano/secret-helper';
 
 const KNOWN_REGISTRY_PROVIDERS_MAP = {
-  'Oracle Container Registry': 'container-registry.oracle.com',
+  'Oracle Container Registry': 'container-registry.oracle.com/v2/',
   'Docker Hub':                'index.docker.io/v1/',
   'Quay.io':                   'quay.io',
 };
@@ -32,7 +32,7 @@ export default {
 
     try {
       // Cannot use computed property decodeData from inside the data() function...
-      const parsed = JSON.parse(this.getDecodedData()['.dockerconfigjson']);
+      const parsed = JSON.parse(this.getDecodedData()['.dockerconfigjson'] || '{}');
 
       auths = parsed.auths;
     } catch (e) {
