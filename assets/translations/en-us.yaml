@@ -6807,7 +6807,7 @@ verrazzano:
   ### verrazzano.apps ###
   #######################
   apps:
-    label: Verrazzano Applications
+    label: Applications
 
   ############################
   ### verrazzano.coherence ###
@@ -8041,7 +8041,7 @@ verrazzano:
   ### verrazzano.components ###
   #############################
   components:
-    label: Verrazzano Components
+    label: Components
 
   ################################
   ### verrazzano.containerized ###
@@ -8135,6 +8135,12 @@ verrazzano:
     tabs:
       deployment: Deployment Template
       strategy: Strategy
+
+  ###################################
+  ### verrazzano.multiClusterApps ###
+  ###################################
+  multiClusterApps:
+    label: Multi-Cluster Applications
 
   ######################
   ### verrazzano.nav ###

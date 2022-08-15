@@ -42,10 +42,22 @@ export function init(store) {
   });
 
   virtualType({
+    labelKey:       'verrazzano.multiClusterApps.label',
+    name:           'mcapps',
+    namespaced:     false,
+    weight:         99,
+    icon:           'folder',
+    route:          {
+      name:   'c-cluster-verrazzano-mcapps',
+      params: { resource: 'clusters.verrazzano.io.MultiClusterApplicationConfiguration' }
+    }
+  });
+
+  virtualType({
     labelKey:       'verrazzano.components.label',
     name:           'components',
     namespaced:     false,
-    weight:         98,
+    weight:         97,
     icon:           'folder',
     route:          {
       name:   'c-cluster-verrazzano-components',
@@ -55,6 +67,7 @@ export function init(store) {
 
   basicType([
     'apps',
+    'mcapps',
     'components'
   ]);
 
