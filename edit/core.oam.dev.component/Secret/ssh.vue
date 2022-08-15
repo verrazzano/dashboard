@@ -41,7 +41,7 @@ export default {
     if (!this.publicKey) {
       this.publicKey = this.getPublicKey();
     }
-    if (!this.password) {
+    if (!this.privateKey) {
       this.privateKey = this.getPrivateKey();
     }
   },
@@ -49,7 +49,7 @@ export default {
     publicKey() {
       this.setData('ssh-publickey', this.publicKey);
     },
-    password() {
+    privateKey() {
       this.setData('ssh-privatekey', this.privateKey);
     },
   },
