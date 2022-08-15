@@ -6414,6 +6414,20 @@ typeLabel:
       other { Cluster Registration Tokens }
     } 
 
+  ### Added by Verrazzano
+  clusters.verrazzano.io.multiclusterapplicationconfiguration: |-
+    {count, plural,
+      one { Multi-Cluster Application }
+      other { Multi-Cluster Applications }
+    } 
+
+  ### Added by Verrazzano
+  core.oam.dev.applicationconfiguration: |-
+    {count, plural,
+      one { Application }
+      other { Applications }
+    } 
+
 action:
   clone: Clone
   disable: Disable
