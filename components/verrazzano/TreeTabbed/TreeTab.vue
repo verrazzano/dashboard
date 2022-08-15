@@ -107,6 +107,9 @@ export default {
   },
 
   watch: {
+    label(neu) {
+      this.navigationNode.label = neu;
+    },
     active(neu) {
       if (neu) {
         this.$emit('active');
