@@ -32,7 +32,7 @@ export default {
 
     try {
       // Cannot use computed property decodeData from inside the data() function...
-      const parsed = JSON.parse(this.getDecodedData()['.dockerconfigjson']);
+      const parsed = JSON.parse(this.getDecodedData()['.dockerconfigjson'] || '{}');
 
       auths = parsed.auths;
     } catch (e) {
