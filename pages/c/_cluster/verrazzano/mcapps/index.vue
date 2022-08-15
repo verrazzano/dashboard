@@ -6,7 +6,7 @@ export default {
   name:       'MultiClusterAppsResourceList',
   components: { ResourceList },
   created() {
-    this.$route.params['resource'] = 'clusters.verrazzano.io.MultiClusterApplicationConfiguration';
+    this.$route.params['resource'] = 'clusters.verrazzano.io.multiclusterapplicationconfiguration';
   }
 };
 </script>
