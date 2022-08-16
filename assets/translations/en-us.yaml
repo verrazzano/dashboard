@@ -7372,6 +7372,7 @@ verrazzano:
       pathExpression: Path Expression
       pathType: Path Match Type
       paused: Pause Deployment
+      placement: Placement
       podSecurityContext:
         fsGroup: Filesystem Group
         fsGroupChangePolicy: Filesystem Group Change Policy
