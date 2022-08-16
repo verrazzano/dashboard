@@ -1,11 +1,12 @@
 <script>
+// Added by Verrazzano
 import LabeledInput from '@/components/form/LabeledInput';
 import TabDeleteButton from '@/components/verrazzano/TabDeleteButton';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
 
 export default {
-  name:       'LoggingTraitTab',
+  name:       'ManualScalerTraitTab',
   components: {
     LabeledInput,
     TabDeleteButton,
@@ -38,7 +39,7 @@ export default {
   },
   created() {
     if (!this.treeTabLabel) {
-      this.treeTabLabel = this.t('verrazzano.common.tabs.loggingTrait');
+      this.treeTabLabel = this.t('verrazzano.common.tabs.manualScalerTrait');
     }
   },
 };
@@ -49,35 +50,32 @@ export default {
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
-        :button-label="t('verrazzano.common.messages.removeTypeFromComponent', { type: 'LoggingTrait' })"
+        :button-label="t('verrazzano.common.messages.removeTypeFromComponent', { type: 'ManualScalerTrait' })"
         :mode="mode"
-        @click="$emit('deleteTrait', 'LoggingTrait')"
+        @click="$emit('deleteTrait', 'ManualScalerTrait')"
       />
     </template>
     <template #default>
       <div class="row">
-        <div class="col span-12">
+        <div class="col span-4">
           <LabeledInput
-            :value="getField('trait.spec.loggingImage')"
+            :value="getField('trait.kind')"
             :mode="mode"
-            required
-            :placeholder="getNotSetPlaceholder(value, 'trait.spec.loggingImage')"
-            :label="t('verrazzano.common.fields.loggingImage')"
-            @input="setFieldIfNotEmpty('trait.spec.loggingImage', $event)"
+            disabled
+            :label="t('verrazzano.common.fields.kind')"
+            @input="setFieldIfNotEmpty('trait.kind', $event)"
           />
         </div>
-      </div>
-      <div class="spacer-small" />
-      <div class="row">
-        <div class="col span-12">
+        <div class="col span-4">
           <LabeledInput
-            :value="getField('trait.spec.loggingConfig')"
+            :value="getField('trait.spec.replicaCount')"
             :mode="mode"
             required
-            type="multiline"
-            :placeholder="getNotSetPlaceholder(value, 'trait.spec.loggingConfig')"
-            :label="t('verrazzano.common.fields.loggingConfig')"
-            @input="setFieldIfNotEmpty('trait.spec.loggingConfig', $event)"
+            type="number"
+            min="0"
+            :placeholder="getNotSetPlaceholder(value, 'trait.spec.replicaCount')"
+            :label="t('verrazzano.common.fields.replicaCount')"
+            @input="setNumberField('trait.spec.replicaCount', $event)"
           />
         </div>
       </div>

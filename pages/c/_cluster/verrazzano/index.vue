@@ -5,11 +5,11 @@ export default {
 
   middleware({ redirect, route, _store } ) {
     return redirect({
-      name:   'c-cluster-verrazzano-applications',
+      name:   'c-cluster-verrazzano-mcapps',
       params: {
         ...route.params,
         product:  'verrazzano',
-        resource: 'core.oam.dev.applicationconfiguration',
+        resource: 'clusters.verrazzano.io.MultiClusterApplicationConfiguration',
       }
     });
   }
