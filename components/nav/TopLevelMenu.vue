@@ -694,4 +694,15 @@ export default {
       }
     }
   }
+
+  // Added by Verrazzano Start
+  .icon-vzlogo:before {
+    background-image: url('~assets/images/pl/verrazzano-logo.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    color: transparent;
+    content: "\ea2a";
+  }
+  // Added by Verrazzano End
+
 </style>
