@@ -23,7 +23,7 @@ export function init(store) {
   product({
     ifHaveVerb:          'PUT',
     inStore:             'management',
-    icon:                'globe',
+    icon:                'vzlogo',
     removable:           false,
     showClusterSwitcher: false,
     category:            'verrazzano',
