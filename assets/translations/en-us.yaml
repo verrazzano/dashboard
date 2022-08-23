@@ -8151,6 +8151,20 @@ verrazzano:
       deployment: Deployment Template
       strategy: Strategy
 
+  ########################
+  ### verrazzano.links ###
+  ########################
+  links:
+    consoleUrl: Verrazzano Console
+    grafanaUrl: Grafana Console
+    keyCloakUrl: Keycloak Console
+    kialiUrl: Kiali Console
+    openSearchDashboardsUrl: OpenSearch Dashboards Console
+    openSearchUrl: OpenSearch Console
+    prometheusUrl: Prometheus Console
+    rancherUrl: Rancher Console
+    title: Verrazzano Links
+
   ###################################
   ### verrazzano.multiClusterApps ###
   ###################################
