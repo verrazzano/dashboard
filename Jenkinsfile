@@ -12,18 +12,19 @@ pipeline {
     }
 
     environment {
-        DASHBOARD_VERSION = "v2.6.5"
+        DASHBOARD_VERSION = "2.6.5"
         OCI_CLI_AUTH = "instance_principal"
         OCI_OS_NAMESPACE = credentials('oci-os-namespace')
         OCI_OS_BUCKET = "verrazzano-builds"
         GITHUB_ACCESS_TOKEN = credentials('github-api-token-release-process')
+        OCI_OS_BUILD_URL = credentials('oci-os-build-url')
     }
 
     stages {
         stage('set version') {
             steps {
                 script {
-                    env.VERSION = get_dashboard_version()
+                    env.VERSION = get_artifact_version()
                     env.GIT_TAG =  "rancher-dashboard-" + "${env.VERSION}"
                     env.DRONE_TAG = "${env.GIT_TAG}"
                     env.TAR_FILE_NAME = "${env.DRONE_TAG}" + ".tar.gz"
@@ -48,7 +49,12 @@ pipeline {
         }
 
          stage('release') {
-            when { buildingTag() }
+            when {
+                allOf {
+                    branch "oracle/release/*"
+                    buildingTag()
+                }
+            }
             steps {
                 sh """
                     echo "${env.GITHUB_ACCESS_TOKEN}" | gh auth login --with-token
@@ -56,16 +62,36 @@ pipeline {
                 """
             }
         }
+
+        stage('Call Downstream Job') {
+            when {
+                allOf {
+                    branch "oracle/release/*"
+                    triggeredBy 'TimerTrigger'
+                }
+            }
+            steps {
+                build job: "rancher/oracle/release/2.6.6", propagate: false, parameters: [
+                    string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard/${env.TAR_FILE_NAME}")
+                ]
+            }
+        }
     }
 }
 
-def get_dashboard_version() {
-    dashboard_version = "${env.DASHBOARD_VERSION}"
+def get_artifact_version() {
+    time_stamp = sh(returnStdout: true, script: "date +%Y%m%d%H%M%S").trim()
+    short_commit_sha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
+    version_prefix = ''
 
-    if (env.TAG_NAME == null) {
-        dashboard_version = dashboard_version + "-SNAPSHOT"
+    if (env.TAG_NAME?.trim()) {
+        version_prefix = "${env.TAG_NAME}" + "-"
+    } else if (env.BRANCH_NAME.startsWith("oracle/release/${DASHBOARD_VERSION}")) {
+        version_prefix = "v" + "${DASHBOARD_VERSION}" + "-"
     }
 
+    dashboard_version = version_prefix + time_stamp + "-" + short_commit_sha
     println("dashboard version: " + dashboard_version)
     return dashboard_version
 }
+
