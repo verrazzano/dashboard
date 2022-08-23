@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 // Added by Verrazzano
 import ApplicationComponentsTab from '@pkg/components/ApplicationComponentsTab/index.vue';
 import CruResource from '@shell/components/CruResource.vue';

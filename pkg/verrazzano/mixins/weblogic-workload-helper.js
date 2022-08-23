@@ -1,5 +1,5 @@
 // Added by Verrazzano
-import VerrazzanoHelper from '~/mixins/verrazzano/verrazzano-helper';
+import VerrazzanoHelper from '@pkg/mixins/verrazzano-helper';
 
 export default {
   mixins:   [VerrazzanoHelper],
