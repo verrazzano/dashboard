@@ -6414,6 +6414,20 @@ typeLabel:
       other { Cluster Registration Tokens }
     } 
 
+  ### Added by Verrazzano
+  clusters.verrazzano.io.multiclusterapplicationconfiguration: |-
+    {count, plural,
+      one { Multi-Cluster Application }
+      other { Multi-Cluster Applications }
+    } 
+
+  ### Added by Verrazzano
+  core.oam.dev.applicationconfiguration: |-
+    {count, plural,
+      one { Application }
+      other { Applications }
+    } 
+
 action:
   clone: Clone
   disable: Disable
@@ -6807,7 +6821,7 @@ verrazzano:
   ### verrazzano.apps ###
   #######################
   apps:
-    label: Verrazzano Applications
+    label: Applications
 
   ############################
   ### verrazzano.coherence ###
@@ -7218,7 +7232,6 @@ verrazzano:
       deleteComponent: Delete Component
       deleteContainer: Delete Container
       deleteElement: Delete { element }
-      deleteIngressRule: Delete Ingress Rule
       deleteTrait: Delete Trait
 
     ################################
@@ -7359,6 +7372,7 @@ verrazzano:
       pathExpression: Path Expression
       pathType: Path Match Type
       paused: Pause Deployment
+      placement: Placement
       podSecurityContext:
         fsGroup: Filesystem Group
         fsGroupChangePolicy: Filesystem Group Change Policy
@@ -7664,6 +7678,7 @@ verrazzano:
       hostAlias: Host Alias
       hostAliases: Host Aliases
       ingressTrait: Ingress Trait
+      ingressTraitRule: Ingress Rule
       initContainer: Init Container
       initContainers: Init Containers
       ipSettings: IP Settings
@@ -8041,7 +8056,7 @@ verrazzano:
   ### verrazzano.components ###
   #############################
   components:
-    label: Verrazzano Components
+    label: Components
 
   ################################
   ### verrazzano.containerized ###
@@ -8135,6 +8150,26 @@ verrazzano:
     tabs:
       deployment: Deployment Template
       strategy: Strategy
+
+  ########################
+  ### verrazzano.links ###
+  ########################
+  links:
+    consoleUrl: Verrazzano Console
+    grafanaUrl: Grafana Console
+    keyCloakUrl: Keycloak Console
+    kialiUrl: Kiali Console
+    openSearchDashboardsUrl: OpenSearch Dashboards Console
+    openSearchUrl: OpenSearch Console
+    prometheusUrl: Prometheus Console
+    rancherUrl: Rancher Console
+    title: Verrazzano Links
+
+  ###################################
+  ### verrazzano.multiClusterApps ###
+  ###################################
+  multiClusterApps:
+    label: Multi-Cluster Applications
 
   ######################
   ### verrazzano.nav ###

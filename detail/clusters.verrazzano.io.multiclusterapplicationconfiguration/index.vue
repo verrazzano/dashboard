@@ -37,7 +37,7 @@ const METRICS_SUPPORTED_KINDS = [
 ];
 
 export default {
-  name:       'VerrazzanoApplicationDetail',
+  name:       'VerrazzanoMultiClusterApplicationDetail',
   components: {
     CountGauge,
     DashboardMetrics,

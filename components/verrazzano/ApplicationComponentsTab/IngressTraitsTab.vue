@@ -1,4 +1,5 @@
 <script>
+// Added by Verrazzano
 import ArrayListGrouped from '@/components/form/ArrayListGrouped';
 import DynamicTabHelper from '@/mixins/verrazzano/dynamic-tab-helper';
 import LabeledArrayList from '@/components/verrazzano/LabeledArrayList';
@@ -206,23 +207,15 @@ export default {
         :label="getRuleLabel(idx)"
         :name="getRuleTabName(idx)"
       >
+        <template #beside-header>
+          <TabDeleteButton
+            :element-name="t('verrazzano.common.tabs.ingressTraitRule')"
+            :mode="mode"
+            @click="removeRule(idx)"
+          />
+        </template>
         <template #default>
           <div>
-            <div v-if="!isView">
-              <div class="row">
-                <div class="col span-10" />
-                <div class="col span-2">
-                  <button
-                    type="button"
-                    class="btn role-tertiary add"
-                    @click="removeRule(idx)"
-                  >
-                    {{ t('verrazzano.common.buttons.deleteIngressRule') }}
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="spacer" />
             <div>
               <h3>{{ t('verrazzano.common.titles.hosts') }}</h3>
               <LabeledArrayList
