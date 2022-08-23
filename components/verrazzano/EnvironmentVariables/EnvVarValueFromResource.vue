@@ -114,10 +114,10 @@ export default {
     const requests = { };
 
     if (this.$store.getters['cluster/schemaFor'](CONFIG_MAP)) {
-      requests.configMaps = this.$store.dispatch('cluster/findAll', { type: CONFIG_MAP });
+      requests.configMaps = this.$store.dispatch('management/findAll', { type: CONFIG_MAP });
     }
     if (this.$store.getters['cluster/schemaFor'](SECRET)) {
-      requests.secrets = this.$store.dispatch('cluster/findAll', { type: SECRET });
+      requests.secrets = this.$store.dispatch('management/findAll', { type: SECRET });
     }
 
     const hash = await allHash(requests);

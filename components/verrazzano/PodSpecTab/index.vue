@@ -72,7 +72,7 @@ export default {
     };
   },
   async fetch() {
-    const requests = { serviceAccounts: this.$store.dispatch('cluster/findAll', { type: SERVICE_ACCOUNT }) };
+    const requests = { serviceAccounts: this.$store.dispatch('management/findAll', { type: SERVICE_ACCOUNT }) };
 
     const hash = await allHash(requests);
 

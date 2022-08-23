@@ -53,10 +53,10 @@ export default {
     };
   },
   async fetch() {
-    const hash = { allPods: this.$store.dispatch('cluster/findAll', { type: POD }) };
+    const hash = { allPods: this.$store.dispatch('management/findAll', { type: POD }) };
 
     if (this.value.type === WORKLOAD_TYPES.CRON_JOB) {
-      hash.allJobs = this.$store.dispatch('cluster/findAll', { type: WORKLOAD_TYPES.JOB });
+      hash.allJobs = this.$store.dispatch('management/findAll', { type: WORKLOAD_TYPES.JOB });
     }
     const res = await allHash(hash);
 

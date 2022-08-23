@@ -86,10 +86,10 @@ export default {
   async fetch() {
     this.allServiceAccounts = {};
 
-    const requests = { nodes: this.$store.dispatch('cluster/findAll', { type: NODE }) };
+    const requests = { nodes: this.$store.dispatch('management/findAll', { type: NODE }) };
 
     if (this.$store.getters['cluster/schemaFor'](SERVICE_ACCOUNT)) {
-      requests.serviceAccounts = this.$store.dispatch('cluster/findAll', { type: SERVICE_ACCOUNT });
+      requests.serviceAccounts = this.$store.dispatch('management/findAll', { type: SERVICE_ACCOUNT });
     }
 
     const hash = await allHash(requests);

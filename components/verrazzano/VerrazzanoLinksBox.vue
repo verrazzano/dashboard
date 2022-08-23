@@ -14,7 +14,7 @@ export default {
     return { links: {} };
   },
   async fetch() {
-    const requests = { verrazzanos: this.$store.dispatch('cluster/findAll', { type: VERRAZZANO }) };
+    const requests = { verrazzanos: this.$store.dispatch('management/findAll', { type: VERRAZZANO }) };
 
     const hash = await allHash(requests);
 
