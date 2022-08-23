@@ -17,7 +17,6 @@ pipeline {
         OCI_OS_NAMESPACE = credentials('oci-os-namespace')
         OCI_OS_BUCKET = "verrazzano-builds"
         GITHUB_ACCESS_TOKEN = credentials('github-api-token-release-process')
-        OCI_OS_BUILD_URL = credentials('oci-os-build-url')
     }
 
     stages {
@@ -72,7 +71,7 @@ pipeline {
             }
             steps {
                 build job: "rancher/oracle/release/2.6.6", propagate: false, parameters: [
-                    string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard/${env.TAR_FILE_NAME}")
+                    string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard%2F${env.TAR_FILE_NAME}")
                 ]
             }
         }
