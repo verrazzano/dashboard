@@ -79,19 +79,19 @@ pipeline {
 }
 
 def get_artifact_version() {
-    time_stamp = sh(returnStdout: true, script: "date +%Y%m%d%H%M%S").trim()
-    short_commit_sha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
-    version_prefix = ''
+    def time_stamp = sh(returnStdout: true, script: "date +%Y%m%d%H%M%S").trim()
+    def short_commit_sha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
+    def version_prefix = ''
 
     if (env.TAG_NAME?.trim()) {
-        version_prefix = "${env.TAG_NAME}" + "-"
+        version_prefix = "${env.TAG_NAME}"
     } else if (env.BRANCH_NAME.startsWith("oracle/release/${DASHBOARD_VERSION}")) {
-        version_prefix = "v" + "${DASHBOARD_VERSION}" + "-"
+        version_prefix = "v" + "${DASHBOARD_VERSION}"
     } else {
         version_prefix = env.BRANCH_NAME.replaceAll("/","_")
     }
 
-    dashboard_version = version_prefix + time_stamp + "-" + short_commit_sha
+    dashboard_version = [version_prefix, time_stamp, short_commit_sha].join("-")
     println("dashboard version: " + dashboard_version)
     return dashboard_version
 }
