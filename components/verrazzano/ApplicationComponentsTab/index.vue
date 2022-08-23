@@ -65,7 +65,7 @@ export default {
     const requests = {};
 
     if (this.$store.getters['cluster/schemaFor'](VZ_COMPONENT)) {
-      requests.components = this.$store.dispatch('cluster/findAll', { type: VZ_COMPONENT });
+      requests.components = this.$store.dispatch('management/findAll', { type: VZ_COMPONENT });
     }
 
     const hash = await allHash(requests);

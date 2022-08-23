@@ -56,7 +56,7 @@ export default {
     const requests = { clusters: this.$store.dispatch('rancher/findAll', { type: NORMAN.CLUSTER }) };
 
     if (this.$store.getters['cluster/schemaFor'](SECRET)) {
-      requests.secrets = this.$store.dispatch('cluster/findAll', { type: SECRET });
+      requests.secrets = this.$store.dispatch('management/findAll', { type: SECRET });
     }
 
     const hash = await allHash(requests);

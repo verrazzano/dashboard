@@ -54,7 +54,7 @@ export default {
     };
   },
   async fetch() {
-    const requests = { configMaps: this.$store.dispatch('cluster/findAll', { type: CONFIG_MAP }) };
+    const requests = { configMaps: this.$store.dispatch('management/findAll', { type: CONFIG_MAP }) };
 
     const hash = await allHash(requests);
 

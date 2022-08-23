@@ -69,10 +69,10 @@ export default {
   async fetch() {
     this.allSecrets = {};
 
-    const requests = { secrets: this.$store.dispatch('cluster/findAll', { type: SECRET }) };
+    const requests = { secrets: this.$store.dispatch('management/findAll', { type: SECRET }) };
 
     if (this.$store.getters['cluster/schemaFor'](CONFIG_MAP)) {
-      requests.configMaps = this.$store.dispatch('cluster/findAll', { type: CONFIG_MAP });
+      requests.configMaps = this.$store.dispatch('management/findAll', { type: CONFIG_MAP });
     }
 
     const hash = await allHash(requests);
