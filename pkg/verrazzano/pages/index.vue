@@ -20,3 +20,14 @@ export default {
   }
 };
 </script>
+
+// global, not scoped
+<style lang='scss'>
+  .icon-vzlogo:before {
+    background-image: url('../assets/verrazzano-logo.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    color: transparent;
+    content: "\ea2a";
+  }
+</style>
