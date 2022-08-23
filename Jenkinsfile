@@ -87,6 +87,8 @@ def get_artifact_version() {
         version_prefix = "${env.TAG_NAME}" + "-"
     } else if (env.BRANCH_NAME.startsWith("oracle/release/${DASHBOARD_VERSION}")) {
         version_prefix = "v" + "${DASHBOARD_VERSION}" + "-"
+    } else {
+        version_prefix = env.BRANCH_NAME.replaceAll("/","_")
     }
 
     dashboard_version = version_prefix + time_stamp + "-" + short_commit_sha
