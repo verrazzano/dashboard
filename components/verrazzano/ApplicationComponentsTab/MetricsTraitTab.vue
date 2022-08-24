@@ -55,10 +55,10 @@ export default {
     const requests = {};
 
     if ( this.$store.getters['cluster/schemaFor'](SECRET) ) {
-      requests.secrets = this.$store.dispatch('cluster/findAll', { type: SECRET });
+      requests.secrets = this.$store.dispatch('management/findAll', { type: SECRET });
     }
     if ( this.$store.getters['cluster/schemaFor']('deployment') ) {
-      requests.deployments = this.$store.dispatch('cluster/findAll', { type: 'deployment' });
+      requests.deployments = this.$store.dispatch('management/findAll', { type: 'deployment' });
     }
 
     const hash = await allHash(requests);

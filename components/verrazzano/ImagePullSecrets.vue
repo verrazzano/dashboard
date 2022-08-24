@@ -48,8 +48,8 @@ export default {
     this.allSecretNames = {};
     const requests = {};
 
-    if (this.$store.getters['cluster/schemaFor'](SECRET)) {
-      requests.secrets = this.$store.dispatch('cluster/findAll', { type: SECRET });
+    if (this.$store.getters['management/schemaFor'](SECRET)) {
+      requests.secrets = this.$store.dispatch('management/findAll', { type: SECRET });
     }
 
     const hash = await allHash(requests);
