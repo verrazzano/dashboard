@@ -70,7 +70,7 @@ pipeline {
                 }
             }
             steps {
-                build job: "rancher/oracle/release/2.6.6", propagate: false, parameters: [
+                build job: "rancher/oracle%2Frelease%2F2.6.6", propagate: false, parameters: [
                     string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard%2F${env.TAR_FILE_NAME}")
                 ]
             }
