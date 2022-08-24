@@ -57,10 +57,10 @@ export default {
   async fetch() {
     this.allSecrets = {};
 
-    const requests = { namespaces: this.$store.dispatch('cluster/findAll', { type: NAMESPACE }) };
+    const requests = { namespaces: this.$store.dispatch('management/findAll', { type: NAMESPACE }) };
 
     if (this.$store.getters['cluster/schemaFor'](SECRET)) {
-      requests.secrets = this.$store.dispatch('cluster/findAll', { type: SECRET });
+      requests.secrets = this.$store.dispatch('management/findAll', { type: SECRET });
     }
 
     const hash = await allHash(requests);

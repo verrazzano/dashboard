@@ -10,7 +10,7 @@ import NameNsDescription from '@/components/form/NameNsDescription';
 import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
 import TreeTabbed from '@/components/verrazzano/TreeTabbed';
 import VerrazzanoHelper from '@/mixins/verrazzano/verrazzano-helper';
-import { CAPI, SECRET } from '@/config/types';
+import { NORMAN, SECRET } from '@/config/types';
 import { allHash } from '@/utils/promise';
 
 export default {
@@ -50,10 +50,13 @@ export default {
     };
   },
   async fetch() {
-    const requests = { clusters: this.$store.dispatch('management/findAll', { type: CAPI.RANCHER_CLUSTER }) };
+    // Use Norman API so that we get the Verrazzano-defined names
+    // of the cluster and not just the Rancher-defined cluster ID.
+    //
+    const requests = { clusters: this.$store.dispatch('rancher/findAll', { type: NORMAN.CLUSTER }) };
 
     if (this.$store.getters['cluster/schemaFor'](SECRET)) {
-      requests.secrets = this.$store.dispatch('cluster/findAll', { type: SECRET });
+      requests.secrets = this.$store.dispatch('management/findAll', { type: SECRET });
     }
 
     const hash = await allHash(requests);
@@ -155,8 +158,8 @@ export default {
                     :mode="mode"
                     :multiple="true"
                     :options="clusters"
-                    option-label="metadata.name"
-                    :reduce="cluster => cluster.metadata.name"
+                    option-label="name"
+                    :reduce="cluster => cluster.name"
                     :placeholder="getNotSetPlaceholder(value, 'clusterNames')"
                     :label="t('verrazzano.common.fields.placement')"
                     @input="setPlacementClusters($event)"

@@ -37,7 +37,7 @@ export default {
     };
   },
   async fetch() {
-    const requests = { pvcs: this.$store.dispatch('cluster/findAll', { type: PVC }) };
+    const requests = { pvcs: this.$store.dispatch('management/findAll', { type: PVC }) };
 
     const hash = await allHash(requests);
 

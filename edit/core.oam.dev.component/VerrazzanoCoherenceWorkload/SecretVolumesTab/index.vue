@@ -54,7 +54,7 @@ export default {
     };
   },
   async fetch() {
-    const requests = { secrets: this.$store.dispatch('cluster/findAll', { type: SECRET }) };
+    const requests = { secrets: this.$store.dispatch('management/findAll', { type: SECRET }) };
 
     const hash = await allHash(requests);
 

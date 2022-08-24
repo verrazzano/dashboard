@@ -57,7 +57,7 @@ export default {
     };
   },
   async fetch() {
-    const requests = { namespaces: this.$store.dispatch('cluster/findAll', { type: NAMESPACE }) };
+    const requests = { namespaces: this.$store.dispatch('management/findAll', { type: NAMESPACE }) };
 
     const hash = await allHash(requests);
 
