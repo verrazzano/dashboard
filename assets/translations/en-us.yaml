@@ -7717,6 +7717,7 @@ verrazzano:
       preferredPrefix: Preferred Term
       readinessGates: Readiness Gates
       readinessProbe: Readiness Probe
+      referringApplications: Referring Applications
       resources: Resources
       seccompProfile: Secure Computing Profile
       seLinuxOptions: SE Linux Options
