@@ -104,7 +104,7 @@ export default {
       }
     },
     getAvailableTraitTypes(component) {
-      const usedTraitTypes = component.traits.map(trait => trait.trait.kind);
+      const usedTraitTypes = component.traits?.map(trait => trait.trait.kind) || [];
 
       return this.traitTypeOptions.filter(traitType => !usedTraitTypes.includes(traitType.value));
     },
