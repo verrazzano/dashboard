@@ -1,7 +1,7 @@
 <script>
 // Added by Verrazzano
-import LabeledInput from '@components/Form/LabeledInput/LabeledInput.vue';
-import LabeledSelect from '@shell/components/form/LabeledSelect.vue';
+import LabeledInput from '@components/Form/LabeledInput/LabeledInput';
+import LabeledSelect from '@shell/components/form/LabeledSelect';
 import TabDeleteButton from '@pkg/components/TabDeleteButton';
 import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@pkg/mixins/verrazzano-helper';

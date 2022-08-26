@@ -1,12 +1,12 @@
 <script>
 // Added by Verrazzano
-import ApplicationComponentsTab from '@pkg/components/ApplicationComponentsTab/index.vue';
-import CruResource from '@shell/components/CruResource.vue';
-import KeyValue from '@shell/components/form/KeyValue.vue';
-import LabeledInput from '@components/Form/LabeledInput/LabeledInput.vue';
-import NameNsDescription from '@shell/components/form/NameNsDescription.vue';
-import TreeTab from '@pkg/components/TreeTabbed/TreeTab.vue';
-import TreeTabbed from '@pkg/components/TreeTabbed/index.vue';
+import ApplicationComponentsTab from '@pkg/components/ApplicationComponentsTab';
+import CruResource from '@shell/components/CruResource';
+import KeyValue from '@shell/components/form/KeyValue';
+import LabeledInput from '@components/Form/LabeledInput/LabeledInput';
+import NameNsDescription from '@shell/components/form/NameNsDescription';
+import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
+import TreeTabbed from '@pkg/components/TreeTabbed';
 import VerrazzanoHelper from '@pkg/mixins/verrazzano-helper';
 
 export default {

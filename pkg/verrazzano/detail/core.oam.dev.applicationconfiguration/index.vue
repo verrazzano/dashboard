@@ -1,12 +1,12 @@
 <script>
 // Added by Verrazzano
-import CountGauge from '@shell/components/CountGauge.vue';
+import CountGauge from '@shell/components/CountGauge';
 import CreateEditView from '@shell/mixins/create-edit-view';
-import DashboardMetrics from '@shell/components/DashboardMetrics.vue';
-import Loading from '@shell/components/Loading.vue';
+import DashboardMetrics from '@shell/components/DashboardMetrics';
+import Loading from '@shell/components/Loading';
 import ResourceTabs from '@shell/components/form/ResourceTabs';
 import SortableTable from '@shell/components/SortableTable';
-import Tab from '@shell/components/Tabbed/Tab.vue';
+import Tab from '@shell/components/Tabbed/Tab';
 import V1WorkloadMetrics from '@shell/mixins/v1-workload-metrics';
 
 import { STATE, NAME, NODE, POD_IMAGES } from '@shell/config/table-headers';
