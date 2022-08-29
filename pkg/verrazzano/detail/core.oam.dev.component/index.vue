@@ -239,22 +239,5 @@ export default {
   </div>
 </template>
 
-<style lang='scss' scoped>
-.gauges {
-  display: flex;
-  justify-content: space-around;
-  &>*{
-    flex: 1;
-    margin-right: $column-gutter;
-  }
-  &__pods {
-    flex-wrap: wrap;
-    justify-content: left;
-    .count-gauge {
-      width: 23%;
-      margin-bottom: 10px;
-      flex: initial;
-    }
-  }
-}
+<style lang='scss' scoped src="@pkg/assets/styles/verrazzano.scss">
 </style>

@@ -196,8 +196,5 @@ export default {
   </TreeTab>
 </template>
 
-<style lang="css" scoped>
-  .spacer-tiny {
-    padding: 5px 0 0 0;
-  }
+<style lang='scss' scoped src="@pkg/assets/styles/verrazzano.scss">
 </style>

@@ -101,43 +101,5 @@ export default {
   </form>
 </template>
 
-<style lang='scss'>
-.container-row{
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.type-placeholder{
-  color: white;
-    font-size: 2.5em;
-    height: 100%;
-    width: 100%;
-    background-color: var(--primary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.type-description{
-  color: var(--input-label)
-}
-
-.next-dropdown{
-  display: inline-block;
-}
-
-.tree-tabbed-form {
-  height: 10px;
-  flex: 1 1 auto;
-
-  .cru {
-    height: 100%;
-  }
-
-  .tree-tabbed {
-    height: 10px;
-    flex: 1 1 auto;
-  }
-}
+<style lang='scss' scoped src="@pkg/assets/styles/verrazzano.scss">
 </style>

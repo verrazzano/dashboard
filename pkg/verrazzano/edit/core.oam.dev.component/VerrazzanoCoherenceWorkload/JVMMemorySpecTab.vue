@@ -212,6 +212,5 @@ export default {
   </TreeTab>
 </template>
 
-<style scoped>
-  @import "../verrazzano-styles.css";
+<style lang='scss' scoped src="@pkg/assets/styles/verrazzano.scss">
 </style>

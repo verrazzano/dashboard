@@ -194,6 +194,5 @@ export default {
   </form>
 </template>
 
-<style scoped>
-
+<style lang='scss' scoped src="@pkg/assets/styles/verrazzano.scss">
 </style>

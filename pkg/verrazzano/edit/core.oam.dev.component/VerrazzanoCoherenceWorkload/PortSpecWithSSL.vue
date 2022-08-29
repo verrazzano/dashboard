@@ -80,6 +80,5 @@ export default {
   </div>
 </template>
 
-<style scoped>
-  @import '../verrazzano-styles.css';
+<style lang='scss' scoped src="@pkg/assets/styles/verrazzano.scss">
 </style>

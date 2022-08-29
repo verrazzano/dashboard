@@ -127,21 +127,21 @@ export default {
             :label="t('verrazzano.common.fields.containerSecurityContext.allowPrivilegeEscalation')"
             @input="setBooleanField('allowPrivilegeEscalation', $event)"
           />
-          <div class="spacer-very-tiny" />
+          <div class="spacer-tiny" />
           <Checkbox
             :value="getField('privileged')"
             :mode="mode"
             :label="t('verrazzano.common.fields.containerSecurityContext.privileged')"
             @input="setBooleanField('privileged', $event)"
           />
-          <div class="spacer-very-tiny" />
+          <div class="spacer-tiny" />
           <Checkbox
             :value="getField('runAsNonRoot')"
             :mode="mode"
             :label="t('verrazzano.common.fields.containerSecurityContext.runAsNonRoot')"
             @input="setBooleanField('runAsNonRoot', $event)"
           />
-          <div class="spacer-very-tiny" />
+          <div class="spacer-tiny" />
           <Checkbox
             :value="getField('readOnlyRootFilesystem')"
             :mode="mode"
@@ -228,8 +228,5 @@ export default {
   </TreeTab>
 </template>
 
-<style scoped>
-  .spacer-very-tiny {
-    padding: 5px 0 0 0;
-  }
+<style lang='scss' scoped src="@pkg/assets/styles/verrazzano.scss">
 </style>
