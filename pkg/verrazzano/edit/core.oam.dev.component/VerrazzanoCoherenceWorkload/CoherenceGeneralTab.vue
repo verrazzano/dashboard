@@ -219,7 +219,7 @@ export default {
           <Checkbox
             :value="getField('enableServiceLinks')"
             :mode="mode"
-            :label="t('verrazzano.coherence.fields.enableServiceLinks')"
+            :label="t('verrazzano.common.fields.podSpec.enableServiceLinks')"
             @input="setBooleanField('enableServiceLinks', $event)"
           />
         </div>
