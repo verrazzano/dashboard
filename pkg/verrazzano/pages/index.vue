@@ -24,7 +24,7 @@ export default {
 // global, not scoped
 <style lang='scss'>
   .icon-vzlogo:before {
-    background-image: url('../assets/verrazzano-logo.svg');
+    background-image: url('../assets/images/verrazzano-logo.svg');
     background-position: center;
     background-repeat: no-repeat;
     color: transparent;

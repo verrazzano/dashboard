@@ -10,7 +10,7 @@ fi
 label_patch="{ \"op\": \"replace\", \"path\": \"/value\", \"value\": \"Verrazzano\" }"
 kubectl patch Setting ui-pl -n cattle-impersonation-system --type json -p "[${label_patch}]"
 
-logo_dir="$(dirname "$0")"/pkg/verrazzano/assets
+logo_dir="$(dirname "$0")"/pkg/verrazzano/assets/images
 
 logo_base64=$(cat $logo_dir/verrazzano-light.svg | base64)
 kubectl apply -f - <<EOF
