@@ -7717,7 +7717,7 @@ verrazzano:
       preferredPrefix: Preferred Term
       readinessGates: Readiness Gates
       readinessProbe: Readiness Probe
-      referringApplications: Referring Applications
+      referringApplications: Related Applications
       resources: Resources
       seccompProfile: Secure Computing Profile
       seLinuxOptions: SE Linux Options
@@ -7740,6 +7740,7 @@ verrazzano:
     titles:
       annotations: Annotations
       component: Component
+      componentDetails: Component Details
       configFiles: Config Files
       containerArgs: Container Arguments
       containerCmd: Container Command
@@ -8165,6 +8166,8 @@ verrazzano:
     prometheusUrl: Prometheus Console
     rancherUrl: Rancher Console
     title: Verrazzano Links
+    elasticUrl: Elasticsearch Console
+    kibanaUrl: Kibana Console
 
   ###################################
   ### verrazzano.multiClusterApps ###
