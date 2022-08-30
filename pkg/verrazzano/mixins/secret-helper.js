@@ -1,7 +1,7 @@
 // Added by Verrazzano
-import OamComponentHelper from '@/mixins/verrazzano/oam-component-helper';
+import OamComponentHelper from '@pkg/mixins/oam-component-helper';
 
-import { base64Decode, base64Encode } from '@/utils/crypto';
+import { base64Decode, base64Encode } from '@shell/utils/crypto';
 
 export default {
   mixins:   [OamComponentHelper],

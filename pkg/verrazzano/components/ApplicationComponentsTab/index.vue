@@ -2,8 +2,8 @@
 // Added by Verrazzano
 import DynamicListHelper from '@pkg/mixins/dynamic-list-helper';
 import IngressTraitsTab from '@pkg/components/ApplicationComponentsTab/IngressTraitsTab';
-import LabeledInput from '@components/Form/LabeledInput/LabeledInput.vue';
-import LabeledSelect from '@shell/components/form/LabeledSelect.vue';
+import LabeledInput from '@components/Form/LabeledInput/LabeledInput';
+import LabeledSelect from '@shell/components/form/LabeledSelect';
 import LoggingTraitTab from '@pkg/components/ApplicationComponentsTab/LoggingTraitTab';
 import ManualScalerTraitTab from '@pkg/components/ApplicationComponentsTab/ManualScalerTraitTab';
 import MetricsTraitTab from '@pkg/components/ApplicationComponentsTab/MetricsTraitTab';
@@ -65,7 +65,7 @@ export default {
     const requests = {};
 
     if (this.$store.getters['cluster/schemaFor'](VZ_COMPONENT)) {
-      requests.components = this.$store.dispatch('cluster/findAll', { type: VZ_COMPONENT });
+      requests.components = this.$store.dispatch('management/findAll', { type: VZ_COMPONENT });
     }
 
     const hash = await allHash(requests);

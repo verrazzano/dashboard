@@ -1,12 +1,12 @@
 <script>
 // Added by Verrazzano
-import ApplicationComponentsTab from '@pkg/components/ApplicationComponentsTab/index.vue';
-import CruResource from '@shell/components/CruResource.vue';
-import KeyValue from '@shell/components/form/KeyValue.vue';
-import LabeledInput from '@components/Form/LabeledInput/LabeledInput.vue';
-import NameNsDescription from '@shell/components/form/NameNsDescription.vue';
-import TreeTab from '@pkg/components/TreeTabbed/TreeTab.vue';
-import TreeTabbed from '@pkg/components/TreeTabbed/index.vue';
+import ApplicationComponentsTab from '@pkg/components/ApplicationComponentsTab';
+import CruResource from '@shell/components/CruResource';
+import KeyValue from '@shell/components/form/KeyValue';
+import LabeledInput from '@components/Form/LabeledInput/LabeledInput';
+import NameNsDescription from '@shell/components/form/NameNsDescription';
+import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
+import TreeTabbed from '@pkg/components/TreeTabbed';
 import VerrazzanoHelper from '@pkg/mixins/verrazzano-helper';
 
 export default {
@@ -101,43 +101,5 @@ export default {
   </form>
 </template>
 
-<style lang='scss'>
-.container-row{
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.type-placeholder{
-  color: white;
-    font-size: 2.5em;
-    height: 100%;
-    width: 100%;
-    background-color: var(--primary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.type-description{
-  color: var(--input-label)
-}
-
-.next-dropdown{
-  display: inline-block;
-}
-
-.tree-tabbed-form {
-  height: 10px;
-  flex: 1 1 auto;
-
-  .cru {
-    height: 100%;
-  }
-
-  .tree-tabbed {
-    height: 10px;
-    flex: 1 1 auto;
-  }
-}
+<style lang='scss' scoped src="@pkg/assets/styles/verrazzano.scss">
 </style>

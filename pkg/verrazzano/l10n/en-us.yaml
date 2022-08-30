@@ -1363,6 +1363,8 @@ verrazzano:
     prometheusUrl: Prometheus Console
     rancherUrl: Rancher Console
     title: Verrazzano Links
+    elasticUrl: Elasticsearch Console
+    kibanaUrl: Kibana Console
 
   ###################################
   ### verrazzano.multiClusterApps ###

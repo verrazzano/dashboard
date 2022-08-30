@@ -1,4 +1,4 @@
 // Added by Verrazzano
-import OamComponentHelper from '~/mixins/verrazzano/oam-component-helper';
+import OamComponentHelper from '@pkg/mixins/oam-component-helper';
 
 export default { mixins: [OamComponentHelper] };

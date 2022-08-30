@@ -1,12 +1,12 @@
 <script>
 // Added by Verrazzano
-import CountGauge from '@shell/components/CountGauge.vue';
+import CountGauge from '@shell/components/CountGauge';
 import CreateEditView from '@shell/mixins/create-edit-view';
-import DashboardMetrics from '@shell/components/DashboardMetrics.vue';
-import Loading from '@shell/components/Loading.vue';
+import DashboardMetrics from '@shell/components/DashboardMetrics';
+import Loading from '@shell/components/Loading';
 import ResourceTabs from '@shell/components/form/ResourceTabs';
 import SortableTable from '@shell/components/SortableTable';
-import Tab from '@shell/components/Tabbed/Tab.vue';
+import Tab from '@shell/components/Tabbed/Tab';
 import V1WorkloadMetrics from '@shell/mixins/v1-workload-metrics';
 
 import { STATE, NAME, NODE, POD_IMAGES } from '@shell/config/table-headers';
@@ -57,10 +57,10 @@ export default {
     };
   },
   async fetch() {
-    const hash = { allPods: this.$store.dispatch('cluster/findAll', { type: POD }) };
+    const hash = { allPods: this.$store.dispatch('management/findAll', { type: POD }) };
 
     if (this.value.type === WORKLOAD_TYPES.CRON_JOB) {
-      hash.allJobs = this.$store.dispatch('cluster/findAll', { type: WORKLOAD_TYPES.JOB });
+      hash.allJobs = this.$store.dispatch('management/findAll', { type: WORKLOAD_TYPES.JOB });
     }
     const res = await allHash(hash);
 
@@ -243,22 +243,5 @@ export default {
   </div>
 </template>
 
-<style lang='scss' scoped>
-.gauges {
-  display: flex;
-  justify-content: space-around;
-  &>*{
-    flex: 1;
-    margin-right: $column-gutter;
-  }
-  &__pods {
-    flex-wrap: wrap;
-    justify-content: left;
-    .count-gauge {
-      width: 23%;
-      margin-bottom: 10px;
-      flex: initial;
-    }
-  }
-}
+<style lang='scss' scoped src="@pkg/assets/styles/verrazzano.scss">
 </style>

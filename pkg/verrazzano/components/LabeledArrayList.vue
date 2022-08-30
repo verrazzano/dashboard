@@ -1,6 +1,6 @@
 <script>
 // Added by Verrazzano
-import LabeledInput from '@components/Form/LabeledInput/LabeledInput.vue';
+import LabeledInput from '@components/Form/LabeledInput/LabeledInput';
 import VerrazzanoHelper from '@pkg/mixins/verrazzano-helper';
 
 import debounce from 'lodash/debounce';

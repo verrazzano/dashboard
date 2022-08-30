@@ -1,7 +1,7 @@
 <script>
 // Added by Verrazzano
-import LabeledInput from '@components/Form/LabeledInput/LabeledInput.vue';
-import LabeledSelect from '@shell/components/form/LabeledSelect.vue';
+import LabeledInput from '@components/Form/LabeledInput/LabeledInput';
+import LabeledSelect from '@shell/components/form/LabeledSelect';
 import TabDeleteButton from '@pkg/components/TabDeleteButton';
 import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
 import VerrazzanoHelper from '@pkg/mixins/verrazzano-helper';
@@ -55,10 +55,10 @@ export default {
     const requests = {};
 
     if ( this.$store.getters['cluster/schemaFor'](SECRET) ) {
-      requests.secrets = this.$store.dispatch('cluster/findAll', { type: SECRET });
+      requests.secrets = this.$store.dispatch('management/findAll', { type: SECRET });
     }
     if ( this.$store.getters['cluster/schemaFor']('deployment') ) {
-      requests.deployments = this.$store.dispatch('cluster/findAll', { type: 'deployment' });
+      requests.deployments = this.$store.dispatch('management/findAll', { type: 'deployment' });
     }
 
     const hash = await allHash(requests);

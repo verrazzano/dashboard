@@ -12,6 +12,9 @@ import { ensureRegex } from '@shell/utils/string';
 import { isPrerelease } from '@shell/utils/version';
 import difference from 'lodash/difference';
 import { lookup } from '@shell/plugins/dashboard-store/model-loader';
+// Added by Verrazzano Start
+import CATALOG_CONFIG from '@pkg/verrazzano/config/catalog-config.json';
+// Added by Verrazzano End
 
 const ALLOWED_CATEGORIES = [
   'Storage',
@@ -625,6 +628,16 @@ export function filterAndArrangeCharts(charts, {
   hideTypes = [],
 } = {}) {
   const out = charts.filter((c) => {
+    // Added by Verrazzano Start
+    const vzCharts = CATALOG_CONFIG.hideCharts;
+
+    const isVzHiddenChart = vzCharts?.find(x => x === c.chartName);
+
+    if (isVzHiddenChart) {
+      return false;
+    }
+    // Added by Verrazzano End
+
     if (
       ( c.deprecated && !showDeprecated ) ||
       ( c.hidden && !showHidden ) ||
