@@ -7648,6 +7648,11 @@ verrazzano:
       workloadSecretName: Workload Secret Name
       workloadSecretType: Workload Secret Type
 
+    ################################
+    ### verrazzano.common.headers###
+    ################################
+    headers:
+      workloadKind: Workload Kind
     ##################################
     ### verrazzano.common.messages ###
     ##################################

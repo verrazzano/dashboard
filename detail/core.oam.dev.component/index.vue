@@ -4,10 +4,11 @@ import CountGauge from '@/components/CountGauge';
 import CreateEditView from '@/mixins/create-edit-view';
 import DashboardMetrics from '@/components/DashboardMetrics';
 import Loading from '@/components/Loading';
-import ResourceTabbed from '@/components/verrazzano/ResourceTabbed';
+import ResourceTabs from '@/components/form/ResourceTabs';
 import SortableTable from '@/components/SortableTable';
-import TreeTab from '@/components/verrazzano/TreeTabbed/TreeTab';
-import TreeTabbed from '@/components/verrazzano/TreeTabbed';
+import Tab from '~/components/Tabbed/Tab.vue';
+import Tabbed from '@/components/Tabbed';
+
 import V1WorkloadMetrics from '@/mixins/v1-workload-metrics';
 import {
   STATE, NAME, NODE, POD_IMAGES, AGE
@@ -44,10 +45,10 @@ export default {
     CountGauge,
     DashboardMetrics,
     Loading,
-    ResourceTabbed,
+    ResourceTabs,
     SortableTable,
-    TreeTabbed,
-    TreeTab,
+    Tabbed,
+    Tab,
   },
   mixins: [CreateEditView, V1WorkloadMetrics],
   data() {
@@ -79,7 +80,7 @@ export default {
 
     // Add references back to containing application
     this.referringApplications = this.allApplications.filter((app) => {
-      for (const workload of app.status?.workloads) {
+      for (const workload of app.status.workloads) {
         const t = this;
 
         if (workload.componentName === t.value.name ) {
@@ -223,7 +224,7 @@ export default {
         />
       </template>
     </div>
-    <ResourceTabbed :value="value">
+    <ResourceTabs :value="value">
       <Tab v-if="isCronJob" name="jobs" :label="t('tableHeaders.jobs')" :weight="4">
         <SortableTable
           :rows="value.jobs"
@@ -235,32 +236,28 @@ export default {
         />
       </Tab>
       <div v-else>
-        <TreeTab name="pods" :label="t('tableHeaders.pods')" :weight="4">
-          <template #default>
-            <SortableTable
-              v-if="value.pods"
-              :rows="value.pods"
-              :headers="podHeaders"
-              key-field="id"
-              :schema="podSchema"
-              :groupable="false"
-              :search="false"
-            />
-          </template>
-        </TreeTab>
-        <TreeTab name="apps" :label="t('verrazzano.common.tabs.referringApplications')" :weight="2">
-          <template #default>
-            <SortableTable
-              v-if="referringApplications"
-              :rows="referringApplications"
-              :headers="appHeaders"
-              key-field="id"
-              :schema="appSchema"
-              :groupable="false"
-              :search="false"
-            />
-          </template>
-        </TreeTab>
+        <Tab name="pods" :label="t('tableHeaders.pods')" :weight="4">
+          <SortableTable
+            v-if="value.pods"
+            :rows="value.pods"
+            :headers="podHeaders"
+            key-field="id"
+            :schema="podSchema"
+            :groupable="false"
+            :search="false"
+          />
+        </Tab>
+        <Tab name="apps" :label="t('verrazzano.common.tabs.referringApplications')" :weight="3">
+          <SortableTable
+            v-if="referringApplications"
+            :rows="referringApplications"
+            :headers="appHeaders"
+            key-field="id"
+            :schema="appSchema"
+            :groupable="false"
+            :search="false"
+          />
+        </Tab>
       </div>
       <Tab v-if="showMetrics" :label="t('workload.container.titles.metrics')" name="workload-metrics" :weight="3">
         <template #default="props">
@@ -278,7 +275,7 @@ export default {
           <EmberPage inline="ember-anchor" :src="v1MonitoringUrl" />
         </div>
       </Tab>
-    </ResourceTabbed>
+    </ResourceTabs>
   </div>
 </template>
 

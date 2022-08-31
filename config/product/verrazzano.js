@@ -1,14 +1,24 @@
 // Added by Verrazzano
 import { DSL } from '@/store/type-map';
-import { MANAGEMENT } from '@/config/types';
+import { MANAGEMENT, VZ_COMPONENT } from '@/config/types';
 import {
   STATE,
   FEATURE_DESCRIPTION,
   RESTART,
+  NAME,
   NAME_UNLINKED,
+  AGE,
 } from '@/config/table-headers';
 
-export const NAME = 'verrazzano';
+export const VZ_NAME = 'verrazzano';
+
+export const WORKLOAD_KIND = {
+  name:     'workloadKind',
+  labelKey: 'verrazzano.common.headers.workloadKind',
+  value:    'spec.workload.kind',
+  sort:     ['workloadKind'],
+  width:    100,
+};
 
 export function init(store) {
   const {
@@ -18,7 +28,7 @@ export function init(store) {
     virtualType,
     headers,
     hideBulkActions,
-  } = DSL(store, NAME);
+  } = DSL(store, VZ_NAME);
 
   product({
     ifHaveVerb:          'PUT',
@@ -93,6 +103,8 @@ export function init(store) {
     FEATURE_DESCRIPTION,
     RESTART,
   ]);
+
+  headers('core.oam.dev.component', [STATE, NAME, WORKLOAD_KIND, AGE]);
 
   hideBulkActions(MANAGEMENT.FEATURE, true);
 }
