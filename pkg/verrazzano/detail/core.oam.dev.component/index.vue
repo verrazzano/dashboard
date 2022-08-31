@@ -9,7 +9,9 @@ import SortableTable from '@shell/components/SortableTable';
 import Tab from '@shell/components/Tabbed/Tab';
 import V1WorkloadMetrics from '@shell/mixins/v1-workload-metrics';
 
-import { STATE, NAME, NODE, POD_IMAGES } from '@shell/config/table-headers';
+import {
+  STATE, NAME, NODE, POD_IMAGES, AGE
+} from '@shell/config/table-headers';
 import { POD, WORKLOAD_TYPES } from '@shell/config/types';
 import { allHash } from '@shell/utils/promise';
 import { mapGetters } from 'vuex';
@@ -53,7 +55,7 @@ export default {
     };
   },
   async fetch() {
-    const hash = { allPods: this.$store.dispatch('management/findAll', { type: POD }) };
+    const hash = { allPods: this.$store.dispatch('management/findAll', { type: POD }), allApplications: this.$store.dispatch(`cluster/findAll`, { type: 'core.oam.dev.applicationconfiguration' }) };
 
     if (this.value.type === WORKLOAD_TYPES.CRON_JOB) {
       hash.allJobs = this.$store.dispatch('management/findAll', { type: WORKLOAD_TYPES.JOB });
@@ -73,6 +75,19 @@ export default {
     const isMetricsSupportedKind = METRICS_SUPPORTED_KINDS.includes(this.value.type);
 
     this.showMetrics = isMetricsSupportedKind && await allDashboardsExist(this.$store, this.currentCluster.id, [WORKLOAD_METRICS_DETAIL_URL, WORKLOAD_METRICS_SUMMARY_URL]);
+
+    // Add references back to containing application
+    this.referringApplications = this.allApplications.filter((app) => {
+      for (const workload of app.status.workloads) {
+        const t = this;
+
+        if (workload.componentName === t.value.name ) {
+          return true;
+        }
+      }
+
+      return false;
+    });
   },
   computed:   {
     ...mapGetters(['currentCluster']),
@@ -84,6 +99,9 @@ export default {
     },
     podSchema() {
       return this.$store.getters['cluster/schemaFor'](POD);
+    },
+    appSchema() {
+      return this.$store.getters['cluster/schemaFor']('core.oam.dev.applicationconfiguration');
     },
     podTemplateSpec() {
       const isCronJob = this.value.type === WORKLOAD_TYPES.CRON_JOB;
@@ -139,6 +157,13 @@ export default {
         NAME,
         NODE,
         POD_IMAGES
+      ];
+    },
+    appHeaders() {
+      return [
+        STATE,
+        NAME,
+        AGE,
       ];
     },
     graphVarsWorkload() {
@@ -208,17 +233,30 @@ export default {
           :search="false"
         />
       </Tab>
-      <Tab v-else name="pods" :label="t('tableHeaders.pods')" :weight="4">
-        <SortableTable
-          v-if="value.pods"
-          :rows="value.pods"
-          :headers="podHeaders"
-          key-field="id"
-          :schema="podSchema"
-          :groupable="false"
-          :search="false"
-        />
-      </Tab>
+      <div v-else>
+        <Tab name="pods" :label="t('tableHeaders.pods')" :weight="4">
+          <SortableTable
+            v-if="value.pods"
+            :rows="value.pods"
+            :headers="podHeaders"
+            key-field="id"
+            :schema="podSchema"
+            :groupable="false"
+            :search="false"
+          />
+        </Tab>
+        <Tab name="apps" :label="t('verrazzano.common.tabs.referringApplications')" :weight="3">
+          <SortableTable
+            v-if="referringApplications"
+            :rows="referringApplications"
+            :headers="appHeaders"
+            key-field="id"
+            :schema="appSchema"
+            :groupable="false"
+            :search="false"
+          />
+        </Tab>
+      </div>
       <Tab v-if="showMetrics" :label="t('workload.container.titles.metrics')" name="workload-metrics" :weight="3">
         <template #default="props">
           <DashboardMetrics
