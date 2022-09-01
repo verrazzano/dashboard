@@ -847,6 +847,12 @@ verrazzano:
       workloadSecretName: Workload Secret Name
       workloadSecretType: Workload Secret Type
 
+    ################################
+    ### verrazzano.common.headers###
+    ################################
+    headers:
+      workloadKind: Workload Kind
+
     ##################################
     ### verrazzano.common.messages ###
     ##################################
@@ -916,6 +922,7 @@ verrazzano:
       preferredPrefix: Preferred Term
       readinessGates: Readiness Gates
       readinessProbe: Readiness Probe
+      referringApplications: Related Applications
       resources: Resources
       seccompProfile: Secure Computing Profile
       seLinuxOptions: SE Linux Options
@@ -937,7 +944,9 @@ verrazzano:
     ################################
     titles:
       annotations: Annotations
+      applicationDetails: Application Details
       component: Component
+      componentDetails: Component Details
       configFiles: Config Files
       containerArgs: Container Arguments
       containerCmd: Container Command

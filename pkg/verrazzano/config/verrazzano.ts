@@ -1,10 +1,24 @@
 import { createVerrazzanoRoute, rootVerrazzanoRoute } from '../utils/custom-routing';
+import {
+  STATE,
+  NAME,
+  AGE,
+} from '@shell/config/table-headers';
+
+export const WORKLOAD_KIND = {
+  name:     'workloadKind',
+  labelKey: 'verrazzano.common.headers.workloadKind',
+  value:    'spec.workload.kind',
+  sort:     ['workloadKind'],
+  width:    100,
+};
 
 export function init($plugin: any, store: any) {
   const {
     product,
     basicType,
     virtualType,
+    headers,
   } = $plugin.DSL(store, $plugin.name);
 
   product({
@@ -57,6 +71,8 @@ export function init($plugin: any, store: any) {
     'mcapps',
     'components'
   ]);
+
+  headers('core.oam.dev.component', [STATE, NAME, WORKLOAD_KIND, AGE]);
 
   // configureType(MANAGEMENT.SETTING, {
   //   isCreatable: false,
