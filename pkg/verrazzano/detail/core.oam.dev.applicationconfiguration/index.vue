@@ -1,12 +1,12 @@
 <script>
 // Added by Verrazzano
 import CountGauge from '@shell/components/CountGauge';
-import CreateEditView from '@shell/mixins/create-edit-view';
 import DashboardMetrics from '@shell/components/DashboardMetrics';
 import Loading from '@shell/components/Loading';
 import ResourceTabs from '@shell/components/form/ResourceTabs';
 import SortableTable from '@shell/components/SortableTable';
 import Tab from '@shell/components/Tabbed/Tab';
+import VerrazzanoHelper from '@/pkg/verrazzano/mixins/verrazzano-helper';
 import V1WorkloadMetrics from '@shell/mixins/v1-workload-metrics';
 
 import { STATE, NAME, NODE, POD_IMAGES } from '@shell/config/table-headers';
@@ -47,12 +47,14 @@ export default {
     SortableTable,
     Tab,
   },
-  mixins: [CreateEditView, V1WorkloadMetrics],
+  mixins: [VerrazzanoHelper, V1WorkloadMetrics],
   data() {
     return {
-      allPods:     [],
-      allJobs:     [],
-      showMetrics: false,
+      fetchInProgress: true,
+      namespace:       this.value.metadata?.namespace,
+      allPods:         {},
+      allJobs:         [],
+      showMetrics:     false,
       WORKLOAD_METRICS_DETAIL_URL,
       WORKLOAD_METRICS_SUMMARY_URL,
     };
@@ -70,14 +72,16 @@ export default {
 
     const res = await allHash(hash);
 
-    for ( const k in res ) {
-      this[k] = res[k];
+    if (res.allPods) {
+      const appName = this.value.metadata.name;
+      const filteredPods = res.allPods.filter(pod => pod.metadata.labels['app.oam.dev/name'] === appName);
+
+      this.sortObjectsByNamespace(filteredPods, this.allPods);
+      this.resetPods();
     }
 
-    if (this.allPods) {
-      const appName = this.value.metadata.name;
-
-      this.value.pods = this.allPods.filter(pod => pod.metadata.labels['app.oam.dev/name'] === appName);
+    if (res.allJobs) {
+      this.allJobs = res.allJobs;
     }
 
     const isMetricsSupportedKind = METRICS_SUPPORTED_KINDS.includes(this.value.type);
@@ -91,6 +95,7 @@ export default {
         return t.allComponents.find(component => component.name === workload.workloadRef.name);
       }).filter(c => c);
     }
+    this.fetchInProgress = false;
   },
   computed:   {
     ...mapGetters(['currentCluster']),
@@ -186,6 +191,20 @@ export default {
       const total = this.isCronJob ? this.totalRuns : this.value.pods.length;
 
       return !jobGauges.find(jg => jg.count === total);
+    }
+  },
+  methods: {
+    resetPods() {
+      this.value.pods = this.allPods[this.namespace] || [];
+    }
+  },
+  watch: {
+    fetchInProgress() {
+      this.resetPods();
+    },
+    'value.metadata.namespace'(neu, old) {
+      this.namespace = neu;
+      this.resetPods();
     }
   },
 };
