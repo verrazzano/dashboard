@@ -53,6 +53,7 @@ export default {
       fetchInProgress: true,
       namespace:       this.value.metadata?.namespace,
       allPods:         {},
+      allComponents:   {},
       allJobs:         [],
       showMetrics:     false,
       WORKLOAD_METRICS_DETAIL_URL,
@@ -80,6 +81,21 @@ export default {
       this.resetPods();
     }
 
+    if (res.allComponents) {
+      const filteredComponents = this.value?.status?.workloads ? [] : res.allComponents;
+
+      if (this.value?.status?.workloads) {
+        res.allComponents.forEach((component) => {
+          if (this.value.status.workloads.find(workload => workload.componentName === component.name)) {
+            filteredComponents.push(component);
+          }
+        });
+      }
+
+      this.sortObjectsByNamespace(filteredComponents, this.allComponents);
+      this.resetComponents();
+    }
+
     if (res.allJobs) {
       this.allJobs = res.allJobs;
     }
@@ -87,14 +103,6 @@ export default {
     const isMetricsSupportedKind = METRICS_SUPPORTED_KINDS.includes(this.value.type);
 
     this.showMetrics = isMetricsSupportedKind && await allDashboardsExist(this.$store, this.currentCluster.id, [WORKLOAD_METRICS_DETAIL_URL, WORKLOAD_METRICS_SUMMARY_URL]);
-
-    if (this.allComponents && this.value?.status?.workloads) {
-      const t = this;
-
-      t.value.relatedComponents = t.value.status.workloads.map((workload) => {
-        return t.allComponents.find(component => component.name === workload.workloadRef.name);
-      }).filter(c => c);
-    }
     this.fetchInProgress = false;
   },
   computed:   {
@@ -196,15 +204,20 @@ export default {
   methods: {
     resetPods() {
       this.value.pods = this.allPods[this.namespace] || [];
+    },
+    resetComponents() {
+      this.value.relatedComponents = this.allComponents[this.namespace] || [];
     }
   },
   watch: {
     fetchInProgress() {
       this.resetPods();
+      this.resetComponents();
     },
     'value.metadata.namespace'(neu, old) {
       this.namespace = neu;
       this.resetPods();
+      this.resetComponents();
     }
   },
 };
