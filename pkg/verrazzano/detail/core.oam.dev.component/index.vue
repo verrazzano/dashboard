@@ -196,7 +196,7 @@ export default {
   <Loading v-if="$fetchState.pending" />
   <div v-else>
     <h3>
-      {{ isJob || isCronJob ? t('workload.detailTop.runs') :t('workload.detailTop.pods') }}
+      {{ isJob || isCronJob ? t('workload.detailTop.runs') :t('verrazzano.common.titles.componentDetails') }}
     </h3>
     <div v-if="value.pods || value.jobGauges" class="gauges mb-20" :class="{'gauges__pods': !!value.pods}">
       <template v-if="value.jobGauges">
