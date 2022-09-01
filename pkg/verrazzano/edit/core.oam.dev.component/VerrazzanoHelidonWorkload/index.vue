@@ -41,7 +41,11 @@ export default {
       });
     },
   },
-
+  created() {
+    if (!this.value.spec?.workload?.apiVersion) {
+      this.initSpec();
+    }
+  },
 };
 </script>
 
