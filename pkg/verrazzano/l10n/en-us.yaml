@@ -1365,15 +1365,16 @@ verrazzano:
   links:
     consoleUrl: Verrazzano Console
     grafanaUrl: Grafana Console
+    elasticUrl: Elasticsearch Console
+    jaegerUrl: Jaeger Console
     keyCloakUrl: Keycloak Console
     kialiUrl: Kiali Console
+    kibanaUrl: Kibana Console
     openSearchDashboardsUrl: OpenSearch Dashboards Console
     openSearchUrl: OpenSearch Console
     prometheusUrl: Prometheus Console
     rancherUrl: Rancher Console
     title: Verrazzano Links
-    elasticUrl: Elasticsearch Console
-    kibanaUrl: Kibana Console
 
   ###################################
   ### verrazzano.multiClusterApps ###

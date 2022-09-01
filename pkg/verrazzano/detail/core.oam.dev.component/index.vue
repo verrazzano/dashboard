@@ -13,6 +13,7 @@ import {
   STATE, NAME, NODE, POD_IMAGES, AGE
 } from '@shell/config/table-headers';
 import { POD, WORKLOAD_TYPES } from '@shell/config/types';
+import { VZ_APPLICATION } from '@pkg/types';
 import { allHash } from '@shell/utils/promise';
 import { mapGetters } from 'vuex';
 import { allDashboardsExist } from '@shell/utils/grafana';
@@ -51,17 +52,23 @@ export default {
   mixins: [VerrazzanoHelper, V1WorkloadMetrics],
   data() {
     return {
-      fetchInProgress: true,
-      namespace:       this.value.metadata?.namespace,
-      allPods:         {},
-      allJobs:         [],
-      showMetrics:     false,
+      fetchInProgress:       true,
+      namespace:             this.value.metadata?.namespace,
+      allPods:               {},
+      allApplications:       {},
+      referringApplications: [],
+      allJobs:               [],
+      showMetrics:           false,
       WORKLOAD_METRICS_DETAIL_URL,
       WORKLOAD_METRICS_SUMMARY_URL,
     };
   },
   async fetch() {
-    const hash = { allPods: this.$store.dispatch('management/findAll', { type: POD }), allApplications: this.$store.dispatch(`cluster/findAll`, { type: 'core.oam.dev.applicationconfiguration' }) };
+    const hash = { allPods: this.$store.dispatch('management/findAll', { type: POD }) };
+
+    if (this.$store.getters['cluster/schemaFor'](VZ_APPLICATION)) {
+      hash.allApplications = this.$store.dispatch(`management/findAll`, { type: VZ_APPLICATION });
+    }
 
     if (this.value.type === WORKLOAD_TYPES.CRON_JOB) {
       hash.allJobs = this.$store.dispatch('management/findAll', { type: WORKLOAD_TYPES.JOB });
@@ -79,6 +86,16 @@ export default {
       this.sortObjectsByNamespace(filteredPods, this.allPods);
     }
 
+    if (res.allApplications) {
+      const componentName = this.value.metadata.name;
+      const filteredApplications = res.allApplications.filter((app) => {
+        return !!app.status.workloads.find(workload => workload.componentName === componentName);
+      });
+
+      this.sortObjectsByNamespace(filteredApplications, this.allApplications);
+      this.resetApplications();
+    }
+
     if (res.allJobs) {
       this.allJobs = res.allJobs;
     }
@@ -88,17 +105,17 @@ export default {
     this.showMetrics = isMetricsSupportedKind && await allDashboardsExist(this.$store, this.currentCluster.id, [WORKLOAD_METRICS_DETAIL_URL, WORKLOAD_METRICS_SUMMARY_URL]);
 
     // Add references back to containing application
-    this.referringApplications = this.allApplications.filter((app) => {
-      for (const workload of app.status.workloads) {
-        const t = this;
-
-        if (workload.componentName === t.value.name ) {
-          return true;
-        }
-      }
-
-      return false;
-    });
+    // this.referringApplications = this.allApplications.filter((app) => {
+    //   for (const workload of app.status.workloads) {
+    //     const t = this;
+    //
+    //     if (workload.componentName === t.value.name ) {
+    //       return true;
+    //     }
+    //   }
+    //
+    //   return false;
+    // });
     this.fetchInProgress = false;
   },
   computed:   {
@@ -204,15 +221,20 @@ export default {
   methods: {
     resetPods() {
       this.value.pods = this.allPods[this.namespace] || [];
+    },
+    resetApplications() {
+      this.referringApplications = this.allApplications[this.namespace] || [];
     }
   },
   watch: {
     fetchInProgress() {
       this.resetPods();
+      this.resetApplications();
     },
     'value.metadata.namespace'(neu, old) {
       this.namespace = neu;
       this.resetPods();
+      this.resetApplications();
     }
   },
 };
