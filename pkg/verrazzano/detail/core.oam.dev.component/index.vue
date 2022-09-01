@@ -75,10 +75,6 @@ export default {
     }
     const res = await allHash(hash);
 
-    for ( const k in res ) {
-      this[k] = res[k];
-    }
-
     if (res.allPods) {
       const componentName = this.value.metadata.name;
       const filteredPods = res.allPods.filter(pod => pod.metadata.labels['app.oam.dev/component'] === componentName);
@@ -104,18 +100,6 @@ export default {
 
     this.showMetrics = isMetricsSupportedKind && await allDashboardsExist(this.$store, this.currentCluster.id, [WORKLOAD_METRICS_DETAIL_URL, WORKLOAD_METRICS_SUMMARY_URL]);
 
-    // Add references back to containing application
-    // this.referringApplications = this.allApplications.filter((app) => {
-    //   for (const workload of app.status.workloads) {
-    //     const t = this;
-    //
-    //     if (workload.componentName === t.value.name ) {
-    //       return true;
-    //     }
-    //   }
-    //
-    //   return false;
-    // });
     this.fetchInProgress = false;
   },
   computed:   {
