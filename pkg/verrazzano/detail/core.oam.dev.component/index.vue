@@ -1,12 +1,12 @@
 <script>
 // Added by Verrazzano
 import CountGauge from '@shell/components/CountGauge';
-import CreateEditView from '@shell/mixins/create-edit-view';
 import DashboardMetrics from '@shell/components/DashboardMetrics';
 import Loading from '@shell/components/Loading';
 import ResourceTabs from '@shell/components/form/ResourceTabs';
 import SortableTable from '@shell/components/SortableTable';
 import Tab from '@shell/components/Tabbed/Tab';
+import VerrazzanoHelper from '@/pkg/verrazzano/mixins/verrazzano-helper';
 import V1WorkloadMetrics from '@shell/mixins/v1-workload-metrics';
 
 import {
@@ -48,10 +48,16 @@ export default {
     SortableTable,
     Tab,
   },
-  mixins: [CreateEditView, V1WorkloadMetrics],
+  mixins: [VerrazzanoHelper, V1WorkloadMetrics],
   data() {
     return {
-      allPods: null, allJobs: [], WORKLOAD_METRICS_DETAIL_URL, WORKLOAD_METRICS_SUMMARY_URL, showMetrics: false
+      fetchInProgress: true,
+      namespace:       this.value.metadata?.namespace,
+      allPods:         {},
+      allJobs:         [],
+      showMetrics:     false,
+      WORKLOAD_METRICS_DETAIL_URL,
+      WORKLOAD_METRICS_SUMMARY_URL,
     };
   },
   async fetch() {
@@ -66,10 +72,15 @@ export default {
       this[k] = res[k];
     }
 
-    if (this.allPods) {
+    if (res.allPods) {
       const componentName = this.value.metadata.name;
+      const filteredPods = res.allPods.filter(pod => pod.metadata.labels['app.oam.dev/component'] === componentName);
 
-      this.value.pods = this.allPods.filter(pod => pod.metadata.labels['app.oam.dev/component'] === componentName);
+      this.sortObjectsByNamespace(filteredPods, this.allPods);
+    }
+
+    if (res.allJobs) {
+      this.allJobs = res.allJobs;
     }
 
     const isMetricsSupportedKind = METRICS_SUPPORTED_KINDS.includes(this.value.type);
@@ -88,6 +99,7 @@ export default {
 
       return false;
     });
+    this.fetchInProgress = false;
   },
   computed:   {
     ...mapGetters(['currentCluster']),
@@ -188,6 +200,20 @@ export default {
 
       return !jobGauges.find(jg => jg.count === total);
     },
+  },
+  methods: {
+    resetPods() {
+      this.value.pods = this.allPods[this.namespace] || [];
+    }
+  },
+  watch: {
+    fetchInProgress() {
+      this.resetPods();
+    },
+    'value.metadata.namespace'(neu, old) {
+      this.namespace = neu;
+      this.resetPods();
+    }
   },
 };
 </script>
