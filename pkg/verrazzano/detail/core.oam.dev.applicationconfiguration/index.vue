@@ -11,6 +11,7 @@ import V1WorkloadMetrics from '@shell/mixins/v1-workload-metrics';
 
 import { STATE, NAME, NODE, POD_IMAGES } from '@shell/config/table-headers';
 import { POD, WORKLOAD_TYPES } from '@shell/config/types';
+import { VZ_COMPONENT } from '@pkg/types';
 import { allHash } from '@shell/utils/promise';
 import { mapGetters } from 'vuex';
 import { allDashboardsExist } from '@shell/utils/grafana';
@@ -64,6 +65,11 @@ export default {
     if (this.value.type === WORKLOAD_TYPES.CRON_JOB) {
       hash.allJobs = this.$store.dispatch('management/findAll', { type: WORKLOAD_TYPES.JOB });
     }
+
+    if (this.$store.getters['cluster/schemaFor'](VZ_COMPONENT)) {
+      hash.allComponents = this.$store.dispatch('management/findAll', { type: VZ_COMPONENT });
+    }
+
     const res = await allHash(hash);
 
     if (res.allPods) {
@@ -81,6 +87,14 @@ export default {
     const isMetricsSupportedKind = METRICS_SUPPORTED_KINDS.includes(this.value.type);
 
     this.showMetrics = isMetricsSupportedKind && await allDashboardsExist(this.$store, this.currentCluster.id, [WORKLOAD_METRICS_DETAIL_URL, WORKLOAD_METRICS_SUMMARY_URL]);
+
+    if (this.allComponents && this.value?.status?.workloads) {
+      const t = this;
+
+      t.value.relatedComponents = t.value.status.workloads.map((workload) => {
+        return t.allComponents.find(component => component.name === workload.workloadRef.name);
+      }).filter(c => c);
+    }
     this.fetchInProgress = false;
   },
   computed:   {
@@ -102,6 +116,12 @@ export default {
       } else {
         return this.value.spec?.template?.spec;
       }
+    },
+    componentHeaders() {
+      return this.$store.getters['type-map/headersFor'](this.componentSchema);
+    },
+    componentSchema() {
+      return this.$store.getters['cluster/schemaFor']('core.oam.dev.component');
     },
     container() {
       return this.podTemplateSpec?.containers[0];
@@ -194,7 +214,7 @@ export default {
   <Loading v-if="$fetchState.pending" />
   <div v-else>
     <h3>
-      {{ isJob || isCronJob ? t('workload.detailTop.runs') :t('workload.detailTop.pods') }}
+      {{ isJob || isCronJob ? t('workload.detailTop.runs') :t('verrazzano.common.titles.applicationDetails') }}
     </h3>
     <div v-if="value.pods || value.jobGauges" class="gauges mb-20" :class="{'gauges__pods': !!value.pods}">
       <template v-if="value.jobGauges">
@@ -231,17 +251,30 @@ export default {
           :search="false"
         />
       </Tab>
-      <Tab v-else name="pods" :label="t('tableHeaders.pods')" :weight="4">
-        <SortableTable
-          v-if="value.pods"
-          :rows="value.pods"
-          :headers="podHeaders"
-          key-field="id"
-          :schema="podSchema"
-          :groupable="false"
-          :search="false"
-        />
-      </Tab>
+      <div v-else>
+        <Tab name="pods" :label="t('tableHeaders.pods')" :weight="4">
+          <SortableTable
+            v-if="value.pods"
+            :rows="value.pods"
+            :headers="podHeaders"
+            key-field="id"
+            :schema="podSchema"
+            :groupable="false"
+            :search="false"
+          />
+        </Tab>
+        <Tab name="Components">
+          <SortableTable
+            v-if="value.relatedComponents"
+            :rows="value.relatedComponents"
+            :headers="componentHeaders"
+            key-field="id"
+            :schema="componentSchema"
+            :groupable="false"
+            :search="false"
+          />
+        </Tab>
+      </div>
       <Tab v-if="showMetrics" :label="t('workload.container.titles.metrics')" name="workload-metrics" :weight="3">
         <template #default="props">
           <DashboardMetrics
