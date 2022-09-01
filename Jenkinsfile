@@ -13,6 +13,11 @@ pipeline {
         }
     }
 
+    triggers {
+        // build nightly
+        cron( env.BRANCH_NAME.equals('oracle/release/2.6.7') ? 'H H(0-3) * * 1-5' : '')
+    }
+
     environment {
         DASHBOARD_VERSION = "2.6.7"
         OCI_CLI_AUTH = "instance_principal"
@@ -72,7 +77,7 @@ pipeline {
                 }
             }
             steps {
-                build job: "Build%20from%20Source/rancher/oracle%2Frelease%2F2.6.6", propagate: false, parameters: [
+                build job: "Build from Source/rancher/oracle%2Frelease%2F2.6.7", propagate: false, parameters: [
                     string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard%2F${env.TAR_FILE_NAME}")
                 ]
             }
