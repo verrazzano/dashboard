@@ -10,7 +10,8 @@ import Tab from '@shell/components/Tabbed/Tab';
 import V1WorkloadMetrics from '@shell/mixins/v1-workload-metrics';
 
 import { STATE, NAME, NODE, POD_IMAGES } from '@shell/config/table-headers';
-import { POD, WORKLOAD_TYPES, VZ_COMPONENT } from '@shell/config/types';
+import { POD, WORKLOAD_TYPES } from '@shell/config/types';
+import { VZ_COMPONENT } from '@pkg/types';
 import { allHash } from '@shell/utils/promise';
 import { mapGetters } from 'vuex';
 import { allDashboardsExist } from '@shell/utils/grafana';

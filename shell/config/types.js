@@ -82,13 +82,6 @@ export const WORKLOAD_TYPES = {
   REPLICATION_CONTROLLER: 'replicationcontroller'
 };
 
-// Added by Verrazzano Start
-// The verrazzano types
-//
-export const VZ_APP = 'core.oam.dev.ApplicationConfiguration';
-export const VZ_COMPONENT = 'core.oam.dev.Component';
-// Added by Verrazzano End
-
 const {
   DAEMON_SET, CRON_JOB, JOB, ...scalableWorkloads
 } = WORKLOAD_TYPES;
