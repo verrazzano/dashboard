@@ -40,7 +40,7 @@ export default {
 </style>
 // not used
 <style lang='scss'>
-  .vzlight {
+  .vzdark {
     background-image: url('../assets/images/verrazzano-dark.svg');
   }
 </style>
