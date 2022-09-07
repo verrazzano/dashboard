@@ -30,4 +30,10 @@ export default {
     color: transparent;
     content: "\ea2a";
   }
+  .vzlight {
+    background-image: url('../assets/images/verrazzano-light.svg');
+  }
+  .vzdark {
+    background-image: url('../assets/images/verrazzano-dark.svg');
+  }
 </style>
