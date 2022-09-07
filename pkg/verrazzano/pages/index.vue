@@ -30,6 +30,9 @@ export default {
     color: transparent;
     content: "\ea2a";
   }
+
+  // Not used, only serving to make sure the images are pulled into the Nuxt package during the build process.
+  //
   .vzlight {
     background-image: url('../assets/images/verrazzano-light.svg');
   }
