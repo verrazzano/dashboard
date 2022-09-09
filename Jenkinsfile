@@ -20,8 +20,8 @@ pipeline {
 
     parameters {
         string (name: 'RANCHER_UPSTREAM_VERSION',
-                defaultValue: '2.6.7',
-                description: 'Verrazzano Rancher upstream version to build, default 2.6.7',
+                defaultValue: '2.6.8',
+                description: 'Verrazzano Rancher upstream version to build, default 2.6.8',
                 trim: true)
 
         booleanParam (name: 'TRIGGER_UPSTREAM', defaultValue: false,
