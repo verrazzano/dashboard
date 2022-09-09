@@ -87,12 +87,12 @@ pipeline {
                 }
             }
             steps {
-                build job: "Build from Source/rancher/oracle%2Frelease%2F"+${params.RANCHER_UPSTREAM_VERSION},
-                        propagate: false,
-                        wait: false,
-                        parameters: [
-                                string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard%2F${env.TAR_FILE_NAME}")
-                        ]
+                build job: "Build from Source/rancher/oracle%2Frelease%2F${params.RANCHER_UPSTREAM_VERSION}",
+                    propagate: false,
+                    wait: false,
+                    parameters: [
+                        string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard%2F${env.TAR_FILE_NAME}")
+                    ]
             }
         }
     }
