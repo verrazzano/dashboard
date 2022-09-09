@@ -81,12 +81,9 @@ pipeline {
 
         stage('Call Downstream Job') {
             when {
-                allOf {
-                    branch "oracle/release/*"
-                    anyOf {
-                        triggeredBy 'TimerTrigger'
-                        expression { return params.RANCHER_UPSTREAM_VERSION }
-                    }
+                anyOf {
+                    triggeredBy 'TimerTrigger'
+                    expression { return params.RANCHER_UPSTREAM_VERSION }
                 }
             }
             steps {
