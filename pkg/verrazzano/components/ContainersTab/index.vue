@@ -55,7 +55,7 @@ export default {
   },
   methods: {
     getDynamicListTabName(child) {
-      return this.createTabName(this.tabName, child?.name);
+      return this.createTabName(this.treeTabName, child?.name);
     },
   },
   created() {
@@ -70,7 +70,7 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="tabName" :label="treeTabLabel">
+  <TreeTab :name="treeTabName" :label="treeTabLabel">
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"

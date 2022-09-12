@@ -9,11 +9,11 @@ export default {
     const cluster = store.getters['currentCluster']?.id || 'local';
 
     return redirect({
-      name:   'verrazzano-c-cluster-mcapps',
+      name:   'verrazzano-c-cluster-projects',
       params: {
         ...route.params,
         product:  'verrazzano',
-        resource: 'clusters.verrazzano.io.MultiClusterApplicationConfiguration',
+        resource: 'clusters.verrazzano.io.verrazzaanoproject',
         cluster
       }
     });

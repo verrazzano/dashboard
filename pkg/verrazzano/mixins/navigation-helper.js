@@ -3,7 +3,7 @@ export default {
   methods: {
 
     // join multiple names with an underscore to create a key.
-    // if the any name is empty, just skip it.
+    // if the name is empty, just skip it.
     createTabName(...args) {
       const scrubbedArgs = args.filter(arg => !!arg);
 

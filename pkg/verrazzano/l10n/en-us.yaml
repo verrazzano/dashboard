@@ -8,7 +8,12 @@ typeLabel:
     {count, plural,
       one { Application }
       other { Applications }
-    } 
+    }
+  clusters.verrazzani.io.verrazzanoproject: |-
+    {count, plural,
+      one { Project }
+      other { Projects }
+    }
 
 ##############################
 ### Verrazzano keys
@@ -393,8 +398,10 @@ verrazzano:
       addDownwardApiVolumeFile: Add Downward API Volume File
       addElement: Add { type }
       addEnvVar: Add Environment Variable
+      addExcept: Add Except CIDR
       addExecCommand: Add Command
       addExternalIP: Add External IP
+      addFinalizer: Add Finalizer
       addFlexVolumeOption: Add Flex Volume Option
       addHost: Add Host
       addHostAlias: Add Host Alias
@@ -406,6 +413,11 @@ verrazzano:
       addLoadBalancerSourceRange: Add Load Balancer Source Range
       addMatchExpression: Add Match Expression
       addMatchLabel: Add Match Label
+      addNetworkPolicy: Add Network Policy
+      addNetworkPolicyEgressRule: Add Egress Rule
+      addNetworkPolicyIngressRule: Add Ingress Rule
+      addNetworkPolicyPeer: Add Network Policy Peer
+      addNetworkPolicyPort: Add Network Policy Port
       addNodeSelector: Add Node Selector
       addNodeSelectorRequirement: Add Node Selector Requirement
       addNodeSelectorTerm: Add Node Selector Term
@@ -417,6 +429,7 @@ verrazzano:
       addReadinessGate: Add Pod Readiness Gate
       addSecretItem: Add Secret Item
       addSysctl: Add Kernel Parameter
+      addSubject: Add Subject
       addSupplementalGroup: Add Supplemental Group
       addTargetPortal: Add iSCSI Target Portal
       addTargetWwn: Add Target World Wide Name
@@ -439,7 +452,9 @@ verrazzano:
     fields:
       accessModes: Access Modes
       allocateLoadBalancerNodePorts: Allocate Node Ports for Load Balancer Service Type
+      apiGroup: API Group
       appProtocol: Application Protocol
+      cidr: CIDR
       clusterIP: Cluster IP
       clusterIPs: Cluster IP
       componentName: Component Name
@@ -501,12 +516,15 @@ verrazzano:
         type: Deployment Strategy Type
       dnsNameserver: DNS Name Server
       dnsSearchDomain: DNS Search Domain
+      endPort: End Port
       envVar:
         name: Environment Variable Name
         value: Environment Variable Value
+      except: Except CIDR
       externalIP: External IP
       externalName: External Name
       externalTrafficPolicy: External Traffic Policy
+      finalizer: Finalizer
       healthCheckNodePort: Health Check Node Port
       host: Host
       hostname: Hostname
@@ -552,6 +570,8 @@ verrazzano:
       mountPropagationMode: Mount Propagation Mode
       name: Name
       namespace: Namespace
+      networkPolicyPeerType: Network Policy Peer Type
+      networkPolicyTypes: Policy Types
       newAffinityType: New Affinity Type
       newComponentName: New Component Name
       newContainerName: New Container Name
@@ -874,14 +894,17 @@ verrazzano:
       containerSecurityContext: Container Security Context
       dataSource: Data Source
       deploymentStrategy: Deployment Strategy
+      egress: Egress
       environmentVariables: Environment Variables
       ephemeralContainers: Ephemeral Containers
       ephemeralVolumeClaimTemplate: Ephemeral Volume Claim Template
       executionEnvironment: Execution Environment
       externalName: External Name Settings
+      from: From
       general: General
       hostAlias: Host Alias
       hostAliases: Host Aliases
+      ingress: Ingress
       ingressTrait: Ingress Trait
       ingressTraitRule: Ingress Rule
       initContainer: Init Container
@@ -900,6 +923,19 @@ verrazzano:
       manualScalerTrait: Manual Scaler Trait
       metricsTrait: Metrics Trait
       metadata: Metadata
+      namespace: Namespace
+      namespaces: Namespaces
+      namespaceSelector: Namespace Selector
+      networkPolicies: Network Policies
+      networkPolicy: Network Policy
+      networkPolicyEgressRule: Egress Rule
+      networkPolicyEgressRules: Egress Rules
+      networkPolicyIngressRule: Ingress Rule
+      networkPolicyIngressRules: Ingress Rules
+      networkPolicyPeer: Network Policy Peer
+      networkPolicyPeers: Network Policy Peers
+      networkPolicyPorts: Network Policy Ports
+      networkPolicySpec: Spec
       nodeAffinity: Node Affinity
       nodePreferredSelectorTerm: Preferred {index}
       nodeRequiredSelectorTerm: Required {index}
@@ -915,19 +951,26 @@ verrazzano:
       podPreferredSelectorTerm: Preferred {index}
       podRequiredSelectorTerm: Required {index}
       podSecurityContext: Pod Security Context
+      podSelector: Pod Selector
       podSpec: Pod Spec
       podTemplate: Pod Template
+      policy: Policy
       port: Port
       ports: Ports
       preferredPrefix: Preferred Term
+      projectAdminSubjects: Project Administrators
+      projectMonitorSubjects: Project Monitors
       readinessGates: Readiness Gates
       readinessProbe: Readiness Probe
       referringApplications: Related Applications
       resources: Resources
       seccompProfile: Secure Computing Profile
+      security: Security
       seLinuxOptions: SE Linux Options
       startupProbe: Startup Probe
+      subjects: Subjects
       sysctls: Kernel Parameters
+      to: To
       tolerations: Tolerations
       topologySpreadConstraint: Topology Spread Constraint
       topologySpreadConstraints: Topology Spread Constraints
@@ -962,6 +1005,7 @@ verrazzano:
       destination: Destination
       dnsResolverOptions: DNS Resolver Options
       envVars: Environment Variables
+      finalizers: Finalizers
       hosts: Hosts
       httpGet: HTTP Get Request
       httpGetHeaders: HTTP Get Request Headers
@@ -1148,6 +1192,13 @@ verrazzano:
         bidirectional: Bidirectional
         hostToContainer: Host to Container
         none: None
+      networkPeerPolicy:
+        ipBlock: IP Block
+        selectors: Label Selectors
+      networkPolicyTypes:
+        egress: Egress
+        ingress: Ingress
+        ingressEgress: Ingress, Egress
       nodeSelectorTerm:
         matchExpression: Match Expression
         matchField: Match Field
@@ -1201,6 +1252,10 @@ verrazzano:
       sessionAffinity:
         clientIP: Client IP
         none: None
+      subjectKind:
+        group: Group
+        serviceAccount: Service Account
+        user: User
       terminationMessagePolicy:
         fallbackToLogsOnError: FallbackToLogsOnError
         file: File
@@ -1393,6 +1448,12 @@ verrazzano:
   ##########################
   product:
     name: Verrazzano
+
+  ##########################
+  ### verrazzano.project ###
+  ##########################
+  projects:
+    label: Projects
 
   ####################################
   ### verrazzano.typeAbbreviations ###

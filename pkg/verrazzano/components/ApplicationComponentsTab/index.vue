@@ -1,7 +1,7 @@
 <script>
 // Added by Verrazzano
 import DynamicListHelper from '@pkg/mixins/dynamic-list-helper';
-import IngressTraitsTab from '@pkg/components/ApplicationComponentsTab/IngressTraitsTab';
+import IngressTraitTab from '@pkg/components/ApplicationComponentsTab/IngressTraitTab';
 import LabeledInput from '@components/Form/LabeledInput/LabeledInput';
 import LabeledSelect from '@shell/components/form/LabeledSelect';
 import LoggingTraitTab from '@pkg/components/ApplicationComponentsTab/LoggingTraitTab';
@@ -17,7 +17,7 @@ import { allHash } from '@shell/utils/promise';
 export default {
   name:       'ApplicationComponentsTab',
   components: {
-    IngressTraitsTab,
+    IngressTraitTab,
     LabeledInput,
     LabeledSelect,
     LoggingTraitTab,
@@ -274,7 +274,7 @@ export default {
         </template>
 
         <template #nestedTabs>
-          <IngressTraitsTab
+          <IngressTraitTab
             v-if="getIngressTrait(component)"
             :value="getIngressTrait(component)"
             :mode="mode"

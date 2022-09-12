@@ -15,7 +15,7 @@ import { randomStr } from '@shell/utils/string';
 import debounce from 'lodash/debounce';
 
 export default {
-  name:       'IngressTraitsTab',
+  name:       'IngressTraitTab',
   components: {
     ArrayListGrouped,
     LabeledArrayList,
