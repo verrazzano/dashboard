@@ -25,7 +25,7 @@ import { filterOnlyKubernetesClusters, filterHiddenLocalCluster } from '@shell/u
 import { RESET_CARDS_ACTION, SET_LOGIN_ACTION } from '@shell/config/page-actions';
 
 // Added by Verrazzano Start
-import VerrazzanoLinksBox from '@pkg/verrazzano/components/VerrazzanoLinksBox';
+import VerrazzanoLinksBox from '@/pkg/verrazzano/components/VerrazzanoLinksBox';
 // Added by Verrazzano End
 
 export default {

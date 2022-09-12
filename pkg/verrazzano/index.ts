@@ -1,19 +1,12 @@
 import { importTypes } from '@rancher/auto-import';
 import { IPlugin, OnNavToPackage, OnNavAwayFromPackage } from '@shell/core/types';
-// import epinioStore from './store/epinio-store';
-// import epinioMgmtStore from './store/epinio-mgmt-store';
 import verrazzanoRoutes from './routing/verrazzano-routing';
 
 const onEnter: OnNavToPackage = async(store, config) => {
-  // await store.dispatch(`${ epinioMgmtStore.config.namespace }/loadManagement`);
+  // no op
 };
 const onLeave: OnNavAwayFromPackage = async(store, config) => {
-  // The dashboard retains the previous cluster info until another cluster is loaded, this helps when returning to the same cluster.
-  // We need to forget epinio cluster info
-  // - The polling is pretty brutal
-  // - The nav path through to the same epinio cluster is fraught with danger (nav from previous cluster id to blank cluster, required to switch epinio clusters)
-  // await store.dispatch(`${ epinioStore.config.namespace }/unsubscribe`);
-  // await store.commit(`${ epinioStore.config.namespace }/reset`);
+  // no-op
 };
 
 // Init the package
@@ -28,8 +21,7 @@ export default function(plugin: IPlugin) {
   plugin.addProduct(require('./config/verrazzano'));
 
   // Add Vuex stores
-  // plugin.addDashboardStore(epinioMgmtStore.config.namespace, epinioMgmtStore.specifics, epinioMgmtStore.config);
-  // plugin.addDashboardStore(epinioStore.config.namespace, epinioStore.specifics, epinioStore.config);
+  // nothing to add
 
   // Add Vue Routes
   plugin.addRoutes(verrazzanoRoutes);

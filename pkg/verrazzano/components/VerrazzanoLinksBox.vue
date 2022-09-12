@@ -20,7 +20,11 @@ export default {
 
     if (hash.verrazzanos) {
       // There should really never be more than one of these so...
-      this.links = hash.verrazzanos[0]?.status?.instance || {};
+      this.links = { ...(hash.verrazzanos[0]?.status?.instance || {}) };
+
+      if ('rancherUrl' in this.links) {
+        delete this.links.rancherUrl;
+      }
     }
   },
   computed: { ...mapGetters('i18n', ['t']) },

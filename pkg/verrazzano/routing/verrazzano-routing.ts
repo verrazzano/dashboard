@@ -9,6 +9,8 @@ import ComponentsResourceList from '../pages/c/_cluster/components/index.vue';
 import ComponentCreate from '../pages/c/_cluster/components/create.vue';
 import MultiClusterAppsResourceList from '../pages/c/_cluster/mcapps/index.vue';
 import MultiClusterAppCreate from '../pages/c/_cluster/mcapps/create.vue';
+import ProjectsResourceList from '../pages/c/_cluster/projects/index.vue';
+import ProjectsCreate from '../pages/c/_cluster/projects/create.vue';
 
 const routes: RouteConfig[] = [{
   name:      `${ VERRAZZANO_PRODUCT_NAME }-c-cluster-applications`,
@@ -23,6 +25,10 @@ const routes: RouteConfig[] = [{
   path:      `/:product/c/:cluster/components`,
   component: ComponentsResourceList,
 }, {
+  name:      `${ VERRAZZANO_PRODUCT_NAME }-c-cluster-projects`,
+  path:      `/:product/c/:cluster/projects`,
+  component: ProjectsResourceList,
+}, {
   name:      `${ VERRAZZANO_PRODUCT_NAME }-c-cluster-applications-create`,
   path:      `/:product/c/:cluster/applications/create`,
   component: ApplicationCreate,
@@ -34,6 +40,10 @@ const routes: RouteConfig[] = [{
   name:      `${ VERRAZZANO_PRODUCT_NAME }-c-cluster-components-create`,
   path:      `/:product/c/:cluster/components/create`,
   component: ComponentCreate,
+}, {
+  name:      `${ VERRAZZANO_PRODUCT_NAME }-c-cluster-projects-create`,
+  path:      `/:product/c/:cluster/projects/create`,
+  component: ProjectsCreate,
 }, {
   name:      `${ VERRAZZANO_PRODUCT_NAME }`,
   path:      `/:product`,

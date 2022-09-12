@@ -32,10 +32,21 @@ export function init($plugin: any, store: any) {
   });
 
   virtualType({
+    labelKey:       'verrazzano.projects.label',
+    name:           'projects',
+    namespaced:     false,
+    weight:         99,
+    icon:           'folder',
+    route:          createVerrazzanoRoute('c-cluster-projects',
+      { resource: 'cluster.verrazzano.io.vberrazzanoproject' }
+    )
+  });
+
+  virtualType({
     labelKey:       'verrazzano.apps.label',
     name:           'apps',
     namespaced:     false,
-    weight:         98,
+    weight:         97,
     icon:           'folder',
     route:          createVerrazzanoRoute('c-cluster-applications',
       { resource: 'core.oam.dev.applicationconfiguration' }
@@ -46,11 +57,11 @@ export function init($plugin: any, store: any) {
     labelKey:       'verrazzano.multiClusterApps.label',
     name:           'mcapps',
     namespaced:     false,
-    weight:         99,
+    weight:         98,
     icon:           'folder',
     route:          {
       name:   'verrazzano-c-cluster-mcapps',
-      params: { resource: 'clusters.verrazzano.io.MultiClusterApplicationConfiguration' }
+      params: { resource: 'clusters.verrazzano.io.multiclusterapplicationconfiguration' }
     }
   });
 
@@ -58,7 +69,7 @@ export function init($plugin: any, store: any) {
     labelKey:       'verrazzano.components.label',
     name:           'components',
     namespaced:     false,
-    weight:         97,
+    weight:         96,
     icon:           'folder',
     route:          {
       name:   'verrazzano-c-cluster-components',
@@ -69,7 +80,8 @@ export function init($plugin: any, store: any) {
   basicType([
     'apps',
     'mcapps',
-    'components'
+    'components',
+    'projects'
   ]);
 
   headers('core.oam.dev.component', [STATE, NAME, WORKLOAD_KIND, AGE]);
