@@ -18,6 +18,16 @@ pipeline {
         cron( env.BRANCH_NAME.equals('oracle/release/2.6.7') ? 'H H(0-3) * * 1-5' : '')
     }
 
+    parameters {
+        string (name: 'RANCHER_UPSTREAM_VERSION',
+                defaultValue: '2.6.8',
+                description: 'Verrazzano Rancher upstream version to build, default 2.6.8',
+                trim: true)
+
+        booleanParam (name: 'TRIGGER_UPSTREAM', defaultValue: false,
+                description: 'Trigger the build for Verrazzano Rancher, similar to nightly build.')
+    }
+
     environment {
         DASHBOARD_VERSION = "2.6.7"
         OCI_CLI_AUTH = "instance_principal"
@@ -71,15 +81,18 @@ pipeline {
 
         stage('Call Downstream Job') {
             when {
-                allOf {
-                    branch "oracle/release/*"
+                anyOf {
                     triggeredBy 'TimerTrigger'
+                    expression { return params.TRIGGER_UPSTREAM }
                 }
             }
             steps {
-                build job: "Build from Source/rancher/oracle%2Frelease%2F2.6.7", propagate: false, parameters: [
-                    string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard%2F${env.TAR_FILE_NAME}")
-                ]
+                build job: "Build from Source/rancher/oracle%2Frelease%2F${params.RANCHER_UPSTREAM_VERSION}",
+                    propagate: false,
+                    wait: false,
+                    parameters: [
+                        string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard%2F${env.TAR_FILE_NAME}")
+                    ]
             }
         }
     }
