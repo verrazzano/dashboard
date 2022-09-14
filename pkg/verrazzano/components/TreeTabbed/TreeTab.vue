@@ -1,7 +1,7 @@
 <script>
 // Added by Verrazzano
 
-import NavigationHelper from '../../mixins/navigation-helper';
+import NavigationHelper from '@pkg/mixins/navigation-helper';
 
 export default {
   inject: ['addTab', 'removeTab', 'addNavigation', 'removeNavigation', 'openNavigation'],
