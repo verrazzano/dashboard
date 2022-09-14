@@ -534,6 +534,7 @@ export default {
             :key="term._id"
             :name="getNodeSelectorTermTabName(idx)"
             :label="getNodeSelectorTermTabLabel(idx)"
+            :weight="idx"
           >
             <template #beside-header>
               <TabDeleteButton
@@ -594,6 +595,7 @@ export default {
             :key="term._id"
             :name="getPodSelectorTermTabName(idx)"
             :label="getPodSelectorTermTabLabel(idx)"
+            :weight="idx"
           >
             <template #beside-header>
               <TabDeleteButton
@@ -654,6 +656,7 @@ export default {
             :key="term._id"
             :name="getPodAntiSelectorTermTabName(idx)"
             :label="getPodAntiSelectorTermTabLabel(idx)"
+            :weight="idx"
           >
             <template #beside-header>
               <TabDeleteButton

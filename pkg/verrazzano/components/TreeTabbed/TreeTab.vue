@@ -122,6 +122,12 @@ export default {
       if (neu) {
         this.$emit('active');
       }
+    },
+    weight(neu) {
+      // if the weight of this tab changes, re-sort it in the navigation
+      this.navigationNode.weight = neu;
+      this.removeNavigation(this.navigationNode);
+      this.addNavigation(this.navigationNode);
     }
   },
 
