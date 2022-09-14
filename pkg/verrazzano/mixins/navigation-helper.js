@@ -31,5 +31,15 @@ export default {
 
       return nextName;
     },
+
+    // insert a navigation node into a parent node,
+    // maintaining its order by weight.
+    insertNavigationNode(node, parent) {
+      let nextIndex = parent.children.findIndex(element => element.weight > node.weight);
+
+      nextIndex = (nextIndex < 0) ? parent.children.length : nextIndex;
+
+      parent.children.splice(nextIndex, 0, node);
+    }
   }
 };
