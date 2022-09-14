@@ -9,7 +9,7 @@ typeLabel:
       one { Application }
       other { Applications }
     }
-  clusters.verrazzani.io.verrazzanoproject: |-
+  clusters.verrazzano.io.verrazzanoproject: |-
     {count, plural,
       one { Project }
       other { Projects }
