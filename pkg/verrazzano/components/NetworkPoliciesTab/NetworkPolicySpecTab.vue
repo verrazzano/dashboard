@@ -136,6 +136,7 @@ export default {
         :mode="mode"
         :tab-name="createTabName(treeTabName, 'egress')"
         :tab-label="t('verrazzano.common.tabs.egress')"
+        :weight="1"
         @input="setFieldIfNotEmpty('egress', $event)"
         @delete="setField('egress', undefined)"
       />
@@ -145,6 +146,7 @@ export default {
         :mode="mode"
         :tab-name="createTabName(treeTabName, 'ingress')"
         :tab-label="t('verrazzano.common.tabs.ingress')"
+        :weight="2"
         @input="setFieldIfNotEmpty('ingress', $event)"
         @delete="setField('ingress', undefined)"
       />
@@ -153,6 +155,7 @@ export default {
         :mode="mode"
         :tab-name="createTabName(treeTabName, 'podSelector')"
         :tab-label="t('verrazzano.common.tabs.podSelector')"
+        :weight="3"
         @input="setFieldIfNotEmpty('podSelector', $event)"
         @delete="setField('podSelector', undefined)"
       />

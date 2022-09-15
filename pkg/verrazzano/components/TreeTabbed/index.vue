@@ -61,7 +61,7 @@ export default {
       },
 
       addNavigation(navigation) {
-        navigationNode.children.push(navigation);
+        this.insertNavigationNode(navigation, navigationNode);
       },
 
       removeNavigation(navigation) {

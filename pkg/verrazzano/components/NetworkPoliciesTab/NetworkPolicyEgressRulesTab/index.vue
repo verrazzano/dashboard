@@ -34,6 +34,10 @@ export default {
       type:    String,
       default: ''
     },
+    weight: {
+      default: 0,
+      type:    Number
+    },
   },
   data() {
     const egressRules = this.value.map((rule) => {
@@ -88,7 +92,7 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab :name="treeTabName" :label="treeTabLabel" :weight="weight">
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"

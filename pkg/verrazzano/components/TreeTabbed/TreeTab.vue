@@ -1,8 +1,11 @@
 <script>
 // Added by Verrazzano
 
+import NavigationHelper from '@pkg/mixins/navigation-helper';
+
 export default {
   inject: ['addTab', 'removeTab', 'addNavigation', 'removeNavigation', 'openNavigation'],
+  mixins: [NavigationHelper],
 
   props: {
     label: {
@@ -33,6 +36,10 @@ export default {
       default: null,
       type:    [String, Object]
     },
+    weight: {
+      default: 0,
+      type:    Number
+    },
   },
 
   provide() {
@@ -41,7 +48,7 @@ export default {
 
     return {
       addNavigation(navigation) {
-        navigationNode.children.push(navigation);
+        this.insertNavigationNode(navigation, navigationNode);
       },
 
       removeNavigation(navigation) {
@@ -65,6 +72,7 @@ export default {
       navigationNode: {
         name:         this.name,
         label:        this.label,
+        weight:       this.weight,
         children:     []
       },
     };
@@ -114,6 +122,12 @@ export default {
       if (neu) {
         this.$emit('active');
       }
+    },
+    weight(neu) {
+      // if the weight of this tab changes, re-sort it in the navigation
+      this.navigationNode.weight = neu;
+      this.removeNavigation(this.navigationNode);
+      this.addNavigation(this.navigationNode);
     }
   },
 
