@@ -1,7 +1,7 @@
 <script>
 // Added by Verrazzano
 
-import NavigationHelper from '../../mixins/navigation-helper';
+import NavigationHelper from '@pkg/mixins/navigation-helper';
 
 export default {
   inject: ['addTab', 'removeTab', 'addNavigation', 'removeNavigation', 'openNavigation'],
@@ -122,6 +122,12 @@ export default {
       if (neu) {
         this.$emit('active');
       }
+    },
+    weight(neu) {
+      // if the weight of this tab changes, re-sort it in the navigation
+      this.navigationNode.weight = neu;
+      this.removeNavigation(this.navigationNode);
+      this.addNavigation(this.navigationNode);
     }
   },
 
