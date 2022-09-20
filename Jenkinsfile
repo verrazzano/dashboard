@@ -13,11 +13,6 @@ pipeline {
         }
     }
 
-    triggers {
-        // build nightly
-        cron( env.BRANCH_NAME.equals('oracle/release/2.6.7') ? 'H H(0-3) * * 1-5' : '')
-    }
-
     parameters {
         string (name: 'RANCHER_UPSTREAM_VERSION',
                 defaultValue: '2.6.8',
@@ -82,7 +77,7 @@ pipeline {
         stage('Call Downstream Job') {
             when {
                 anyOf {
-                    triggeredBy 'TimerTrigger'
+                    branch 'oracle/release/2.6.7'
                     expression { return params.TRIGGER_UPSTREAM }
                 }
             }
@@ -101,7 +96,7 @@ pipeline {
 def get_artifact_version() {
     def time_stamp = sh(returnStdout: true, script: "date +%Y%m%d%H%M%S").trim()
     def short_commit_sha = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
-    def version_prefix = ''
+    def version_prefix
 
     if (env.TAG_NAME?.trim()) {
         version_prefix = "${env.TAG_NAME}"
