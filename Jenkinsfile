@@ -40,6 +40,7 @@ pipeline {
                     env.DRONE_TAG = "${env.GIT_TAG}"
                     env.TAR_FILE_NAME = "${env.DRONE_TAG}" + ".tar.gz"
                 }
+                sh 'echo {} | jq --arg version "${env.VERSION}" \'. + { "dashboardVersion": $version }\' >> ./buildVersion.json'
             }
         }
 
