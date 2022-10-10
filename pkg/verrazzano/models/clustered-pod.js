@@ -1,4 +1,4 @@
-import Pod from '~/shell/models/pod';
+import Pod from '@shell/models/pod';
 
 export default class ClusteredPod extends Pod {
   get _detailLocation() {
@@ -16,9 +16,5 @@ export default class ClusteredPod extends Pod {
         id,
       }
     };
-  }
-
-  get detailLocation() {
-    return this._detailLocation;
   }
 }

@@ -13,12 +13,20 @@ export const WORKLOAD_KIND = {
   width:    100,
 };
 
+export const DEFINITION_NAME_KIND = {
+  name:     'definitionName',
+  labelKey: 'verrazzano.common.headers.definitionName',
+  value:    'spec.definitionRef.name',
+  sort:     ['definitionName']
+};
+
 export function init($plugin: any, store: any) {
   const {
     product,
     basicType,
     virtualType,
     headers,
+    mapGroup
   } = $plugin.DSL(store, $plugin.name);
 
   product({
@@ -77,6 +85,18 @@ export function init($plugin: any, store: any) {
     }
   });
 
+  // assign these Kubernetes API groups to the name "Verrazzano".
+  // they will appear under "More Resources / Verrazzano" in the cluster nav.
+
+  const VERRAZZANO_GROUP = 'verrazzano';
+
+  mapGroup('clusters.verrazzano.io', VERRAZZANO_GROUP);
+  mapGroup('core.oam.dev', VERRAZZANO_GROUP);
+  mapGroup('oam.verrazzano.io', VERRAZZANO_GROUP);
+  mapGroup('install.verrazzano.io', VERRAZZANO_GROUP);
+  mapGroup('coherence.oracle.com', VERRAZZANO_GROUP);
+  mapGroup('weblogic.oracle', VERRAZZANO_GROUP);
+
   basicType([
     'apps',
     'mcapps',
@@ -85,6 +105,10 @@ export function init($plugin: any, store: any) {
   ]);
 
   headers('core.oam.dev.component', [STATE, NAME, WORKLOAD_KIND, AGE]);
+
+  headers('core.oam.dev.scopedefinition', [STATE, NAME, DEFINITION_NAME_KIND]);
+  headers('core.oam.dev.traitdefinition', [STATE, NAME, DEFINITION_NAME_KIND]);
+  headers('core.oam.dev.workloaddefinition', [STATE, NAME, DEFINITION_NAME_KIND]);
 
   // configureType(MANAGEMENT.SETTING, {
   //   isCreatable: false,
