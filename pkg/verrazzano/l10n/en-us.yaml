@@ -871,6 +871,7 @@ verrazzano:
     ### verrazzano.common.headers###
     ################################
     headers:
+      cluster: Cluster
       workloadKind: Workload Kind
 
     ##################################

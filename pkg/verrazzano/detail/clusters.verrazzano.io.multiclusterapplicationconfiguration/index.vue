@@ -1,5 +1,6 @@
 <script>
 // Added by Verrazzano
+
 import CountGauge from '@shell/components/CountGauge';
 import DashboardMetrics from '@shell/components/DashboardMetrics';
 import Loading from '@shell/components/Loading';
@@ -9,11 +10,13 @@ import Tab from '@shell/components/Tabbed/Tab';
 import VerrazzanoHelper from '@pkg/mixins/verrazzano-helper';
 import V1WorkloadMetrics from '@shell/mixins/v1-workload-metrics';
 
-import { STATE, NAME, NODE, POD_IMAGES } from '@shell/config/table-headers';
-import { POD, WORKLOAD_TYPES } from '@shell/config/types';
+import { STATE, NAME, POD_IMAGES } from '@shell/config/table-headers';
+import { MANAGEMENT, POD, WORKLOAD_TYPES } from '@shell/config/types';
 import { allHash } from '@shell/utils/promise';
 import { mapGetters } from 'vuex';
 import { allDashboardsExist } from '@shell/utils/grafana';
+
+import ClusteredPod from '@pkg/models/clustered-pod';
 
 const WORKLOAD_METRICS_DETAIL_URL = '/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-grafana:80/proxy/d/rancher-workload-pods-1/rancher-workload-pods?orgId=1';
 const WORKLOAD_METRICS_SUMMARY_URL = '/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-grafana:80/proxy/d/rancher-workload-1/rancher-workload?orgId=1';
@@ -49,33 +52,72 @@ export default {
   mixins: [VerrazzanoHelper, V1WorkloadMetrics],
   data() {
     return {
-      fetchInProgress: true,
-      namespace:       this.value.metadata?.namespace,
-      allPods:         {},
-      allJobs:         [],
-      showMetrics:     false,
+      actionMenuTargetElement:  null,
+      actionMenuTargetEvent:    null,
+      actionMenuIsOpen:        false,
+      fetchInProgress:         true,
+      namespace:               this.value.metadata?.namespace,
+      allPods:                 {},
+      allJobs:                 [],
+      showMetrics:             false,
       WORKLOAD_METRICS_DETAIL_URL,
       WORKLOAD_METRICS_SUMMARY_URL,
     };
   },
+
   async fetch() {
-    const hash = { allPods: this.$store.dispatch('management/findAll', { type: POD }) };
+    const hash = {
+      allClusters: this.$store.dispatch('management/findAll', {
+        type: MANAGEMENT.CLUSTER,
+        opt:  { url: MANAGEMENT.CLUSTER }
+      })
+    };
 
     if (this.value.type === WORKLOAD_TYPES.CRON_JOB) {
       hash.allJobs = this.$store.dispatch('management/findAll', { type: WORKLOAD_TYPES.JOB });
     }
+
     const res = await allHash(hash);
-
-    if (res.allPods) {
-      const appName = this.value.metadata.name;
-      const filteredPods = res.allPods.filter(pod => pod.metadata.labels['app.oam.dev/name'] === appName);
-
-      this.sortObjectsByNamespace(filteredPods, this.allPods);
-    }
 
     if (res.allJobs) {
       this.allJobs = res.allJobs;
     }
+
+    const pods = [];
+
+    if (res.allClusters) {
+      const inStore = this.$store.getters['currentProduct'].inStore;
+
+      for (const cluster of res.allClusters) {
+        const clusterRes = await this.$store.dispatch('management/request', { url: `/k8s/clusters/${ cluster?.id }/v1/pods` });
+
+        const appName = this.value.metadata.name;
+
+        const podsResult = clusterRes?.data?.filter(pod => pod.metadata.labels['app.oam.dev/name'] === appName);
+
+        podsResult.forEach((pod) => {
+          const p = new ClusteredPod(pod, {
+            dispatch: (c, payload) => {
+              return this.$store.dispatch(c.includes('/') ? c : `${ inStore }/${ c }`, payload);
+            },
+            getters:
+            {
+              schemaFor: (type) => {
+                this.$store.getters[`${ inStore }/schemaFor`](type);
+              }
+            },
+            rootGetters: this.$store.getters
+          });
+
+          p.cluster = cluster.id;
+          p.clusterDisplay = cluster.nameDisplay;
+
+          pods.push(p);
+        });
+      }
+    }
+
+    this.sortObjectsByNamespace(pods, this.allPods);
 
     const isMetricsSupportedKind = METRICS_SUPPORTED_KINDS.includes(this.value.type);
 
@@ -84,6 +126,8 @@ export default {
   },
   computed:   {
     ...mapGetters(['currentCluster']),
+    ...mapGetters({ t: 'i18n/t' }),
+
     isJob() {
       return this.value.type === WORKLOAD_TYPES.JOB;
     },
@@ -144,8 +188,21 @@ export default {
     podHeaders() {
       return [
         STATE,
-        NAME,
-        NODE,
+        {
+          ...NAME,
+          value:            row => row.metadata?.name,
+          formatter:     'ClusterLinkName',
+          formatterOpts: {
+            type:      POD,
+            namespace: this.value.namespace,
+          },
+        },
+        {
+          name:          'cluster',
+          labelKey:      'verrazzano.common.headers.cluster',
+          value:         'clusterDisplay',
+          sort:          ['nameSort'],
+        },
         POD_IMAGES
       ];
     },
@@ -231,15 +288,17 @@ export default {
         />
       </Tab>
       <Tab v-else name="pods" :label="t('tableHeaders.pods')" :weight="4">
-        <SortableTable
-          v-if="value.pods"
-          :rows="value.pods"
-          :headers="podHeaders"
-          key-field="id"
-          :schema="podSchema"
-          :groupable="false"
-          :search="false"
-        />
+        <div>
+          <SortableTable
+            :rows="value.pods"
+            :headers="podHeaders"
+            key-field="id"
+            :schema="podSchema"
+            :search="false"
+            :row-actions="true"
+            :show-groups="false"
+          />
+        </div>
       </Tab>
       <Tab v-if="showMetrics" :label="t('workload.container.titles.metrics')" name="workload-metrics" :weight="3">
         <template #default="props">
