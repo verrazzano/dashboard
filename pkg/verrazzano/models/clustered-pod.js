@@ -1,3 +1,4 @@
+// Added by Verrazzano
 import Pod from '@shell/models/pod';
 
 export default class ClusteredPod extends Pod {
