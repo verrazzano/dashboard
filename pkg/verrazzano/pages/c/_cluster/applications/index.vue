@@ -53,15 +53,7 @@ export default {
     <Masthead
       :schema="schema"
       :resource="resource"
-    >
-      <template v-slot:header>
-        <ResourceLoadingIndicator
-          v-if="showIncrementalLoadingIndicator"
-          :resources="loadResources"
-          :indeterminate="loadIndeterminate"
-        />
-      </template>
-    </Masthead>
+    />
 
     <ResourceTable
       v-if="rows && rows.length"
