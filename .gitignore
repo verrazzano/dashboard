@@ -111,6 +111,3 @@ shell/rancher-components
 scripts/standalone/ui
 scripts/standalone/cert
 
-# Added by Verrazzano Start
-shell/assets/brand/verrazzano
-# Added by Verrazzano End
