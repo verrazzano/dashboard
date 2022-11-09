@@ -39,7 +39,3 @@ metadata:
     name: ui-brand
 value: "verrazzano"
 EOF
-
-brand_dir="$(dirname "$0")"/pkg/verrazzano/assets/brand
-
-cp -r ${brand_dir}/verrazzano "$(dirname "$0")"/shell/assets/brand
