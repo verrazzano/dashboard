@@ -31,3 +31,15 @@ metadata:
     name: ui-logo-dark
 value: "data:image/svg+xml;base64,${logo_base64}"
 EOF
+
+kubectl apply -f - <<EOF
+apiVersion: management.cattle.io/v3
+kind: Setting
+metadata:
+    name: ui-brand
+value: "verrazzano"
+EOF
+
+brand_dir="$(dirname "$0")"/pkg/verrazzano/assets/brand
+
+cp -r ${brand_dir}/verrazzano "$(dirname "$0")"/shell/assets/brand
