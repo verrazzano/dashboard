@@ -144,6 +144,12 @@ export default {
     verrazzanoComponentApiVersion() {
       return 'oam.verrazzano.io/v1alpha1';
     },
+    verrazzanoWeblogicDomainApiVersion() {
+      return 'weblogic.oracle/v9';
+    },
+    verrazzanoWeblogicDomain8ApiVersion() {
+      return 'weblogic.oracle/v8';
+    },
     manualScalerTraitApiVersion() {
       return 'core.oam.dev/v1alpha2';
     },

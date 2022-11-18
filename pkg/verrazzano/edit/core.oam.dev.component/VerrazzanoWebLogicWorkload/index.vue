@@ -56,7 +56,7 @@ export default {
     initSpec() {
       this.$set(this.configRoot, 'spec', {
         workload: {
-          apiVersion: this.verrazzanoComponentApiVersion,
+          apiVersion: this.verrazzanoWeblogicDomainApiVersion,
           kind:       'VerrazzanoWebLogicWorkload',
           spec:       {
             template: {
