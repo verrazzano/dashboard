@@ -460,6 +460,7 @@ export default {
 
   .landscape {
     /* Added by Verrazzano Start */
+    /* background-image: url('~shell/assets/images/pl/login-landscape.svg'); */
     background-image: url('~shell/assets/brand/verrazzano/login-landscape.svg');
     /* Added by Verrazzano End */
     background-repeat: no-repeat;
