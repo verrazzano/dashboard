@@ -13,13 +13,8 @@ pipeline {
     }
 
     parameters {
-        string (name: 'RANCHER_UPSTREAM_VERSION',
-                defaultValue: '2.6.8',
-                description: 'Verrazzano Rancher upstream version to build, default 2.6.8',
-                trim: true)
-
         booleanParam (name: 'TRIGGER_UPSTREAM', defaultValue: false,
-                description: 'Trigger the build for Verrazzano Rancher, similar to nightly build.')
+                description: 'Trigger the build for Verrazzano Rancher using the same branch name')
     }
 
     environment {
@@ -89,7 +84,7 @@ pipeline {
             steps {
                 archiveArtifacts artifacts: "dist/${env.TAR_FILE_NAME}"
 
-                build job: "Build from Source/rancher/oracle%2Frelease%2F${params.RANCHER_UPSTREAM_VERSION}",
+                build job: get_upstream_jobname(),
                     propagate: false,
                     wait: false,
                     parameters: [
@@ -116,4 +111,9 @@ def get_artifact_version() {
     dashboard_version = [version_prefix, time_stamp, short_commit_sha].join("-")
     println("dashboard version: " + dashboard_version)
     return dashboard_version
+}
+
+def get_upstream_jobname() {
+    def branch_name = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
+    return "Build from Source/rancher/${branch_name}"
 }
