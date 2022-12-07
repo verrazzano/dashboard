@@ -1,6 +1,6 @@
 <script>
 // Added by Verrazzano
-import AuxiliaryImage from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImagesTab/AuxiliaryImage';
+import AuxiliaryImage from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ConfigurationDataTab/AuxiliaryImagesTab/AuxiliaryImage';
 import ArrayListGrouped from '@shell/components/form/ArrayListGrouped';
 import DynamicListHelper from '@pkg/mixins/dynamic-list-helper';
 import TabDeleteButton from '@pkg/components/TabDeleteButton';

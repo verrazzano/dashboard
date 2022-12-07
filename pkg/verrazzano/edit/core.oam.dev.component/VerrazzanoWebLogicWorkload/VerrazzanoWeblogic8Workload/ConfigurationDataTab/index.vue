@@ -1,13 +1,13 @@
 <script>
 // Added by Verrazzano
 import ConfigurationModelTab
-  from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload//ConfigurationDataTab/ConfigurationModelTab';
+  from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/VerrazzanoWeblogic8Workload/ConfigurationDataTab/ConfigurationModelTab';
 import IstioConfigTab
-  from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload//ConfigurationDataTab/IstioConfigTab';
+  from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ConfigurationDataTab/IstioConfigTab';
 import LabeledInput from '@components/Form/LabeledInput/LabeledInput';
 import LabeledSelect from '@shell/components/form/LabeledSelect';
 import OpssConfigurationTab
-  from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload//ConfigurationDataTab/OpssConfigurationTab';
+  from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ConfigurationDataTab/OpssConfigurationTab';
 import TabDeleteButton from '@pkg/components/TabDeleteButton';
 import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
 import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
@@ -194,10 +194,6 @@ export default {
         </div>
       </div>
     </template>
-
-    <!--
-
-    -->
     <template #nestedTabs>
       <ConfigurationModelTab
         v-if="isModelInImage"

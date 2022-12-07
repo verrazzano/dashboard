@@ -2,7 +2,7 @@
 // Added by Verrazzano
 import ArrayListGrouped from '@shell/components/form/ArrayListGrouped';
 import AuxiliaryImageVolume
-  from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AuxiliaryImageVolumesTab/AuxiliaryImageVolume';
+  from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/VerrazzanoWeblogic8Workload/AuxiliaryImageVolumesTab/AuxiliaryImageVolume';
 import DynamicListHelper from '@pkg/mixins/dynamic-list-helper';
 import TabDeleteButton from '@pkg/components/TabDeleteButton';
 import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
