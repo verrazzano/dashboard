@@ -19,7 +19,7 @@ import TolerationsTab from '@pkg/components/TolerationsTab';
 import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
 import VolumeMountsTab from '@pkg/components/VolumeMountsTab';
 import VolumesTab from '@pkg/components/VolumesTab';
-import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
+import WebLogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
 
 import { SERVICE_ACCOUNT, NODE } from '@shell/config/types';
 import { allHash } from '@shell/utils/promise';
@@ -47,7 +47,7 @@ export default {
     VolumeMountsTab,
     VolumesTab,
   },
-  mixins: [WeblogicWorkloadHelper],
+  mixins: [WebLogicWorkloadHelper],
   props:  {
     value: {
       type:    Object,

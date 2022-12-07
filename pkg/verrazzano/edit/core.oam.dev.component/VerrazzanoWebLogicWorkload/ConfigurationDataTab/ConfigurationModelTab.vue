@@ -4,7 +4,7 @@ import LabeledSelect from '@shell/components/form/LabeledSelect';
 import OnlineUpdatesTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ConfigurationDataTab/OnlineUpdatesTab';
 import TabDeleteButton from '@pkg/components/TabDeleteButton';
 import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
-import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
+import WebLogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
 import AuxiliaryImagesTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ConfigurationDataTab/AuxiliaryImagesTab';
 
 import { CONFIG_MAP, SECRET } from '@shell/config/types';
@@ -19,7 +19,7 @@ export default {
     TreeTab,
     AuxiliaryImagesTab,
   },
-  mixins: [WeblogicWorkloadHelper],
+  mixins: [WebLogicWorkloadHelper],
   props:  {
     value: {
       type:    Object,

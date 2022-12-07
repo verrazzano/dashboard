@@ -1,7 +1,7 @@
 <script>
 // Added by Verrazzano
 import AffinityTab from '@pkg/components/AffinityTab';
-import AuxiliaryImagesTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/VerrazzanoWeblogic8Workload/AuxiliaryImagesTab';
+import AuxiliaryImagesTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/VerrazzanoWebLogic8Workload/AuxiliaryImagesTab';
 import ContainerResourcesTab from '@pkg/components/ContainerResourcesTab';
 import ContainersTab from '@pkg/components/ContainersTab';
 import ContainerSecurityContextTab from '@pkg/components/ContainerSecurityContextTab';
@@ -20,7 +20,7 @@ import TolerationsTab from '@pkg/components/TolerationsTab';
 import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
 import VolumeMountsTab from '@pkg/components/VolumeMountsTab';
 import VolumesTab from '@pkg/components/VolumesTab';
-import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
+import WebLogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
 
 import { SERVICE_ACCOUNT, NODE } from '@shell/config/types';
 import { allHash } from '@shell/utils/promise';
@@ -49,7 +49,7 @@ export default {
     VolumeMountsTab,
     VolumesTab,
   },
-  mixins: [WeblogicWorkloadHelper],
+  mixins: [WebLogicWorkloadHelper],
   props:  {
     value: {
       type:    Object,

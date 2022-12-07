@@ -4,7 +4,7 @@ import Checkbox from '@components/Form/Checkbox/Checkbox';
 import LabeledInput from '@components/Form/LabeledInput/LabeledInput';
 import TabDeleteButton from '@pkg/components/TabDeleteButton';
 import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
-import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
+import WebLogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
 
 export default {
   name:       'IstioConfig',
@@ -14,7 +14,7 @@ export default {
     TabDeleteButton,
     TreeTab,
   },
-  mixins: [WeblogicWorkloadHelper],
+  mixins: [WebLogicWorkloadHelper],
   props:  {
     value: {
       type:    Object,

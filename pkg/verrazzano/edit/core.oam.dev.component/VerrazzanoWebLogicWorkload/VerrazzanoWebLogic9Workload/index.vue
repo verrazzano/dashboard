@@ -1,25 +1,23 @@
 <script>
 // Added by Verrazzano
 import AdminServerTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/AdminServerTab';
-import AuxiliaryImageVolumesTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/VerrazzanoWeblogic8Workload/AuxiliaryImageVolumesTab';
-import ClustersTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/VerrazzanoWeblogic8Workload/ClustersTab';
-import ConfigurationDataTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/VerrazzanoWeblogic8Workload/ConfigurationDataTab';
+import ClustersTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ClustersTab';
+import ConfigurationDataTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ConfigurationDataTab';
 import FluentdSpecificationTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/FluentdSpecificationTab';
 import WebLogicGeneralDataTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/WebLogicGeneralDataTab';
 import ManagedServersTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ManagedServersTab';
 import MonitoringExporterTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/MonitoringExporterTab';
-import ServerPodTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/VerrazzanoWeblogic8Workload/ServerPodTab';
+import ServerPodTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerPodTab';
 import ServerServiceTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ServerServiceTab';
 import TreeTabbed from '@pkg/components/TreeTabbed';
-import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
-
-const WKO_DOMAIN_VERSION = 'domain-v8';
+import WebLogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
+import VerrazzanoHelper from '@pkg/mixins/verrazzano-helper';
 
 export default {
-  name:       'VerrazzanoWeblogic8Workload',
+  name:       'VerrazzanoWebLogic9Workload',
   components: {
     AdminServerTab,
-    AuxiliaryImageVolumesTab,
+
     ClustersTab,
     ConfigurationDataTab,
     FluentdSpecificationTab,
@@ -30,7 +28,7 @@ export default {
     TreeTabbed,
     WebLogicGeneralDataTab,
   },
-  mixins: [WeblogicWorkloadHelper],
+  mixins: [WebLogicWorkloadHelper, VerrazzanoHelper],
   props:  {
     value: {
       type:     Object,
@@ -42,36 +40,18 @@ export default {
     },
   },
   data() {
+    const domainHomeSourceType = this.getWorkloadSpecField('domainHomeSourceType');
+
     return {
-      configRoot: this.value,
-      namespace:  '',
+      isModelInImage: domainHomeSourceType === 'FromModel',
+      configRoot:     this.value,
+      namespace:      '',
     };
   },
-  computed: {
-    isModelInImage() {
-      return this.getWorkloadSpecField('domainHomeSourceType') === 'FromModel';
+  watch: {
+    'value.spec.workload.spec.template.domainHomeSourceType'(neu, old) {
+      this.isModelInImage = neu === 'FromModel';
     },
-  },
-  methods:  {
-    initSpec() {
-      this.$set(this.configRoot, 'spec', {
-        workload: {
-          apiVersion: this.verrazzanoWeblogicDomainApiVersion,
-          kind:       'VerrazzanoWebLogicWorkload',
-          spec:       {
-            template: {
-              metadata: { labels: { 'weblogic.resourceVersion': WKO_DOMAIN_VERSION } },
-              spec:     { }
-            }
-          }
-        }
-      });
-    },
-  },
-  created() {
-    if (!this.configRoot.spec?.workload?.spec?.template) {
-      this.initSpec();
-    }
   },
 };
 </script>
@@ -84,16 +64,7 @@ export default {
         :mode="mode"
         :namespaced-object="value"
         tab-name="general"
-      />
-      <!-------------------------------------------------------------------------------------------------------
-       |                                  Auxiliary Image Volumes Tab                                         |
-       -------------------------------------------------------------------------------------------------------->
-
-      <AuxiliaryImageVolumesTab
-        :value="getWorkloadSpecListField('auxiliaryImageVolumes')"
-        :mode="mode"
-        tab-name="auxiliaryImageVolumes"
-        @input="setWorkloadSpecFieldIfNotEmpty('auxiliaryImageVolumes', $event)"
+        @input="$emit('input', value)"
       />
 
       <!-------------------------------------------------------------------------------------------------------
@@ -140,11 +111,11 @@ export default {
        -------------------------------------------------------------------------------------------------------->
 
       <ClustersTab
-        :value="getWorkloadSpecListField('clusters')"
+        :value="getWorkloadListField('clusters')"
         :mode="mode"
         :namespaced-object="value"
         tab-name="clusters"
-        @input="setWorkloadSpecFieldIfNotEmpty('clusters', $event)"
+        @input="setWorkloadFieldIfNotEmpty('clusters', $event)"
       />
 
       <!-------------------------------------------------------------------------------------------------------

@@ -10,7 +10,7 @@ import OpssConfigurationTab
   from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload//ConfigurationDataTab/OpssConfigurationTab';
 import TabDeleteButton from '@pkg/components/TabDeleteButton';
 import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
-import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
+import WebLogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
 
 import { CONFIG_MAP, SECRET } from '@shell/config/types';
 import { allHash } from '@shell/utils/promise';
@@ -26,7 +26,7 @@ export default {
     TabDeleteButton,
     TreeTab,
   },
-  mixins: [WeblogicWorkloadHelper],
+  mixins: [WebLogicWorkloadHelper],
   props:  {
     value: {
       type:     Object,

@@ -5,7 +5,7 @@ import DynamicListHelper from '@pkg/mixins/dynamic-list-helper';
 import ManagedServerTab from '@pkg/edit/core.oam.dev.component/VerrazzanoWebLogicWorkload/ManagedServersTab/ManagedServerTab';
 import TabDeleteButton from '@pkg/components/TabDeleteButton';
 import TreeTab from '@pkg/components/TreeTabbed/TreeTab';
-import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
+import WebLogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
 
 export default {
   name:       'ManagedServersTab',
@@ -15,7 +15,7 @@ export default {
     TabDeleteButton,
     TreeTab,
   },
-  mixins: [WeblogicWorkloadHelper, DynamicListHelper],
+  mixins: [WebLogicWorkloadHelper, DynamicListHelper],
   props:  {
     value: {
       type:    Array,

@@ -2,7 +2,7 @@
 // Added by Verrazzano
 import LabeledInput from '@components/Form/LabeledInput/LabeledInput';
 import LabeledSelect from '@shell/components/form/LabeledSelect';
-import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
+import WebLogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
 
 export default {
   name:       'AuxiliaryImage',
@@ -10,7 +10,7 @@ export default {
     LabeledInput,
     LabeledSelect
   },
-  mixins: [WeblogicWorkloadHelper],
+  mixins: [WebLogicWorkloadHelper],
   props:  {
     value: {
       type:    Object,

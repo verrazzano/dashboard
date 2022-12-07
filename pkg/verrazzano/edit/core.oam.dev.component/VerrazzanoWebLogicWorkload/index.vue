@@ -1,14 +1,17 @@
 <script>
 // Added by Verrazzano
-import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
-import VerrazzanoWeblogic8Workload from './VerrazzanoWeblogic8Workload';
-import VerrazzanoWeblogic9Workload from './VerrazzanoWeblogic9Workload';
+import WebLogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
+import VerrazzanoWebLogic8Workload from './VerrazzanoWebLogic8Workload';
+import VerrazzanoWebLogic9Workload from './VerrazzanoWebLogic9Workload';
 
 export default {
   name:       'VerrazzanoWebLogicWorkload',
-  components: { VerrazzanoWeblogic8Workload, VerrazzanoWeblogic9Workload },
-  mixins:     [WeblogicWorkloadHelper],
-  props:      {
+  components: {
+    VerrazzanoWebLogic8Workload,
+    VerrazzanoWebLogic9Workload
+  },
+  mixins: [WebLogicWorkloadHelper],
+  props:  {
     value: {
       type:     Object,
       required: true
@@ -19,23 +22,26 @@ export default {
     },
   },
   data() {
+    let domainApiVersion = this.get(this.value, 'spec.workload.spec.template.apiVersion');
+
+    // No use of computed properties from within the data block...
+    if (this.mode === 'create') {
+      domainApiVersion = this.getVerrazzanoWebLogicDomainApiVersion();
+    } else if (domainApiVersion === undefined) {
+      domainApiVersion = this.getVerrazzanoWebLogicDomain8ApiVersion();
+      this.$set(this.value, 'spec.workload.spec.template.apiVersion', domainApiVersion);
+    }
+
     return {
-      configRoot: this.value,
-      namespace:  '',
+      apiVersion:     domainApiVersion,
+      configRoot:     this.value,
+      namespace:      '',
     };
   },
   computed: {
-    isModelInImage() {
-      return this.getWorkloadSpecField('domainHomeSourceType') === 'FromModel';
-    },
     isV8Domain() {
-      const apiVersion = this.getWorkloadSpecField('apiVersion');
-
-      return !apiVersion || apiVersion === this.verrazzanoWeblogicDomain8ApiVersion;
-    },
-    isV9Domain() {
-      return this.getWorkloadSpecField('apiVersion') === this.verrazzanoWeblogicDomainApiVersion;
-    },
+      return this.apiVersion === this.getVerrazzanoWebLogicDomain8ApiVersion();
+    }
   },
   methods:  {
     initSpec() {
@@ -45,8 +51,9 @@ export default {
           kind:       'VerrazzanoWebLogicWorkload',
           spec:       {
             template: {
-              metadata: { },
-              spec:     { apiVersion: this.verrazzanoWeblogicDomainApiVersion }
+              apiVersion: this.apiVersion,
+              metadata:   { },
+              spec:       { }
             }
           }
         }
@@ -63,8 +70,8 @@ export default {
 
 <template>
   <div>
-    <VerrazzanoWeblogic8Workload v-if="isV8Domain" :value="value" :mode="mode" :is-model-in-image="isModelInImage" />
-    <VerrazzanoWeblogic9Workload v-else :value="value" :mode="mode" :is-model-in-image="isModelInImage" />
+    <VerrazzanoWebLogic8Workload v-if="isV8Domain" :value="value" :mode="mode" />
+    <VerrazzanoWebLogic9Workload v-else :value="value" :mode="mode" />
   </div>
 </template>
 

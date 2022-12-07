@@ -144,11 +144,14 @@ export default {
     verrazzanoComponentApiVersion() {
       return 'oam.verrazzano.io/v1alpha1';
     },
-    verrazzanoWeblogicDomainApiVersion() {
-      return 'weblogic.oracle/v9';
-    },
-    verrazzanoWeblogicDomain8ApiVersion() {
+    verrazzanoWebLogicDomain8ApiVersion() {
       return 'weblogic.oracle/v8';
+    },
+    verrazzanoWebLogicDomain9ApiVersion() {
+      return 'weblogic.oracle/v8';
+    },
+    verrazzanoWebLogicDomainApiVersion() {
+      return this.verrazzanoWebLogicDomain9ApiVersion;
     },
     manualScalerTraitApiVersion() {
       return 'core.oam.dev/v1alpha2';
@@ -306,6 +309,15 @@ export default {
     },
     arraysAreEquivalent(a, b) {
       return a.length === b.length && a.every((v, i) => v === b[i]);
-    }
+    },
+    getVerrazzanoWebLogicDomain8ApiVersion() {
+      return 'weblogic.oracle/v8';
+    },
+    getVerrazzanoWebLogicDomain9ApiVersion() {
+      return 'weblogic.oracle/v9';
+    },
+    getVerrazzanoWebLogicDomainApiVersion() {
+      return this.getVerrazzanoWebLogicDomain9ApiVersion();
+    },
   },
 };
