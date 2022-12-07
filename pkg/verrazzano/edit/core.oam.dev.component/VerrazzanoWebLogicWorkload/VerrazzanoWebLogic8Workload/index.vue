@@ -85,7 +85,7 @@ export default {
         :value="getWorkloadSpecField('configuration')"
         :mode="mode"
         :namespaced-object="value"
-        :is-model-in-image="isModelInImage"
+        :template-object="workloadTemplate"
         tab-name="configuration"
         @input="setWorkloadSpecFieldIfNotEmpty('configuration', $event)"
         @delete="setWorkloadSpecField('configuration', undefined)"

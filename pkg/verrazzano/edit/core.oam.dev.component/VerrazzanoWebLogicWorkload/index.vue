@@ -52,6 +52,7 @@ export default {
           spec:       {
             template: {
               apiVersion: this.apiVersion,
+
               metadata:   { },
               spec:       { }
             }

@@ -32,6 +32,10 @@ export default {
       type:    String,
       default: ''
     },
+    weight: {
+      type:    Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -48,7 +52,7 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab :name="treeTabName" :label="treeTabLabel" :weight="weight">
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"

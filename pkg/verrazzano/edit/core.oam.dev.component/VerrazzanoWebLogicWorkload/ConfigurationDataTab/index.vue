@@ -40,9 +40,9 @@ export default {
       type:     Object,
       required: true
     },
-    isModelInImage: {
-      type:    Boolean,
-      default: true
+    templateObject: {
+      type:     Object,
+      required: true,
     },
     tabName: {
       type:     String,
@@ -54,6 +54,8 @@ export default {
     },
   },
   data() {
+    const domainHomeSourceType = this.get(this.templateObject, 'spec.domainHomeSourceType');
+
     return {
       treeTabName:     this.tabName,
       treeTabLabel:    this.tabLabel,
@@ -63,7 +65,8 @@ export default {
       allSecrets:      {},
       allConfigMaps:   {},
       secrets:         [],
-      configMaps:      []
+      configMaps:      [],
+      domainHomeSourceType,
     };
   },
   async fetch() {
@@ -91,6 +94,9 @@ export default {
         { value: 'DYNAMIC', label: this.t('verrazzano.weblogic.types.overrideDistributionStrategy.dynamic') },
         { value: 'ON_RESTART', label: this.t('verrazzano.weblogic.types.overrideDistributionStrategy.onRestart') },
       ];
+    },
+    showModelTab() {
+      return this.domainHomeSourceType === 'FromModel';
     }
   },
   methods: {
@@ -99,9 +105,6 @@ export default {
         this.secrets = this.allSecrets[this.namespace] || [];
         this.configMaps = this.allConfigMaps[this.namespace] || [];
       }
-    },
-    clearModelField() {
-      this.setField('model', undefined);
     },
   },
   created() {
@@ -120,9 +123,9 @@ export default {
       this.namespace = neu;
       this.resetSecretsAndConfigMaps();
     },
-    isModelInImage(neu, old) {
-      if (!this.isLoading && neu === false) {
-        this.clearModelField();
+    'templateObject.spec.domainHomeSourceType'(neu, old) {
+      if (!this.isLoading) {
+        this.domainHomeSourceType = neu;
       }
     },
   },
@@ -200,11 +203,12 @@ export default {
     -->
     <template #nestedTabs>
       <ConfigurationModelTab
-        v-if="isModelInImage"
+        v-if="showModelTab"
         :value="getField('model')"
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-name="createTabName(treeTabName, 'model')"
+        :weight="1"
         @input="setFieldIfNotEmpty('model', $event)"
         @delete="setField('model', undefined)"
       />
@@ -212,6 +216,7 @@ export default {
         :value="getField('istio')"
         :mode="mode"
         :tab-name="createTabName(treeTabName, 'istio')"
+        :weight="2"
         @input="setFieldIfNotEmpty('istio', $event)"
         @delete="setField('istio', undefined)"
       />
@@ -220,6 +225,7 @@ export default {
         :mode="mode"
         :namespaced-object="namespacedObject"
         :tab-name="createTabName(treeTabName, 'opss')"
+        :weight="3"
         @input="setFieldIfNotEmpty('opss', $event)"
         @delete="setField('opss', undefined)"
       />
