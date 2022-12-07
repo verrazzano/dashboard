@@ -4,9 +4,6 @@ import WeblogicWorkloadHelper from '@pkg/mixins/weblogic-workload-helper';
 import VerrazzanoWeblogic8Workload from './VerrazzanoWeblogic8Workload';
 import VerrazzanoWeblogic9Workload from './VerrazzanoWeblogic9Workload';
 
-const WKO_DOMAIN_8_VERSION = 'domain-v8';
-const WKO_DOMAIN_9_VERSION = 'domain-v9';
-
 export default {
   name:       'VerrazzanoWebLogicWorkload',
   components: { VerrazzanoWeblogic8Workload, VerrazzanoWeblogic9Workload },
@@ -32,22 +29,24 @@ export default {
       return this.getWorkloadSpecField('domainHomeSourceType') === 'FromModel';
     },
     isV8Domain() {
-      return this.getWorkloadMetadataField('labels')?.['weblogic.resourceVersion'] === WKO_DOMAIN_8_VERSION;
+      const apiVersion = this.getWorkloadSpecField('apiVersion');
+
+      return !apiVersion || apiVersion === this.verrazzanoWeblogicDomain8ApiVersion;
     },
     isV9Domain() {
-      return this.getWorkloadMetadataField('labels')?.['weblogic.resourceVersion'] === WKO_DOMAIN_9_VERSION;
+      return this.getWorkloadSpecField('apiVersion') === this.verrazzanoWeblogicDomainApiVersion;
     },
   },
   methods:  {
     initSpec() {
       this.$set(this.configRoot, 'spec', {
         workload: {
-          apiVersion: this.verrazzanoWeblogicDomainApiVersion,
+          apiVersion: this.verrazzanoComponentApiVersion,
           kind:       'VerrazzanoWebLogicWorkload',
           spec:       {
             template: {
-              metadata: { labels: { 'weblogic.resourceVersion': WKO_DOMAIN_9_VERSION } },
-              spec:     { }
+              metadata: { },
+              spec:     { apiVersion: this.verrazzanoWeblogicDomainApiVersion }
             }
           }
         }
