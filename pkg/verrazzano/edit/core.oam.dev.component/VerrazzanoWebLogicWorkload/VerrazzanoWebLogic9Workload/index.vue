@@ -114,6 +114,7 @@ export default {
         :value="getWorkloadListField('clusters')"
         :mode="mode"
         :namespaced-object="value"
+        :template-object="workloadTemplate"
         tab-name="clusters"
         @input="setWorkloadFieldIfNotEmpty('clusters', $event)"
       />

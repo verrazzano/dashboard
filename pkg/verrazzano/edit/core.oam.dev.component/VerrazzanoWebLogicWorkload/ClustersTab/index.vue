@@ -29,6 +29,10 @@ export default {
       type:     Object,
       required: true
     },
+    templateObject: {
+      type:     Object,
+      required: true
+    },
     tabName: {
       type:     String,
       required: true
@@ -46,8 +50,79 @@ export default {
   },
   methods: {
     getDynamicListTabName(child) {
-      return this.createTabName(this.treeTabName, child?.clusterName);
+      return this.createTabName(this.treeTabName, child?.spec?.clusterName);
     },
+    addCluster(name) {
+      const newClusterName = `${ this.domainName }-${ name }`;
+
+      const newCluster = {
+        apiVersion: this.verrazzanoClusterApiVersion,
+        kind:       'Cluster',
+        spec:       {
+          metadata:    { name: newClusterName, namespace: this.namespace },
+          clusterName: name
+        }
+      };
+
+      this.dynamicListAddChild(newCluster);
+
+      const clusterRefField = 'spec.workload.template.spec.clusters';
+      const clusterRefs = this.get(this.templateObject, clusterRefField) || [];
+
+      clusterRefs.push({ name: newClusterName });
+
+      this.set(this.templateObject, clusterRefField, clusterRefs);
+    },
+  },
+  computed: {
+    domainName() {
+      return this.get(this.templateObject, 'metadata.name') || '';
+    },
+    namespace() {
+      return this.get(this.templateObject, 'metadata.namespace') || '';
+    },
+  },
+  watch: {
+    'templateObject.metadata.namespace'(neu, old) {
+      const namespaceField = 'spec.metadata.namespace';
+
+      for (const cluster of this.dynamicListChildren) {
+        this.set(cluster, namespaceField, neu);
+      }
+      this.update();
+    },
+    'templateObject.metadata.name'(neu, old) {
+      function updateDomainPrefix(name) {
+        name = name.substring(name.indexOf('-') + 1);
+        name = `${ neu }-${ name }`;
+
+        return name;
+      }
+
+      const nameField = 'spec.metadata.name';
+
+      for (const cluster of this.dynamicListChildren) {
+        let name = this.get(cluster, nameField);
+
+        if (name) {
+          name = updateDomainPrefix(name);
+          this.set(cluster, nameField, name);
+        }
+      }
+
+      const clusterRefs = this.get(this.templateObject, 'spec.workload.template.spec.clusters') || [];
+
+      for (const clusterRef of clusterRefs) {
+        let name = clusterRef.name;
+
+        if (name) {
+          name = name.substring(name.indexOf('-') + 1);
+          clusterRef.name = updateDomainPrefix(name);
+        }
+      }
+
+      this.update();
+    }
   },
   created() {
     if (!this.treeTabLabel) {
@@ -70,18 +145,19 @@ export default {
       <AddNamedElement
         :value="dynamicListChildren"
         :mode="mode"
-        key-field-name="clusterName"
+        key-field-name="template.spec.clusterName"
         :add-type="t('verrazzano.weblogic.tabs.cluster')"
-        @input="dynamicListAddChild({ clusterName: $event })"
+        @input="addCluster($event)"
       />
     </template>
     <template #nestedTabs>
       <ClusterTab
         v-for="(cluster, idx) in dynamicListChildren"
         :key="cluster._id"
-        :value="cluster"
+        :value="cluster.spec"
         :mode="mode"
         :namespaced-object="namespacedObject"
+        :template-object="templateObject"
         :tab-name="getDynamicListTabName(cluster)"
         @input="dynamicListUpdate"
         @delete="dynamicListDeleteChildByIndex(idx)"

@@ -36,6 +36,10 @@ export default {
       type:     Object,
       required: true
     },
+    templateObject: {
+      type:     Object,
+      required: true
+    },
     tabName: {
       type:     String,
       required: true
