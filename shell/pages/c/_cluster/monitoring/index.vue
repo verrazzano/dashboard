@@ -58,7 +58,7 @@ export default {
           iconSrc:     grafanaSrc,
           label:       'monitoring.overview.linkedList.grafana.label',
           description: 'monitoring.overview.linkedList.grafana.description',
-          link:        `/k8s/clusters/${ currentCluster.id }/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-grafana:80/proxy`,
+          link:        `https://grafana.vmi.system.default.172.19.0.231.nip.io`,
         },
         {
           enabled:     false,
@@ -67,7 +67,7 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusPromQl.label',
           description:
             'monitoring.overview.linkedList.prometheusPromQl.description',
-          link: `/k8s/clusters/${ currentCluster.id }/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/graph`,
+          link: `https://prometheus.vmi.system.default.172.19.0.231.nip.io/graph`,
         },
         {
           enabled:     false,
@@ -76,7 +76,7 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusRules.label',
           description:
             'monitoring.overview.linkedList.prometheusRules.description',
-          link: `/k8s/clusters/${ currentCluster.id }/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/rules`,
+          link: `https://prometheus.vmi.system.default.172.19.0.231.nip.io/rules`,
         },
         {
           enabled:     false,
@@ -85,7 +85,7 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusTargets.label',
           description:
             'monitoring.overview.linkedList.prometheusTargets.description',
-          link: `/k8s/clusters/${ currentCluster.id }/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/targets`,
+          link: `https://prometheus.vmi.system.default.172.19.0.231.nip.io/targets`,
         },
       ]
     };
