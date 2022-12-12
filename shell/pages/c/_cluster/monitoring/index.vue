@@ -15,6 +15,7 @@ import { haveV1MonitoringWorkloads } from '@shell/utils/monitoring';
 
 const VERRAZZANO_SYSTEM_NAMESPACE = 'verrazzano-system';
 const VERRAZZANO_MONITORING_NAMESPACE = 'verrazzano-monitoring';
+const VERRAZZANO = 'install.verrazzano.io.Verrazzano';
 
 export default {
   components: {
@@ -59,7 +60,7 @@ export default {
           iconSrc:     grafanaSrc,
           label:       'monitoring.overview.linkedList.grafana.label',
           description: 'monitoring.overview.linkedList.grafana.description',
-          link:        `https://grafana.vmi.system.default.172.19.0.231.nip.io`,
+          link:        this.links['grafanaUrl'],
         },
         {
           enabled:     false,
@@ -68,7 +69,7 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusPromQl.label',
           description:
             'monitoring.overview.linkedList.prometheusPromQl.description',
-          link: `https://prometheus.vmi.system.default.172.19.0.231.nip.io/graph`,
+          link: this.links['prometheusUrl'] + `/graph`,
         },
         {
           enabled:     false,
@@ -77,7 +78,7 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusRules.label',
           description:
             'monitoring.overview.linkedList.prometheusRules.description',
-          link: `https://prometheus.vmi.system.default.172.19.0.231.nip.io/rules`,
+          link: this.links['prometheusUrl'] + `/rules`,
         },
         {
           enabled:     false,
@@ -86,9 +87,10 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusTargets.label',
           description:
             'monitoring.overview.linkedList.prometheusTargets.description',
-          link: `https://prometheus.vmi.system.default.172.19.0.231.nip.io/targets`,
+          link: this.links['prometheusUrl'] + `/targets`,
         },
-      ]
+      ],
+      links: {}
     };
   },
 
@@ -132,6 +134,15 @@ export default {
           promeMatch.forEach((match) => {
             match.enabled = true;
           });
+        }
+
+        const requests = { verrazzanos: this.$store.dispatch('management/findAll', { type: VERRAZZANO }) };
+
+        const vzhash = await allHash(requests);
+
+        if (vzhash.verrazzanos) {
+          // There should really never be more than one of these so...
+          this.links = { ...(vzhash.verrazzanos[0]?.status?.instance || {}) };
         }
       }
     },
