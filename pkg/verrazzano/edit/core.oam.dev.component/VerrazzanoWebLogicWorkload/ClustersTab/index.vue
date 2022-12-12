@@ -66,7 +66,7 @@ export default {
 
       this.dynamicListAddChild(newCluster);
 
-      const clusterRefField = 'spec.workload.template.spec.clusters';
+      const clusterRefField = 'spec.clusters';
       const clusterRefs = this.get(this.templateObject, clusterRefField) || [];
 
       clusterRefs.push({ name: newClusterName });
@@ -110,7 +110,7 @@ export default {
         }
       }
 
-      const clusterRefs = this.get(this.templateObject, 'spec.workload.template.spec.clusters') || [];
+      const clusterRefs = this.get(this.templateObject, 'spec.clusters') || [];
 
       for (const clusterRef of clusterRefs) {
         let name = clusterRef.name;
