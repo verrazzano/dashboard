@@ -13,7 +13,8 @@ import LazyImage from '@shell/components/LazyImage';
 import SimpleBox from '@shell/components/SimpleBox';
 import { haveV1MonitoringWorkloads } from '@shell/utils/monitoring';
 
-const CATTLE_MONITORING_NAMESPACE = 'cattle-monitoring-system';
+const VERRAZZANO_SYSTEM_NAMESPACE = 'verrazzano-system';
+const VERRAZZANO_MONITORING_NAMESPACE = 'verrazzano-monitoring';
 
 export default {
   components: {
@@ -108,17 +109,17 @@ export default {
         const alertmanager = findBy(
           hash.endpoints,
           'id',
-          `${ CATTLE_MONITORING_NAMESPACE }/rancher-monitoring-alertmanager`
+          `${ VERRAZZANO_MONITORING_NAMESPACE }/rancher-monitoring-alertmanager`
         );
         const grafana = findBy(
           hash.endpoints,
           'id',
-          `${ CATTLE_MONITORING_NAMESPACE }/rancher-monitoring-grafana`
+          `${ VERRAZZANO_SYSTEM_NAMESPACE }/vmi-system-grafana`
         );
         const prometheus = findBy(
           hash.endpoints,
           'id',
-          `${ CATTLE_MONITORING_NAMESPACE }/rancher-monitoring-prometheus`
+          `${ VERRAZZANO_MONITORING_NAMESPACE }/prometheus-operated`
         );
 
         if (!isEmpty(alertmanager) && !isEmpty(alertmanager.subsets)) {
