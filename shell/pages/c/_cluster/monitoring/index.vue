@@ -44,6 +44,7 @@ export default {
       },
       resources:     [MONITORING.ALERTMANAGER, MONITORING.PROMETHEUS],
       v1Installed:   false,
+      links: {},
       externalLinks: [
         {
           enabled:     false,
@@ -60,7 +61,7 @@ export default {
           iconSrc:     grafanaSrc,
           label:       'monitoring.overview.linkedList.grafana.label',
           description: 'monitoring.overview.linkedList.grafana.description',
-          link:        this.links['grafanaUrl'],
+          link:        ``,
         },
         {
           enabled:     false,
@@ -69,7 +70,7 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusPromQl.label',
           description:
             'monitoring.overview.linkedList.prometheusPromQl.description',
-          link: this.links['prometheusUrl'] + `/graph`,
+          link: `##prometheusUrl##/graph`,
         },
         {
           enabled:     false,
@@ -78,7 +79,7 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusRules.label',
           description:
             'monitoring.overview.linkedList.prometheusRules.description',
-          link: this.links['prometheusUrl'] + `/rules`,
+          link: `##prometheusUrl##/rules`,
         },
         {
           enabled:     false,
@@ -87,10 +88,9 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusTargets.label',
           description:
             'monitoring.overview.linkedList.prometheusTargets.description',
-          link: this.links['prometheusUrl'] + `/targets`,
+          link: `##prometheusUrl##/targets`,
         },
-      ],
-      links: {}
+      ]
     };
   },
 
@@ -101,6 +101,15 @@ export default {
       this.v1Installed = await haveV1MonitoringWorkloads($store);
 
       const hash = await allHash({ endpoints: $store.dispatch('cluster/findAll', { type: ENDPOINTS }) });
+
+      const requests = { verrazzanos: this.$store.dispatch('management/findAll', { type: VERRAZZANO }) };
+
+      const vzhash = await allHash(requests);
+
+      if (vzhash.verrazzanos) {
+        // There should really never be more than one of these so...
+        this.links = { ...(vzhash.verrazzanos[0]?.status?.instance || {}) };
+      }
 
       if (!isEmpty(hash.endpoints)) {
         const amMatch = findBy(externalLinks, 'group', 'alertmanager');
@@ -129,20 +138,13 @@ export default {
         }
         if (!isEmpty(grafana) && !isEmpty(grafana.subsets)) {
           grafanaMatch.enabled = true;
+          grafanaMatch.link = this.links['grafanaUrl']
         }
         if (!isEmpty(prometheus) && !isEmpty(prometheus.subsets)) {
           promeMatch.forEach((match) => {
             match.enabled = true;
+            match.link = match.link.replaceAll('##prometheusUrl##', this.links['prometheusUrl'])
           });
-        }
-
-        const requests = { verrazzanos: this.$store.dispatch('management/findAll', { type: VERRAZZANO }) };
-
-        const vzhash = await allHash(requests);
-
-        if (vzhash.verrazzanos) {
-          // There should really never be more than one of these so...
-          this.links = { ...(vzhash.verrazzanos[0]?.status?.instance || {}) };
         }
       }
     },
