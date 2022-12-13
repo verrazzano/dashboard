@@ -13,6 +13,8 @@ import LazyImage from '@shell/components/LazyImage';
 import SimpleBox from '@shell/components/SimpleBox';
 import { haveV1MonitoringWorkloads } from '@shell/utils/monitoring';
 
+const CATTLE_MONITORING_NAMESPACE = 'cattle-monitoring-system';
+
 const VERRAZZANO_SYSTEM_NAMESPACE = 'verrazzano-system';
 const VERRAZZANO_MONITORING_NAMESPACE = 'verrazzano-monitoring';
 const VERRAZZANO = 'install.verrazzano.io.Verrazzano';
@@ -44,7 +46,6 @@ export default {
       },
       resources:     [MONITORING.ALERTMANAGER, MONITORING.PROMETHEUS],
       v1Installed:   false,
-      links: {},
       externalLinks: [
         {
           enabled:     false,
@@ -54,6 +55,7 @@ export default {
           description:
             'monitoring.overview.linkedList.alertManager.description',
           link: `/k8s/clusters/${ currentCluster.id }/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-alertmanager:9093/proxy`,
+          vzlink:        ``
         },
         {
           enabled:     false,
@@ -61,7 +63,8 @@ export default {
           iconSrc:     grafanaSrc,
           label:       'monitoring.overview.linkedList.grafana.label',
           description: 'monitoring.overview.linkedList.grafana.description',
-          link:        ``,
+          link:        `/k8s/clusters/${ currentCluster.id }/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-grafana:80/proxy`,
+          vzlink:        ``
         },
         {
           enabled:     false,
@@ -70,7 +73,8 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusPromQl.label',
           description:
             'monitoring.overview.linkedList.prometheusPromQl.description',
-          link: `##prometheusUrl##/graph`,
+          link: `/k8s/clusters/${ currentCluster.id }/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/graph`,
+          vzlink: `##prometheusUrl##/graph`
         },
         {
           enabled:     false,
@@ -79,7 +83,8 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusRules.label',
           description:
             'monitoring.overview.linkedList.prometheusRules.description',
-          link: `##prometheusUrl##/rules`,
+          link: `/k8s/clusters/${ currentCluster.id }/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/rules`,
+          vzlink: `##prometheusUrl##/rules`
         },
         {
           enabled:     false,
@@ -88,9 +93,11 @@ export default {
           label:       'monitoring.overview.linkedList.prometheusTargets.label',
           description:
             'monitoring.overview.linkedList.prometheusTargets.description',
-          link: `##prometheusUrl##/targets`,
+          link: `/k8s/clusters/${ currentCluster.id }/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-prometheus:9090/proxy/targets`,
+          vzlink: `##prometheusUrl##/targets`
         },
-      ]
+      ],
+      links: {}
     };
   },
 
@@ -102,48 +109,73 @@ export default {
 
       const hash = await allHash({ endpoints: $store.dispatch('cluster/findAll', { type: ENDPOINTS }) });
 
-      const requests = { verrazzanos: this.$store.dispatch('management/findAll', { type: VERRAZZANO }) };
-
-      const vzhash = await allHash(requests);
-
-      if (vzhash.verrazzanos) {
-        // There should really never be more than one of these so...
-        this.links = { ...(vzhash.verrazzanos[0]?.status?.instance || {}) };
-      }
-
       if (!isEmpty(hash.endpoints)) {
         const amMatch = findBy(externalLinks, 'group', 'alertmanager');
         const grafanaMatch = findBy(externalLinks, 'group', 'grafana');
         const promeMatch = externalLinks.filter(
           el => el.group === 'prometheus'
         );
+
         const alertmanager = findBy(
-          hash.endpoints,
-          'id',
-          `${ VERRAZZANO_MONITORING_NAMESPACE }/rancher-monitoring-alertmanager`
+            hash.endpoints,
+            'id',
+            `${ CATTLE_MONITORING_NAMESPACE }/rancher-monitoring-alertmanager`
         );
         const grafana = findBy(
+            hash.endpoints,
+            'id',
+            `${ CATTLE_MONITORING_NAMESPACE }/rancher-monitoring-grafana`
+        );
+        const prometheus = findBy(
+            hash.endpoints,
+            'id',
+            `${ CATTLE_MONITORING_NAMESPACE }/rancher-monitoring-prometheus`
+        );
+
+        const vzAlertmanager = findBy(
+          hash.endpoints,
+          'id',
+          `${ VERRAZZANO_MONITORING_NAMESPACE }/alertmanager`
+        );
+        const vzGrafana = findBy(
           hash.endpoints,
           'id',
           `${ VERRAZZANO_SYSTEM_NAMESPACE }/vmi-system-grafana`
         );
-        const prometheus = findBy(
+        const vzPrometheus = findBy(
           hash.endpoints,
           'id',
           `${ VERRAZZANO_MONITORING_NAMESPACE }/prometheus-operated`
         );
 
+        const requests = { verrazzanos: this.$store.dispatch('management/findAll', { type: VERRAZZANO }) };
+
+        const vzhash = await allHash(requests);
+
+        if (vzhash.verrazzanos) {
+          // There should really never be more than one of these so...
+          this.links = { ...(vzhash.verrazzanos[0]?.status?.instance || {}) };
+        }
+
         if (!isEmpty(alertmanager) && !isEmpty(alertmanager.subsets)) {
           amMatch.enabled = true;
         }
+
         if (!isEmpty(grafana) && !isEmpty(grafana.subsets)) {
+          grafanaMatch.enabled = true;
+        } else if (!isEmpty(vzGrafana) && !isEmpty(vzGrafana.subsets)) {
           grafanaMatch.enabled = true;
           grafanaMatch.link = this.links['grafanaUrl']
         }
+
         if (!isEmpty(prometheus) && !isEmpty(prometheus.subsets)) {
           promeMatch.forEach((match) => {
             match.enabled = true;
-            match.link = match.link.replaceAll('##prometheusUrl##', this.links['prometheusUrl'])
+          });
+        } else if (!isEmpty(vzPrometheus) && !isEmpty(vzPrometheus.subsets)) {
+          promeMatch.forEach((match) => {
+            match.enabled = true;
+            match.link = match.vzlink.replaceAll('##prometheusUrl##', this.links['prometheusUrl'])
           });
         }
       }
