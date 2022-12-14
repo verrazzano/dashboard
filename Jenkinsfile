@@ -78,7 +78,7 @@ pipeline {
                 // Trigger upstream build WHEN new changes for Rancher Dashboard are committed to the release branch, OR the user demands it
                 anyOf {
                     allOf {
-                        branch 'oracle/release/2.6.8'
+                        branch "oracle/release/${DASHBOARD_VERSION}"
                         expression {
                             currentBuild.changeSets.size() > 0
                         }
