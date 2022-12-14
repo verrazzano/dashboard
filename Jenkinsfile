@@ -13,8 +13,13 @@ pipeline {
     }
 
     parameters {
+        string (name: 'RANCHER_UPSTREAM_BRANCH',
+                defaultValue: '',
+                description: 'Upstream Verrazzano Rancher branch to build after this Dashboard build completes, like oracle/release/2.6.8.  Defaults to same branch name.',
+                trim: true)
+
         booleanParam (name: 'TRIGGER_UPSTREAM', defaultValue: false,
-                description: 'Trigger the build for Verrazzano Rancher using the same branch name')
+                description: 'Trigger the build for Verrazzano Rancher after this dashboard build completes.')
     }
 
     environment {
@@ -84,7 +89,7 @@ pipeline {
             steps {
                 archiveArtifacts artifacts: "dist/${env.TAR_FILE_NAME}"
 
-                build job: get_upstream_jobname(),
+                build job: get_upstream_jobname("${params.RANCHER_UPSTREAM_BRANCH}"),
                     propagate: false,
                     wait: false,
                     parameters: [
@@ -113,7 +118,12 @@ def get_artifact_version() {
     return dashboard_version
 }
 
-def get_upstream_jobname() {
-    def branch_name = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
+def get_upstream_jobname(branchNameParam) {
+    def branch_name
+    if (branchNameParam?.trim()) {
+        branch_name =  java.net.URLEncoder.encode(branchNameParam, "UTF-8")
+    } else {
+        branch_name = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
+    }
     return "Build from Source/rancher/${branch_name}"
 }
