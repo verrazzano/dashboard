@@ -16,6 +16,9 @@ import { mapPref, HIDE_REPOS, SHOW_PRE_RELEASE } from '@shell/store/prefs';
 import { removeObject, addObject, findBy } from '@shell/utils/array';
 import { compatibleVersionsFor, filterAndArrangeCharts } from '@shell/store/catalog';
 import { CATALOG } from '@shell/config/labels-annotations';
+import { SERVICE } from '@shell/config/types';
+import { allHash } from '@shell/utils/promise';
+import isEmpty from 'lodash/isEmpty';
 
 export default {
   components: {
@@ -38,6 +41,17 @@ export default {
     this.showHidden = query[HIDDEN] === _FLAGGED;
     this.category = query[CATEGORY] || '';
     this.allRepos = this.areAllEnabled();
+
+    const VERRAZZANO_MONITORING_NAMESPACE = 'verrazzano-monitoring';
+    const hash = await allHash({ services: $store.dispatch('cluster/findAll', { type: SERVICE }) });
+    const vzPrometheus = findBy(
+        hash.services,
+        'id',
+        `${ VERRAZZANO_MONITORING_NAMESPACE }/prometheus-operated`
+    );
+    if (!isEmpty(vzPrometheus) && !isEmpty(vzPrometheus.subsets)) {
+      this.vzMonitoring = true
+    }
   },
 
   data() {
@@ -48,6 +62,7 @@ export default {
       searchQuery:         null,
       showDeprecated:      null,
       showHidden:          null,
+      vzMonitoring:        false,
     };
   },
 
@@ -122,6 +137,10 @@ export default {
 
     enabledCharts() {
       return (this.allCharts || []).filter((c) => {
+        if ( this.vzMonitoring && c.chartNameDisplay == "rancher-monitoring" ) {
+          return false;
+        }
+
         if ( c.deprecated && !this.showDeprecated ) {
           return false;
         }
