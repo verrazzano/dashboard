@@ -50,6 +50,7 @@ export default {
         `${ VERRAZZANO_MONITORING_NAMESPACE }/prometheus-operated`
     );
     if (!isEmpty(vzPrometheus) && !isEmpty(vzPrometheus.subsets)) {
+      console.log(`Verrazzano Monitoring Stack detected`)
       this.vzMonitoring = true
     }
   },
@@ -137,6 +138,7 @@ export default {
 
     enabledCharts() {
       return (this.allCharts || []).filter((c) => {
+        console.log(`Determining enablement of chart ${ c.chartNameDisplay }`)
         if ( this.vzMonitoring && c.chartNameDisplay == "rancher-monitoring" ) {
           return false;
         }
