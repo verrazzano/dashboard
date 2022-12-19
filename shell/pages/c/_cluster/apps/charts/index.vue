@@ -16,9 +16,9 @@ import { mapPref, HIDE_REPOS, SHOW_PRE_RELEASE } from '@shell/store/prefs';
 import { removeObject, addObject, findBy } from '@shell/utils/array';
 import { compatibleVersionsFor, filterAndArrangeCharts } from '@shell/store/catalog';
 import { CATALOG } from '@shell/config/labels-annotations';
-import { SERVICE } from '@shell/config/types';
 import { allHash } from '@shell/utils/promise';
 import isEmpty from 'lodash/isEmpty';
+import {ENDPOINTS} from "@/shell/config/types";
 
 export default {
   components: {
@@ -33,6 +33,7 @@ export default {
 
   async fetch() {
     await this.$store.dispatch('catalog/load');
+    const { $store } = this;
 
     const query = this.$route.query;
 
@@ -42,16 +43,23 @@ export default {
     this.category = query[CATEGORY] || '';
     this.allRepos = this.areAllEnabled();
 
-    const VERRAZZANO_MONITORING_NAMESPACE = 'verrazzano-monitoring';
-    const hash = await allHash({ services: $store.dispatch('cluster/findAll', { type: SERVICE }) });
-    const vzPrometheus = findBy(
-        hash.services,
-        'id',
-        `${ VERRAZZANO_MONITORING_NAMESPACE }/prometheus-operated`
-    );
-    if (!isEmpty(vzPrometheus) && !isEmpty(vzPrometheus.subsets)) {
-      console.log(`Verrazzano Monitoring Stack detected`)
-      this.vzMonitoring = true
+    const hash = await allHash({ endpoints: $store.dispatch('cluster/findAll', { type: ENDPOINTS }) });
+
+    if (!isEmpty(hash.endpoints)) {
+      const VERRAZZANO_MONITORING_NAMESPACE = 'verrazzano-monitoring';
+      const vzPrometheus = findBy(
+          hash.endpoints,
+          'id',
+          `${VERRAZZANO_MONITORING_NAMESPACE}/prometheus-operated`
+      );
+      if (!isEmpty(vzPrometheus) && !isEmpty(vzPrometheus.subsets)) {
+        console.log(`Verrazzano Monitoring Stack detected`)
+        this.vzMonitoring = true
+      } else {
+        console.log("Verrazzano monitoring stack not detected")
+      }
+    } else {
+      console.log("Did not find cluster endpoints")
     }
   },
 
@@ -138,8 +146,9 @@ export default {
 
     enabledCharts() {
       return (this.allCharts || []).filter((c) => {
-        console.log(`Determining enablement of chart ${ c.chartNameDisplay }`)
+        console.log(`Determining enablement of chart ${ c.releaseName }`)
         if ( this.vzMonitoring && c.releaseName == "rancher-monitoring" ) {
+          console.log(`Filtering out chart ${ c.releaseName }`)
           return false;
         }
 
