@@ -146,10 +146,12 @@ export default {
 
     enabledCharts() {
       return (this.allCharts || []).filter((c) => {
-        console.log(`Determining enablement of chart ${ c.releaseName }`)
-        if ( this.vzMonitoring && c.releaseName == "rancher-monitoring" ) {
-          console.log(`Filtering out chart ${ c.releaseName }`)
+        console.log(`Determining enablement of chart ${ c.chartName }`)
+        if ( this.vzMonitoring && c.chartName == "rancher-monitoring" ) {
+          console.log(`Filtering out chart ${ c.chartName }`)
           return false;
+        } else {
+          console.log(`Not filtering ${ c.chartName }`)
         }
 
         if ( c.deprecated && !this.showDeprecated ) {
