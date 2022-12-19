@@ -139,7 +139,7 @@ export default {
     enabledCharts() {
       return (this.allCharts || []).filter((c) => {
         console.log(`Determining enablement of chart ${ c.chartNameDisplay }`)
-        if ( this.vzMonitoring && c.chartNameDisplay == "rancher-monitoring" ) {
+        if ( this.vzMonitoring && c.releaseName == "rancher-monitoring" ) {
           return false;
         }
 
