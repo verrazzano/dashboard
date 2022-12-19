@@ -16,9 +16,11 @@ import { mapPref, HIDE_REPOS, SHOW_PRE_RELEASE } from '@shell/store/prefs';
 import { removeObject, addObject, findBy } from '@shell/utils/array';
 import { compatibleVersionsFor, filterAndArrangeCharts } from '@shell/store/catalog';
 import { CATALOG } from '@shell/config/labels-annotations';
+// Added by Verrazzano Start
 import { allHash } from '@shell/utils/promise';
 import isEmpty from 'lodash/isEmpty';
 import {ENDPOINTS} from "@/shell/config/types";
+// Added by Verrazzano End
 
 export default {
   components: {
@@ -33,7 +35,9 @@ export default {
 
   async fetch() {
     await this.$store.dispatch('catalog/load');
+// Added by Verrazzano Start
     const { $store } = this;
+// Added by Verrazzano End
 
     const query = this.$route.query;
 
@@ -42,7 +46,7 @@ export default {
     this.showHidden = query[HIDDEN] === _FLAGGED;
     this.category = query[CATEGORY] || '';
     this.allRepos = this.areAllEnabled();
-
+// Added by Verrazzano Start
     const hash = await allHash({ endpoints: $store.dispatch('cluster/findAll', { type: ENDPOINTS }) });
 
     if (!isEmpty(hash.endpoints)) {
@@ -56,6 +60,7 @@ export default {
         this.vzMonitoring = true
       }
     }
+// Added by Verrazzano End
   },
 
   data() {
@@ -66,7 +71,9 @@ export default {
       searchQuery:         null,
       showDeprecated:      null,
       showHidden:          null,
+// Added by Verrazzano Start
       vzMonitoring:        false,
+// Added by Verrazzano End
     };
   },
 
@@ -141,11 +148,13 @@ export default {
 
     enabledCharts() {
       return (this.allCharts || []).filter((c) => {
+// Added by Verrazzano Start
         if ( this.vzMonitoring && c.chartName == "rancher-monitoring" ) {
           console.log(`Filtering out chart ${ c.chartName }`)
           return false;
         }
-        
+// Added by Verrazzano End
+
         if ( c.deprecated && !this.showDeprecated ) {
           return false;
         }
