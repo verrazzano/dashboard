@@ -164,7 +164,7 @@ export default {
           `${ VERRAZZANO_MONITORING_NAMESPACE }/prometheus-operated`
         );
 
-        const requests = { verrazzanos: this.$store.dispatch('management/findAll', { type: VERRAZZANO }) };
+        const requests = { verrazzanos: this.$store.dispatch('cluster/findAll', { type: VERRAZZANO }) };
 
         const vzhash = await allHash(requests);
 
