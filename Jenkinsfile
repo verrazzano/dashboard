@@ -40,7 +40,11 @@ pipeline {
                     env.DRONE_TAG = "${env.GIT_TAG}"
                     env.TAR_FILE_NAME = "${env.DRONE_TAG}" + ".tar.gz"
                 }
-                sh 'jq --arg version "${VERSION}" \'.dashboardBuild |= $version \' ./buildVersion.json > tmp.json && mv tmp.json buildVersion.json'
+                sh '''
+                    cd ./pkg/verrazzano/assets
+                    jq --arg version "${VERSION}" \'.dashboardBuild |= $version \' buildVersion.json > tmp.json 
+                    mv tmp.json buildVersion.json'
+                '''
             }
         }
 

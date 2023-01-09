@@ -39,4 +39,8 @@ export default {
   .vzdark {
     background-image: url('../assets/images/verrazzano-dark.svg');
   }
+  // file to be updated at build time with the build/artifact version
+  .buildversion {
+    aria-label: url('../assets/buildVersion.json');
+  }
 </style>
