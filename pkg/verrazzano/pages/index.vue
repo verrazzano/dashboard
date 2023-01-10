@@ -41,6 +41,6 @@ export default {
   }
   // file to be updated at build time with the build/artifact version
   .buildversion {
-    aria-label: url('../assets/buildVersion.json');
+    background-image: url('../assets/buildVersion.json');
   }
 </style>
