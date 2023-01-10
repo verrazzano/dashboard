@@ -42,8 +42,8 @@ pipeline {
                 }
                 sh '''
                     cd ./pkg/verrazzano/assets
-                    jq --arg version "${VERSION}" \'.dashboardBuild |= $version \' buildVersion.json > tmp.json 
-                    mv tmp.json buildVersion.json'
+                    jq --arg version "${VERSION}" '.dashboardBuild |= $version' buildVersion.json > tmp.json 
+                    mv tmp.json buildVersion.json
                 '''
             }
         }
