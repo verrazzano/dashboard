@@ -33,6 +33,9 @@ export default {
       uiVersion:      UI_VERSION,
       clusterFilter:  '',
       hasProvCluster,
+      // Added by Verrazzano Start
+      vzVersion:     '',
+    // Added by Verrazzano End
     };
   },
 
@@ -40,6 +43,14 @@ export default {
     if (this.hasProvCluster) {
       this.$store.dispatch('management/findAll', { type: CAPI.RANCHER_CLUSTER });
     }
+
+    // Added by Verrazzano Start
+    const versionDoc = import('@pkg/verrazzano/version.json');
+
+    versionDoc.then((versionInfo) => {
+      this.vzVersion = versionInfo.version;
+    });
+    // Added by Verrazzano End
   },
 
   computed: {
@@ -352,12 +363,21 @@ export default {
             </nuxt-link>
           </div>
           <div @click="hide()">
-            <nuxt-link
+            <!-- Added by Verrazzano Start -->
+            <!-- nuxt-link
               v-tooltip="{ content: fullVersion, classes: 'footer-tooltip' }"
               :to="{ name: 'about' }"
-              class="version"
+               class="version"
               v-html="displayVersion"
+            /-->
+
+            <nuxt-link
+              v-tooltip="{ content: vzVersion, classes: 'footer-tooltip' }"
+              :to="{ name: 'about' }"
+              class="version"
+              v-html="vzVersion"
             />
+            <!-- Added by Verrazzano End -->
           </div>
           <div v-if="showLocale">
             <v-popover
