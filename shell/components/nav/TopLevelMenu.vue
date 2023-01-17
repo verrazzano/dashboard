@@ -45,10 +45,10 @@ export default {
     }
 
     // Added by Verrazzano Start
-    const versionDoc = import('@pkg/verrazzano/version.json');
+    const versionDoc = import('@pkg/verrazzano/assets/buildVersion.json');
 
     versionDoc.then((versionInfo) => {
-      this.vzVersion = versionInfo.version;
+      this.vzVersion = versionInfo.dashboardBuild;
     });
     // Added by Verrazzano End
   },
