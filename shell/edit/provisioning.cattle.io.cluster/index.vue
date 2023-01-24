@@ -266,19 +266,19 @@ export default {
           });
         });
 
-        if (this.isRke1 ) {
-          machineTypes.forEach((id) => {
-            addType(id, 'rke1', false, `/g/clusters/add/launch/${ id }`, this.iconClasses[id]);
-          });
-
-          addType('custom', 'custom1', false, '/g/clusters/add/launch/custom');
-        } else {
-          machineTypes.forEach((id) => {
-            addType(id, 'rke2', false);
-          });
-
-          addType('custom', 'custom2', false);
-        }
+        // if (this.isRke1 ) {
+        //   machineTypes.forEach((id) => {
+        //     addType(id, 'rke1', false, `/g/clusters/add/launch/${ id }`, this.iconClasses[id]);
+        //   });
+        //
+        //   addType('custom', 'custom1', false, '/g/clusters/add/launch/custom');
+        // } else {
+        //   machineTypes.forEach((id) => {
+        //     addType(id, 'rke2', false);
+        //   });
+        //
+        //   addType('custom', 'custom2', false);
+        // }
       }
 
       return out;
@@ -448,16 +448,16 @@ export default {
     <template #subtypes>
       <div v-for="obj in groupedSubTypes" :key="obj.id" class="mb-20" style="width: 100%;">
         <h4>
-          <div v-if="showRkeToggle && [_RKE1,_RKE2].includes(obj.name)" class="grouped-type">
-            <ToggleSwitch
-              v-model="provisioner"
-              class="rke-switch"
-              off-value="rke1"
-              :off-label="t('cluster.toggle.v1')"
-              on-value="rke2"
-              :on-label="t('cluster.toggle.v2')"
-            />
-          </div>
+<!--          <div v-if="showRkeToggle && [_RKE1,_RKE2].includes(obj.name)" class="grouped-type">-->
+<!--            <ToggleSwitch-->
+<!--              v-model="provisioner"-->
+<!--              class="rke-switch"-->
+<!--              off-value="rke1"-->
+<!--              :off-label="t('cluster.toggle.v1')"-->
+<!--              on-value="rke2"-->
+<!--              :on-label="t('cluster.toggle.v2')"-->
+<!--            />-->
+<!--          </div>-->
           {{ obj.label }}
         </h4>
         <SelectIconGrid
