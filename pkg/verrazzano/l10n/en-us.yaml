@@ -1667,6 +1667,7 @@ verrazzano:
       adminService: Admin Service
       auxiliaryImage: Auxiliary Image
       auxiliaryImages: Auxiliary Images
+      auxiliaryImageSettings: Volume Settings
       auxiliaryImageVolumes: Auxiliary Image Volumes
       cluster: Cluster
       clusters: Clusters
