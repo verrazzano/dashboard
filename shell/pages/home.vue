@@ -234,11 +234,10 @@ export default {
       let vzVersion = version.dashboardBuild;
 
       // strip dashboardBuild to {major}.{minor} when possible
-      const regex = /(^\d+)\.(\d+).*/;
+      const groups = vzVersion.match(/^(\d+)\.(\d+)\..*/);
 
-      if (regex.test(vzVersion)) {
-        vzVersion = vzVersion.replace(regex, '$1.$2');
-        vzVersion = Math.round(10 * vzVersion) / 10;
+      if (groups) {
+        vzVersion = `${ groups[1] }.${ groups[2] }`;
       }
       this.whatsNewVersion = vzVersion;
     });
