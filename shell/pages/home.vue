@@ -79,7 +79,7 @@ export default {
       pageActions,
       vendor:          getVendor(),
       // Added by Verrazzano Start
-      whatsNewVersion: ''
+      whatsNewVersion: undefined,
       // Added by Verrazzano End
     };
   },
@@ -336,7 +336,7 @@ export default {
             <!--
             <a class="hand" @click.prevent.stop="showWhatsNew"><span v-html="t('landing.whatsNewLink')" /></a>
             -->
-            <a :href="whatsNewLink" target="_blank" rel="noopener noreferrer nofollow" class="hand">
+            <a v-if="whatsNewVersion" :href="whatsNewLink" target="_blank" rel="noopener noreferrer nofollow" class="hand">
               <span v-html="t('landing.whatsNewLink', {version: whatsNewVersion})" />
             </a>
 
