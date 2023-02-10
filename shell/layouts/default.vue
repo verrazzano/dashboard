@@ -25,9 +25,9 @@ import { NAME as NAVLINKS } from '@shell/config/product/navlinks';
 import { NAME as HARVESTER } from '@shell/config/product/harvester';
 import isEqual from 'lodash/isEqual';
 import { ucFirst } from '@shell/utils/string';
+import { getVersionInfo, markSeenReleaseNotes } from '@shell/utils/version';
 // Added by Verrazzano Start
-// import { getVersionInfo, markSeenReleaseNotes } from '@shell/utils/version';
-import { getVersionInfo, getVerrazzanoVersion, markSeenReleaseNotes } from '@shell/utils/version';
+import { getVerrazzanoVersion } from '@pkg/verrazzano/utils/version';
 // Added by Verrazzano End
 
 import { sortBy } from '@shell/utils/sort';
@@ -69,7 +69,7 @@ export default {
   // Added by Verrazzano Start
   fetch() {
     getVerrazzanoVersion().then((versionInfo) => {
-      this.vzVersion = versionInfo.dashboardBuild;
+      this.vzVersion = versionInfo;
     });
   },
   // Added by Verrazzano End

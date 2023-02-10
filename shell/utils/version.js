@@ -1,9 +1,6 @@
 import { sortableNumericSuffix } from '@shell/utils/sort';
 import semver from 'semver';
-// Added by Verrazzano Start
-// import { MANAGEMENT } from '@shell/config/types';
-import { MANAGEMENT, VERRAZZANO } from '@shell/config/types';
-// Added by Verrazzano End
+import { MANAGEMENT } from '@shell/config/types';
 import { READ_WHATS_NEW, SEEN_WHATS_NEW } from '@shell/store/prefs';
 
 export function parse(str) {
@@ -100,14 +97,6 @@ export function getVersionInfo(store) {
     fullVersion
   };
 }
-
-// Added by Verrazzano Start
-export async function getVerrazzanoVersion(store) {
-  const vz = await store.dispatch('management/findAll', { type: VERRAZZANO });
-
-  return vz[0]?.spec?.version;
-}
-// Added by Verrazzano End
 
 export function seenReleaseNotes(store) {
   const lastSeenNew = store.getters['prefs/get'](SEEN_WHATS_NEW) ;
