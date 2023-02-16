@@ -68,13 +68,13 @@ export default {
       groups:           [],
       gettingGroups:    false,
       wantNavSync:      false,
-// Added by Verrazzano Start
-      vzVersion:     '',
+      // Added by Verrazzano Start
+      vzVersion:        '',
       // Added by Verrazzano End
     };
   },
 
-// Added by Verrazzano Start
+  // Added by Verrazzano Start
   fetch() {
     getVerrazzanoVersion().then((versionInfo) => {
       this.vzVersion = versionInfo.dashboardBuild;
@@ -658,7 +658,10 @@ export default {
           </span>
         </div>
         <div v-else class="version text-muted">
+          <!-- Added by Verrazzano Start -->
+          <!-- {{ displayVersion }} -->
           {{ vzVersion }}
+          <!-- Added by Verrazzano End -->
         </div>
       </nav>
       <main v-if="clusterAndRouteReady">
