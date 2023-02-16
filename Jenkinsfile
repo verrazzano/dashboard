@@ -23,7 +23,7 @@ pipeline {
     }
 
     environment {
-        DASHBOARD_VERSION = "2.6.8"
+        DASHBOARD_VERSION = "2.7.1"
         OCI_CLI_AUTH = "instance_principal"
         OCI_OS_NAMESPACE = credentials('oci-os-namespace')
         OCI_OS_BUCKET = "verrazzano-builds"
