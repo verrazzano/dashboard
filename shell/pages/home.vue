@@ -13,12 +13,7 @@ import { NAME as MANAGER } from '@shell/config/product/manager';
 import { STATE } from '@shell/config/table-headers';
 import { MODE, _IMPORT } from '@shell/config/query-params';
 import { createMemoryFormat, formatSi, parseSi, createMemoryValues } from '@shell/utils/units';
-// Added by Verrazzano Start
-// import { getVersionInfo, readReleaseNotes, markReadReleaseNotes, markSeenReleaseNotes } from '@shell/utils/version';
-import {
-  getVersionInfo, readReleaseNotes, markReadReleaseNotes, markSeenReleaseNotes, getVerrazzanoVersion
-} from '@shell/utils/version';
-// Added by Verrazzano End
+import { getVersionInfo, readReleaseNotes, markReadReleaseNotes, markSeenReleaseNotes } from '@shell/utils/version';
 import PageHeaderActions from '@shell/mixins/page-actions';
 import { getVendor } from '@shell/config/private-label';
 import { mapFeature, MULTI_CLUSTER } from '@shell/store/features';
@@ -31,6 +26,7 @@ import { RESET_CARDS_ACTION, SET_LOGIN_ACTION } from '@shell/config/page-actions
 import { vzCommunityLinks, vzGettingStartedLink, vzWhatsNewLink } from '@/pkg/verrazzano/home-page-links.json';
 import VerrazzanoLinksBox from '@/pkg/verrazzano/components/VerrazzanoLinksBox';
 import SimpleBox from '@shell/components/SimpleBox';
+import { getVerrazzanoVersion } from '@pkg/verrazzano/utils/version';
 // Added by Verrazzano End
 
 export default {
@@ -63,6 +59,7 @@ export default {
     if (groups) {
       vzVersion = `${ groups[1] }.${ groups[2] }`;
     }
+
     this.whatsNewVersion = vzVersion;
 
     // Added by Verrazzano End
