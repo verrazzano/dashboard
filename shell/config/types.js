@@ -292,3 +292,7 @@ export const AUTH_TYPE = {
   _SSH:   '_ssh',
   _S3:    '_S3'
 };
+
+// Added by Verrazzano Start
+export const VERRAZZANO = 'install.verrazzano.io.Verrazzano';
+// Added by Verrazzano End
