@@ -39,6 +39,10 @@ import { getProductFromRoute } from '@shell/middleware/authenticated';
 import { BOTTOM } from '@shell/utils/position';
 import { BLANK_CLUSTER } from '@shell/store';
 
+// Added by Verrazzano Start
+import { getVerrazzanoVersion } from '@pkg/verrazzano/utils/version';
+// Added by Verrazzano End
+
 const SET_LOGIN_ACTION = 'set-as-login';
 
 export default {
@@ -71,8 +75,19 @@ export default {
       unwatchPin:       undefined,
       wmPin:            null,
       draggable:        false,
+      // Added by Verrazzano Start
+      vzVersion:        '',
+      // Added by Verrazzano End
     };
   },
+  // Added by Verrazzano Start
+  fetch() {
+    getVerrazzanoVersion().then((versionInfo) => {
+      this.vzVersion = versionInfo;
+    });
+  },
+
+  // Added by Verrazzano End
 
   // Note - These will run on route change
   middleware: [
@@ -706,7 +721,10 @@ export default {
           v-else
           class="version text-muted"
         >
-          {{ displayVersion }}
+          <!-- Added by Verrazzano Start -->
+          <!-- {{ displayVersion }} -->
+          {{ vzVersion }}
+          <!-- Added by Verrazzano End -->
         </div>
       </nav>
       <main
