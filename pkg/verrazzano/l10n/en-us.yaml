@@ -1455,6 +1455,7 @@ verrazzano:
     openSearchUrl: OpenSearch Console
     prometheusUrl: Prometheus Console
     rancherUrl: Rancher Console
+    thanosQueryFrontend: Thanos Query Frontend
     slack: Slack
     title: Verrazzano Links
 
