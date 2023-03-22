@@ -270,8 +270,6 @@ export default {
           machineTypes.forEach((id) => {
             addType(id, 'rke1', false, `/g/clusters/add/launch/${ id }`, this.iconClasses[id]);
           });
-
-          addType('custom', 'custom1', false, '/g/clusters/add/launch/custom');
         } else {
           machineTypes.forEach((id) => {
             addType(id, 'rke2', false);
