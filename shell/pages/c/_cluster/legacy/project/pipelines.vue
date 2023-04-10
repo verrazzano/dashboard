@@ -1,3 +1,5 @@
+<!--
+Added by Verrazzano Start
 <script>
 import EmberPage from '@shell/components/EmberPage';
 import Tabbed from '@shell/components/Tabbed';
@@ -72,3 +74,5 @@ export default {
     }
   }
 </style>
+Added by Verrazzano End
+-->

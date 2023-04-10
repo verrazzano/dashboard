@@ -25,7 +25,9 @@ export const mapFeature = function(name) {
 //    This is mainly useful for development before the flag has been created in the API..
 
 export const MULTI_CLUSTER = create('multi-cluster-management', true);
-export const LEGACY = create('legacy', false);
+// Added by Verrazzano Start
+// export const LEGACY = create('legacy', false);
+// Added by Verrazzano End
 export const RKE2 = create('rke2', true);
 export const UNSUPPORTED_STORAGE_DRIVERS = create('unsupported-storage-drivers', false);
 export const FLEET = create('continuous-delivery', true);

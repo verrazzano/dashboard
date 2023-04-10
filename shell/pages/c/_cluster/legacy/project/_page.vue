@@ -1,3 +1,5 @@
+<!--
+Added by Verrazzano Start
 <script>
 import EmberPage from '@shell/components/EmberPage';
 import { project } from '@shell/store/type-map';
@@ -52,3 +54,5 @@ export default {
 <template>
   <EmberPage v-if="src" :src="src" />
 </template>
+Added by Verrazzano End
+-->

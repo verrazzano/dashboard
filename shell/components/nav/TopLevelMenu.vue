@@ -9,7 +9,9 @@ import { sortBy } from '@shell/utils/sort';
 import { ucFirst } from '@shell/utils/string';
 import { KEY } from '@shell/utils/platform';
 import { getVersionInfo } from '@shell/utils/version';
-import { LEGACY } from '@shell/store/features';
+// Added by Verrazzano Start
+// import { LEGACY } from '@shell/store/features';
+// Added by Verrazzano End
 import { SETTING } from '@shell/config/settings';
 import { filterOnlyKubernetesClusters, filterHiddenLocalCluster } from '@shell/utils/cluster';
 import { isRancherPrime } from '@shell/config/version';
@@ -68,7 +70,10 @@ export default {
     },
 
     legacyEnabled() {
-      return this.features(LEGACY);
+      // Added by Verrazzano Start
+      // return this.features(LEGACY);
+      return false;
+      // Added by Verrazzano End
     },
 
     showClusterSearch() {

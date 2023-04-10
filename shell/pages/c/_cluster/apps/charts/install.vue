@@ -3,7 +3,10 @@ import jsyaml from 'js-yaml';
 import merge from 'lodash/merge';
 import isEqual from 'lodash/isEqual';
 import { mapPref, DIFF } from '@shell/store/prefs';
-import { mapFeature, MULTI_CLUSTER, LEGACY } from '@shell/store/features';
+// Added by Verrazzano Start
+// import { mapFeature, MULTI_CLUSTER, LEGACY } from '@shell/store/features';
+import { mapFeature, MULTI_CLUSTER } from '@shell/store/features';
+// Added by Verrazzano End
 import { mapGetters } from 'vuex';
 import { Banner } from '@components/Banner';
 import ButtonGroup from '@shell/components/ButtonGroup';
@@ -631,7 +634,10 @@ export default {
 
     legacyEnabled() {
       // Check for the legacy feature flag in the settings
-      return this.features(LEGACY);
+      // Added by Verrazzano Start
+      return false;
+      // return this.features(LEGACY);
+      // Added by Verrazzano End
     },
 
     legacyFeatureRoute() {

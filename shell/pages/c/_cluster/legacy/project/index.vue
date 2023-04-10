@@ -1,3 +1,5 @@
+<!--
+Added by Verrazzano Start
 <script>
 import IconMessage from '@shell/components/IconMessage';
 import { project } from '@shell/store/type-map';
@@ -27,3 +29,5 @@ export default {
 <template>
   <IconMessage icon="icon-monitoring" message-key="legacy.project.select" />
 </template>
+Added by Verrazzano End
+-->

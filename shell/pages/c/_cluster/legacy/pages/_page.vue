@@ -1,3 +1,5 @@
+<!--
+Added by Verrazzano Start
 <script>
 import EmberPage from '@shell/components/EmberPage';
 
@@ -24,3 +26,5 @@ export default {
 <template>
   <EmberPage v-if="src" :src="src" />
 </template>
+Added by Verrazzano End
+-->
