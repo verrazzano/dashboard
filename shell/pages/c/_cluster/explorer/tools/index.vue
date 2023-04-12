@@ -8,7 +8,9 @@ import { CATALOG as CATALOG_ANNOTATIONS } from '@shell/config/labels-annotations
 import LazyImage from '@shell/components/LazyImage';
 import AppSummaryGraph from '@shell/components/formatter/AppSummaryGraph';
 import { sortBy } from '@shell/utils/sort';
-import { LEGACY } from '@shell/store/features';
+// Added by Verrazzano Start
+// import { LEGACY } from '@shell/store/features';
+// Added by Verrazzano End
 import { isAlternate } from '@shell/utils/platform';
 import IconMessage from '@shell/components/IconMessage';
 import TypeDescription from '@shell/components/TypeDescription';
@@ -62,8 +64,11 @@ export default {
   },
 
   data() {
-    const legacyEnabled = this.$store.getters['features/get'](LEGACY);
+    // Added by Verrazzano Start
+    // const legacyEnabled = this.$store.getters['features/get'](LEGACY);
+    const legacyEnabled = false;
 
+    // Added by Verrazzano End
     return {
       allInstalled:    null,
       v1SystemCatalog: null,

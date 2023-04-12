@@ -51,7 +51,9 @@ import Questions from '@shell/components/Questions';
 import { normalizeName } from '@shell/components/form/NameNsDescription.vue';
 import ClusterMembershipEditor from '@shell/components/form/Members/ClusterMembershipEditor';
 import SelectOrCreateAuthSecret from '@shell/components/form/SelectOrCreateAuthSecret';
-import { LEGACY } from '@shell/store/features';
+// Added by Verrazzano Start
+// import { LEGACY } from '@shell/store/features';
+// Added by Verrazzano End
 import semver from 'semver';
 import { canViewClusterMembershipEditor } from '@shell/components/form/Members/ClusterMembershipEditor.vue';
 import { SETTING } from '@shell/config/settings';
@@ -714,14 +716,18 @@ export default {
     },
 
     showk8s21LegacyWarning() {
-      const isLegacyEnabled = this.features(LEGACY);
+      // Added by Verrazzano Start
+      // const isLegacyEnabled = this.features(LEGACY);
 
-      if (!isLegacyEnabled) {
-        return false;
-      }
-      const selectedVersion = semver.coerce(this.value.spec.kubernetesVersion);
+      // if (!isLegacyEnabled) {
+      //   return false;
+      // }
 
-      return semver.satisfies(selectedVersion, '>=1.21.0');
+      // const selectedVersion = semver.coerce(this.value.spec.kubernetesVersion);
+
+      // return semver.satisfies(selectedVersion, '>=1.21.0');
+      return false;
+      // Added by Verrazzano End
     },
 
     canManageMembers() {

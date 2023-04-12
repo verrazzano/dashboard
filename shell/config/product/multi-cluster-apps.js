@@ -1,24 +1,30 @@
-import { LEGACY } from '@shell/store/features';
+// Added by Verrazzano Start
+// import { LEGACY } from '@shell/store/features';
+// Added by Verrazzano End
 import { DSL } from '@shell/store/type-map';
 
 export const NAME = 'mcapps';
 
 export function init(store) {
   const {
-    product,
+    // Added by Verrazzano Start
+    // product,
+    // Added by Verrazzano End
     basicType,
     virtualType,
   } = DSL(store, NAME);
 
-  product({
-    icon:                  'marketplace',
-    category:              'legacy',
-    inStore:               'management',
-    ifFeature:             LEGACY,
-    removable:             false,
-    showClusterSwitcher:   false,
-    showWorkspaceSwitcher: false,
-  });
+  // Added by Verrazzano Start
+  // product({
+  //   icon:                  'marketplace',
+  //   category:              'legacy',
+  //   inStore:               'management',
+  //   ifFeature:             LEGACY,
+  //   removable:             false,
+  //   showClusterSwitcher:   false,
+  //   showWorkspaceSwitcher: false,
+  // });
+  // Added by Verrazzano End
 
   virtualType({
     labelKey:       'legacy.catalogs',

@@ -1,3 +1,5 @@
+<!--
+Added by Verrazzano Start
 <script>
 import { NAME } from '@shell/config/product/multi-cluster-apps';
 
@@ -20,3 +22,5 @@ export default {
 <template>
   <div>This is Legacy Apps.</div>
 </template>
+Added by Verrazzano End
+-->
