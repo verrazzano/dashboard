@@ -116,16 +116,15 @@ export default {
     // For the node drivers, look for custom UI that we can use to show an icon (if not built-in)
     this.nodeDrivers.forEach((driver) => {
       if (!driver.spec?.builtin && driver.spec?.uiUrl && driver.spec?.active) {
-        const name = driver.spec?.displayName || driver.id;
+        // const name = driver.spec?.displayName || driver.id;
         let cssUrl = driver.spec.uiUrl.replace(/\.js$/, '.css');
 
         if (cssUrl.startsWith('http://') || cssUrl.startsWith('https://')) {
           cssUrl = `${ PROXY_ENDPOINT }/${ cssUrl }`;
         }
 
-        this.loadStylesheet(cssUrl, `driver-ui-css-${ driver.id }`);
-
-        this.iconClasses[name] = `machine-driver ${ name }`;
+        // this.loadStylesheet(cssUrl, `driver-ui-css-${ driver.id }`);
+        // this.iconClasses[name] = `machine-driver ${ name }`;
       }
     });
   },
