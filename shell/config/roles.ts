@@ -313,20 +313,22 @@ export const SCOPED_RESOURCES = {
         'PodSecurityPolicies',
       ]
     },
-    'project.cattle.io': {
-      resources: [
-        'Apps',
-        'AppRevisions'
-      ],
-      deprecatedResources: [
-        'Pipelines', // Replaced by Fleet
-        'PipelineExecutions', // Replaced by Fleet
-        'PipelineSettings', // Replaced by Fleet
-        'SourceCodeCredentials', // Replaced by Fleet
-        'SourceCodeProviderConfigs', // Replaced by Fleet
-        'SourceCodeRepositories', // Replaced by Fleet
-      ]
-    },
+    // Added by Verrazzano Start
+    // 'project.cattle.io': {
+    //   resources: [
+    //     'Apps',
+    //     'AppRevisions'
+    //   ],
+    //   deprecatedResources: [
+    //     'Pipelines', // Replaced by Fleet
+    //     'PipelineExecutions', // Replaced by Fleet
+    //     'PipelineSettings', // Replaced by Fleet
+    //     'SourceCodeCredentials', // Replaced by Fleet
+    //     'SourceCodeProviderConfigs', // Replaced by Fleet
+    //     'SourceCodeRepositories', // Replaced by Fleet
+    //   ]
+    // },
+    // Added by Verrazzano End
     'logging.banzaicloud.io': {
       resources: [
         'ClusterFlows',
