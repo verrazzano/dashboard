@@ -1,7 +1,7 @@
 import { VERRAZZANO_PRODUCT_NAME } from '../types';
 
 export const rootVerrazzanoRoute = () => ({
-  name:    VERRAZZANO_PRODUCT_NAME,
+  name:   VERRAZZANO_PRODUCT_NAME,
   params: { product: VERRAZZANO_PRODUCT_NAME }
 });
 

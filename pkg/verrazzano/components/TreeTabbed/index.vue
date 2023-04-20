@@ -243,7 +243,10 @@ export default {
 
 <template>
   <div class="tree-tabbed">
-    <div ref="treeTabNav" class="tab-nav">
+    <div
+      ref="treeTabNav"
+      class="tab-nav"
+    >
       <NavigationNode
         :nav-node="navigationNode"
         :navigator="this"
@@ -253,8 +256,7 @@ export default {
     <div
       ref="slider"
       class="slider"
-    >
-    </div>
+    />
     <div
       ref="treeTabContent"
       :class="{ 'tab-container': !!tabs.length, 'no-content': noContent }"

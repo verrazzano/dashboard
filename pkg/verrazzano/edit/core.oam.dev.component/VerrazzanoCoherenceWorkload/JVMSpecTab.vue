@@ -69,7 +69,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -122,7 +125,10 @@ export default {
             @input="setBooleanField('jmxmp.enabled', $event)"
           />
         </div>
-        <div v-if="jmxmpEnabled" class="col span-4">
+        <div
+          v-if="jmxmpEnabled"
+          class="col span-4"
+        >
           <LabeledInput
             :value="getField('jmxmp.port')"
             :mode="mode"

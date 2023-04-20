@@ -26,7 +26,7 @@ export default {
   mixins: [WebLogicWorkloadHelper],
   props:  {
     value: {
-      type:     Object,
+      type:    Object,
       default: () => ({})
     },
     mode: {
@@ -130,7 +130,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"

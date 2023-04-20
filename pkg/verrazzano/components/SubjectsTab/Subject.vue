@@ -136,7 +136,10 @@ export default {
         @input="setFieldIfNotEmpty('kind', $event)"
       />
     </div>
-    <div v-if="nameIsSelect" class="col span-3">
+    <div
+      v-if="nameIsSelect"
+      class="col span-3"
+    >
       <LabeledSelect
         :value="getField('name')"
         :mode="mode"
@@ -148,7 +151,10 @@ export default {
         @input="setFieldIfNotEmpty('name', $event)"
       />
     </div>
-    <div v-else class="col span-3">
+    <div
+      v-else
+      class="col span-3"
+    >
       <LabeledInput
         :value="getField('name')"
         :mode="mode"

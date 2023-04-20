@@ -24,7 +24,7 @@ export default {
   data() {
     return { isLoading: true };
   },
-  computed:   {
+  computed: {
     deploymentStrategyTypeOptions() {
       return [
         { value: 'RollingUpdate', label: this.t('verrazzano.common.types.deploymentStrategy.rollingUpdate') },
@@ -50,7 +50,10 @@ export default {
 
 <template>
   <div>
-    <div :style="{'align-items':'center'}" class="row mb-20">
+    <div
+      :style="{'align-items':'center'}"
+      class="row mb-20"
+    >
       <div class="col span-4">
         <LabeledSelect
           :value="getField('type')"
@@ -63,7 +66,10 @@ export default {
           @input="setFieldIfNotEmpty('type', $event)"
         />
       </div>
-      <div v-if="usingRollingUpdateStrategy" class="col span-4">
+      <div
+        v-if="usingRollingUpdateStrategy"
+        class="col span-4"
+      >
         <LabeledInput
           :value="getField('rollingUpdate.maxSurge')"
           :mode="mode"
@@ -72,7 +78,10 @@ export default {
           @input="setFieldIfNotEmpty('rollingUpdate.maxSurge', $event)"
         />
       </div>
-      <div v-if="usingRollingUpdateStrategy" class="col span-4">
+      <div
+        v-if="usingRollingUpdateStrategy"
+        class="col span-4"
+      >
         <LabeledInput
           :value="getField('rollingUpdate.maxUnavailable')"
           :mode="mode"

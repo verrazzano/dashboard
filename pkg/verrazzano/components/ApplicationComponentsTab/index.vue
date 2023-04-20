@@ -209,7 +209,10 @@ export default {
     :show-nav-children="true"
   >
     <template #default>
-      <div v-if="!isView" class="row">
+      <div
+        v-if="!isView"
+        class="row"
+      >
         <div class="col span-4">
           <LabeledSelect
             v-model="newName"
@@ -262,7 +265,10 @@ export default {
                 />
               </div>
               <div class="flex-right">
-                <nuxt-link v-if="getComponentRoute(component.componentName)" :to="getComponentRoute(component.componentName)">
+                <nuxt-link
+                  v-if="getComponentRoute(component.componentName)"
+                  :to="getComponentRoute(component.componentName)"
+                >
                   <i class="icon icon-external-link" />
                 </nuxt-link>
               </div>

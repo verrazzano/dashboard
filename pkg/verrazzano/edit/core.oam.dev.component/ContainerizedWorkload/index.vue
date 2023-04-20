@@ -45,7 +45,7 @@ export default {
       ];
     }
   },
-  methods:  {
+  methods: {
     initSpec() {
       this.$set(this.value, 'spec', {
         workload: {
@@ -68,7 +68,10 @@ export default {
 <template>
   <TreeTabbed>
     <template #nestedTabs>
-      <TreeTab name="workload" :label="t('verrazzano.common.tabs.workload')">
+      <TreeTab
+        name="workload"
+        :label="t('verrazzano.common.tabs.workload')"
+      >
         <template #default>
           <div class="row">
             <div class="col span-4">

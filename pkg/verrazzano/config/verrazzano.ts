@@ -40,46 +40,46 @@ export function init($plugin: any, store: any) {
   });
 
   virtualType({
-    labelKey:       'verrazzano.projects.label',
-    name:           'projects',
-    namespaced:     false,
-    weight:         99,
-    icon:           'folder',
-    route:          createVerrazzanoRoute('c-cluster-projects',
+    labelKey:   'verrazzano.projects.label',
+    name:       'projects',
+    namespaced: false,
+    weight:     99,
+    icon:       'folder',
+    route:      createVerrazzanoRoute('c-cluster-projects',
       { resource: 'cluster.verrazzano.io.vberrazzanoproject' }
     )
   });
 
   virtualType({
-    labelKey:       'verrazzano.apps.label',
-    name:           'apps',
-    namespaced:     false,
-    weight:         97,
-    icon:           'folder',
-    route:          createVerrazzanoRoute('c-cluster-applications',
+    labelKey:   'verrazzano.apps.label',
+    name:       'apps',
+    namespaced: false,
+    weight:     97,
+    icon:       'folder',
+    route:      createVerrazzanoRoute('c-cluster-applications',
       { resource: 'core.oam.dev.applicationconfiguration' }
     )
   });
 
   virtualType({
-    labelKey:       'verrazzano.multiClusterApps.label',
-    name:           'mcapps',
-    namespaced:     false,
-    weight:         98,
-    icon:           'folder',
-    route:          {
+    labelKey:   'verrazzano.multiClusterApps.label',
+    name:       'mcapps',
+    namespaced: false,
+    weight:     98,
+    icon:       'folder',
+    route:      {
       name:   'verrazzano-c-cluster-mcapps',
       params: { resource: 'clusters.verrazzano.io.multiclusterapplicationconfiguration' }
     }
   });
 
   virtualType({
-    labelKey:       'verrazzano.components.label',
-    name:           'components',
-    namespaced:     false,
-    weight:         96,
-    icon:           'folder',
-    route:          {
+    labelKey:   'verrazzano.components.label',
+    name:       'components',
+    namespaced: false,
+    weight:     96,
+    icon:       'folder',
+    route:      {
       name:   'verrazzano-c-cluster-components',
       params: { resource: 'core.oam.dev.component' }
     }

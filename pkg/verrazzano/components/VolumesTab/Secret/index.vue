@@ -145,7 +145,10 @@ export default {
           />
         </div>
       </div>
-      <div v-if="showDefaultMode" class="col span-4">
+      <div
+        v-if="showDefaultMode"
+        class="col span-4"
+      >
         <LabeledInput
           :value="getField('defaultMode')"
           :mode="mode"

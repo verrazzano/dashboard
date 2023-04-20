@@ -65,7 +65,11 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel" :weight="weight">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+    :weight="weight"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -85,7 +89,10 @@ export default {
           />
         </div>
       </div>
-      <div v-if="!!getField('enabled')" class="spacer-small">
+      <div
+        v-if="!!getField('enabled')"
+        class="spacer-small"
+      >
         <div class="row">
           <div class="col span-4">
             <LabeledSelect

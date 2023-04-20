@@ -84,7 +84,11 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel" :weight="weight">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+    :weight="weight"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -93,7 +97,10 @@ export default {
       />
     </template>
     <template #nestedTabs>
-      <TreeTab name="advanced" :label="advancedTabLabel">
+      <TreeTab
+        name="advanced"
+        :label="advancedTabLabel"
+      >
         <div>
           <div class="row">
             <div class="col span-2">

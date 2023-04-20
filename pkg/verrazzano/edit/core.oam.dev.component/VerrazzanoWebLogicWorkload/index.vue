@@ -40,8 +40,8 @@ export default {
     }
 
     return {
-      configRoot:     this.value,
-      namespace:      '',
+      configRoot: this.value,
+      namespace:  '',
     };
   },
   computed: {
@@ -55,7 +55,7 @@ export default {
       return this.apiVersion === this.getVerrazzanoWebLogicDomain8ApiVersion();
     }
   },
-  methods:  {
+  methods: {
     initSpec() {
       this.$set(this.configRoot, 'spec', {
         workload: {
@@ -83,8 +83,16 @@ export default {
 
 <template>
   <div class="if-wrapper">
-    <VerrazzanoWebLogic8Workload v-if="isV8Domain" :value="value" :mode="mode" />
-    <VerrazzanoWebLogic9Workload v-else :value="value" :mode="mode" />
+    <VerrazzanoWebLogic8Workload
+      v-if="isV8Domain"
+      :value="value"
+      :mode="mode"
+    />
+    <VerrazzanoWebLogic9Workload
+      v-else
+      :value="value"
+      :mode="mode"
+    />
   </div>
 </template>
 

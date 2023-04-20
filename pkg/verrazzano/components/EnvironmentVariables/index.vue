@@ -101,7 +101,10 @@ export default {
 
 <template>
   <div :style="{'width':'100%'}">
-    <div v-for="(row, i) in allEnv" :key="row.id">
+    <div
+      v-for="(row, i) in allEnv"
+      :key="row.id"
+    >
       <EnvVarValueFromResource
         v-model="row.value"
         :mode="mode"

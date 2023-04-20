@@ -27,7 +27,7 @@ export default {
       default: 'create'
     },
     tabName: {
-      type:      String,
+      type:     String,
       required: true
     },
     tabLabel: {

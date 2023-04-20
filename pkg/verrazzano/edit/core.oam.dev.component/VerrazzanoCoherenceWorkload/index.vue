@@ -77,7 +77,7 @@ export default {
       default: 'create'
     },
   },
-  methods:  {
+  methods: {
     initSpec() {
       this.$set(this.value, 'spec', {
         workload: {
@@ -167,7 +167,10 @@ export default {
         tab-name="startQuorum"
         @input="setWorkloadSpecFieldIfNotEmpty('startQuorum', $event)"
       />
-      <TreeTab name="envVars" :label="t('verrazzano.common.tabs.environmentVariables')">
+      <TreeTab
+        name="envVars"
+        :label="t('verrazzano.common.tabs.environmentVariables')"
+      >
         <template #default>
           <EnvironmentVariables
             :value="workloadTemplateSpec"
@@ -278,7 +281,10 @@ export default {
         @input="setWorkloadSpecFieldIfNotEmpty('affinity', $event)"
         @delete="setWorkloadSpecField('affinity', undefined)"
       />
-      <TreeTab name="nodeSelector" :label="t('verrazzano.coherence.tabs.nodeSelector')">
+      <TreeTab
+        name="nodeSelector"
+        :label="t('verrazzano.coherence.tabs.nodeSelector')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.coherence.tabs.nodeSelector')"

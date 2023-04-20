@@ -65,7 +65,10 @@ export default {
           @input="setField('effect', $event)"
         />
       </div>
-      <div v-if="showTolerationSeconds" class="col span-6">
+      <div
+        v-if="showTolerationSeconds"
+        class="col span-6"
+      >
         <LabeledInput
           :value="getField('tolerationSeconds')"
           :mode="mode"

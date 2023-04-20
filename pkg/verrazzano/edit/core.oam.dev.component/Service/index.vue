@@ -156,7 +156,10 @@ export default {
 <template>
   <TreeTabbed>
     <template #nestedTabs>
-      <TreeTab name="general" :label="t('verrazzano.common.tabs.general')">
+      <TreeTab
+        name="general"
+        :label="t('verrazzano.common.tabs.general')"
+      >
         <template #default>
           <div class="row">
             <div class="col span-4">

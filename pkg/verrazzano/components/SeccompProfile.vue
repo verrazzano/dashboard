@@ -13,7 +13,7 @@ export default {
   mixins: [VerrazzanoHelper],
   props:  {
     value: {
-      type:     Object,
+      type:    Object,
       default: () => ({})
     },
     mode: {
@@ -66,7 +66,10 @@ export default {
           @input="setField('type', $event)"
         />
       </div>
-      <div v-if="showLocalhost" class="col span-6">
+      <div
+        v-if="showLocalhost"
+        class="col span-6"
+      >
         <LabeledInput
           :value="getField('localhostProfile')"
           :mode="mode"

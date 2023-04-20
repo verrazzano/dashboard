@@ -100,7 +100,10 @@ export default {
 
 <template>
   <Loading v-if="$fetchState.pending" />
-  <form v-else class="tree-tabbed-form">
+  <form
+    v-else
+    class="tree-tabbed-form"
+  >
     <CruResource
       :validation-passed="true"
       :resource="value"
@@ -124,7 +127,10 @@ export default {
       </div>
       <TreeTabbed>
         <template #nestedTabs>
-          <TreeTab name="metadata" :label="t('verrazzano.common.tabs.metadata')">
+          <TreeTab
+            name="metadata"
+            :label="t('verrazzano.common.tabs.metadata')"
+          >
             <template #default>
               <div class="row">
                 <div class="col span-4">
@@ -150,7 +156,10 @@ export default {
               </div>
             </template>
           </TreeTab>
-          <TreeTab name="general" :label="t('verrazzano.common.tabs.general')">
+          <TreeTab
+            name="general"
+            :label="t('verrazzano.common.tabs.general')"
+          >
             <template #default>
               <div class="row">
                 <div class="col span-6">

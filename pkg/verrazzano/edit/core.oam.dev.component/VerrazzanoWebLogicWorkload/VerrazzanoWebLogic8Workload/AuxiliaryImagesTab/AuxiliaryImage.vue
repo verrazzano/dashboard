@@ -49,7 +49,7 @@ export default {
         />
       </div>
     </div>
-    <br />
+    <br>
     <div class="row">
       <div class="col span-3">
         <LabeledInput
