@@ -39,3 +39,5 @@ metadata:
     name: ui-brand
 value: "verrazzano"
 EOF
+
+kubectl delete feature.management.cattle.io legacy
