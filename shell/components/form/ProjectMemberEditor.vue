@@ -60,16 +60,18 @@ export default {
           label: this.t('projectMembers.projectPermissions.ingressManage'),
           value: false,
         },
-        {
-          key:   'projectcatalogs-manage',
-          label: this.t('projectMembers.projectPermissions.projectcatalogsManage'),
-          value: false,
-        },
-        {
-          key:   'projectroletemplatebindings-manage',
-          label: this.t('projectMembers.projectPermissions.projectroletemplatebindingsManage'),
-          value: false,
-        },
+        // Added by Verrazzano Start
+        // {
+        //   key:   'projectcatalogs-manage',
+        //   label: this.t('projectMembers.projectPermissions.projectcatalogsManage'),
+        //   value: false,
+        // },
+        // {
+        //   key:   'projectroletemplatebindings-manage',
+        //   label: this.t('projectMembers.projectPermissions.projectroletemplatebindingsManage'),
+        //   value: false,
+        // },
+        // Added by Verrazzano End
         {
           key:   'secrets-manage',
           label: this.t('projectMembers.projectPermissions.secretsManage'),
@@ -110,16 +112,18 @@ export default {
           label: this.t('projectMembers.projectPermissions.monitoringUiView'),
           value: false,
         },
-        {
-          key:   'projectcatalogs-view',
-          label: this.t('projectMembers.projectPermissions.projectcatalogsView'),
-          value: false,
-        },
-        {
-          key:   'projectroletemplatebindings-view',
-          label: this.t('projectMembers.projectPermissions.projectroletemplatebindingsView'),
-          value: false,
-        },
+        // Added by Verrazzano Start
+        // {
+        //   key:   'projectcatalogs-view',
+        //   label: this.t('projectMembers.projectPermissions.projectcatalogsView'),
+        //   value: false,
+        // },
+        // {
+        //   key:   'projectroletemplatebindings-view',
+        //   label: this.t('projectMembers.projectPermissions.projectroletemplatebindingsView'),
+        //   value: false,
+        // },
+        // Added by Verrazzano End
         {
           key:   'secrets-view',
           label: this.t('projectMembers.projectPermissions.secretsView'),

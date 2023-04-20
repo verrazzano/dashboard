@@ -63,11 +63,13 @@ export default {
           key:      'backups-manage',
           value: false
         },
-        {
-          label: this.t('members.clusterPermissions.manageClusterCatalogs'),
-          key:      'clustercatalogs-manage',
-          value: false
-        },
+        // Added by Verrazzano Start
+        // {
+        //   label: this.t('members.clusterPermissions.manageClusterCatalogs'),
+        //   key:      'clustercatalogs-manage',
+        //   value: false
+        // },
+        // Added by Verrazzano End
         {
           label: this.t('members.clusterPermissions.manageClusterMembers'),
           key:      'clusterroletemplatebindings-manage',
@@ -93,11 +95,13 @@ export default {
           key:      'projects-view',
           value: false
         },
-        {
-          label: this.t('members.clusterPermissions.viewClusterCatalogs'),
-          key:      'clustercatalogs-view',
-          value: false
-        },
+        // Added by Verrazzano Start
+        // {
+        //   label: this.t('members.clusterPermissions.viewClusterCatalogs'),
+        //   key:      'clustercatalogs-view',
+        //   value: false
+        // },
+        // Added by Verrazzano End
         {
           label: this.t('members.clusterPermissions.viewClusterMembers'),
           key:      'clusterroletemplatebindings-view',
