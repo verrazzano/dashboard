@@ -581,7 +581,7 @@ export const actions = {
       features: dispatch('features/loadServer'),
     };
 
-    const isRancher = false; // res.rancherSchemas.status === 'fulfilled' && !!getters['management/schemaFor'](MANAGEMENT.PROJECT);
+    const isRancher = res.rancherSchemas.status === 'fulfilled' && !!getters['management/schemaFor'](MANAGEMENT.PROJECT);
 
     if ( isRancher ) {
       promises['prefs'] = dispatch('prefs/loadServer');
