@@ -41,5 +41,3 @@ value: "verrazzano"
 EOF
 
 kubectl delete feature.management.cattle.io legacy
-kubectl delete feature.management.cattle.io istio-virtual-service-ui
-
