@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import { NAME, CHART_NAME } from '@shell/config/product/istio';
 import InstallRedirect from '@shell/utils/install-redirect';
 // Added by Verrazzano Start
-// import { SERIVCE } from '@shell/config/types';
+// import { SERVICE } from '@shell/config/types';
 import { INGRESS } from '@shell/config/types';
 // Added by Verrazzano End
 export default {
