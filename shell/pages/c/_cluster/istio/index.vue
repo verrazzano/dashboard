@@ -2,7 +2,7 @@
 import { mapGetters } from 'vuex';
 import { NAME, CHART_NAME } from '@shell/config/product/istio';
 import InstallRedirect from '@shell/utils/install-redirect';
-import { SERVICE } from '@shell/config/types';
+import { INGRESS } from '@shell/config/types';
 export default {
   components: {},
 
@@ -10,15 +10,15 @@ export default {
 
   async fetch() {
     try {
-      this.kialiService = await this.$store.dispatch('cluster/find', { type: SERVICE, id: 'istio-system/kiali' });
+      this.kialiIngress = await this.$store.dispatch('cluster/find', { type: INGRESS, id: 'verrazzano-system/vmi-system-kiali' });
     } catch {}
     try {
-      this.jaegerService = await this.$store.dispatch('cluster/find', { type: SERVICE, id: 'istio-system/tracing' });
+      this.jaegerIngress = await this.$store.dispatch('cluster/find', { type: INGRESS, id: 'verrazzano-system/verrazzano-jaeger' });
     } catch {}
   },
 
   data() {
-    return { kialiService: null, jaegerService: null };
+    return { kialiIngress: null, jaegerIngress: null };
   },
 
   computed: {
@@ -30,7 +30,9 @@ export default {
     },
 
     kialiUrl() {
-      return this.kialiService ? this.kialiService.proxyUrl('http', '20001') : null;
+      const kialiIngressHost = this.kialiIngress?.spec?.tls?.[0]?.hosts?.[0];
+
+      return kialiIngressHost ? `https://${ kialiIngressHost }` : null;
     },
 
     jaegerLogo() {
@@ -38,7 +40,9 @@ export default {
     },
 
     jaegerUrl() {
-      return this.jaegerService ? `${ this.jaegerService.proxyUrl('http', '16686') }/jaeger/search` : null;
+      const jaegerIngressHost = this.jaegerIngress?.spec?.tls?.[0]?.hosts?.[0];
+
+      return jaegerIngressHost ? `https://${ jaegerIngressHost }` : null;
     },
 
     monitoringUrl() {
@@ -80,7 +84,6 @@ export default {
       >
         <span
           class="link-content pull-right"
-          @click="launchKiali"
         >
           <div class="link-logo">
             <img :src="kialiLogo">
