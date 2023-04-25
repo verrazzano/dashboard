@@ -27,7 +27,9 @@ export default {
   mixins: [CreateEditView],
 
   async fetch() {
-    this.allClusters = await this.$store.dispatch('management/findAll', { type: FLEET.CLUSTER });
+    if (this.$store.getters['management/schemaFor']( FLEET.CLUSTER )) {
+      this.allClusters = await this.$store.getters['management/all'](FLEET.CLUSTER);
+    }
     this.allWorkspaces = await this.$store.dispatch('management/findAll', { type: FLEET.WORKSPACE });
 
     if ( !this.value.spec?.selector ) {
@@ -100,9 +102,9 @@ export default {
 
       this.matchingClusters = {
         matched,
-        total:   all.length,
-        isAll:   matched === all.length,
-        isNone:  matched === 0,
+        total:  all.length,
+        isAll:  matched === all.length,
+        isNone: matched === 0,
         sample,
       };
     }, 250, { leading: true }),
@@ -140,9 +142,18 @@ export default {
       :show-remove="false"
       @input="matchChanged($event)"
     />
-    <Banner v-if="matchingClusters" :color="(matchingClusters.isNone || matchingClusters.isAll ? 'warning' : 'success')">
-      <span v-if="matchingClusters.isAll" v-html="t('fleet.clusterGroup.selector.matchesAll', matchingClusters)" />
-      <span v-else-if="matchingClusters.isNone" v-html="t('fleet.clusterGroup.selector.matchesNone', matchingClusters)" />
+    <Banner
+      v-if="matchingClusters"
+      :color="(matchingClusters.isNone || matchingClusters.isAll ? 'warning' : 'success')"
+    >
+      <span
+        v-if="matchingClusters.isAll"
+        v-html="t('fleet.clusterGroup.selector.matchesAll', matchingClusters)"
+      />
+      <span
+        v-else-if="matchingClusters.isNone"
+        v-html="t('fleet.clusterGroup.selector.matchesNone', matchingClusters)"
+      />
       <span
         v-else
         v-html="t('fleet.clusterGroup.selector.matchesSome', matchingClusters)"

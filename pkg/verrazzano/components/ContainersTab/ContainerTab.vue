@@ -83,7 +83,11 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="tabName" :label="tabLabel" :title="containerTypeLabel">
+  <TreeTab
+    :name="tabName"
+    :label="tabLabel"
+    :title="containerTypeLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :mode="mode"
@@ -138,7 +142,10 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab :name="createTabName(tabName, 'execution')" :label="t('verrazzano.common.tabs.executionEnvironment')">
+      <TreeTab
+        :name="createTabName(tabName, 'execution')"
+        :label="t('verrazzano.common.tabs.executionEnvironment')"
+      >
         <div class="row">
           <div class="col span-6">
             <LabeledArrayList

@@ -3,6 +3,7 @@ import { clearModelCache } from '@shell/plugins/dashboard-store/model-loader';
 import { Plugin } from './plugin';
 import { PluginRoutes } from './plugin-routes';
 import { UI_PLUGIN_BASE_URL } from '@shell/config/uiplugins';
+import { ExtensionPoint } from './types';
 
 const MODEL_TYPE = 'models';
 
@@ -17,9 +18,15 @@ export default function({
   let _lastLoaded = 0;
 
   // Track which plugin loaded what, so we can unload stuff
-  let plugins = {};
+  const plugins = {};
 
-  let pluginRoutes = new PluginRoutes(app.router);
+  const pluginRoutes = new PluginRoutes(app.router);
+
+  const uiConfig = {};
+
+  for (const ep in ExtensionPoint) {
+    uiConfig[ExtensionPoint[ep]] = {};
+  }
 
   inject('plugin', {
     // Plugins should not use these - but we will pass them in for now as a 2nd argument
@@ -160,20 +167,23 @@ export default function({
     },
 
     async logout() {
-      const all = Object.keys(plugins);
+      const all = Object.values(plugins);
 
       for (let i = 0; i < all.length; i++) {
-        const name = all[i];
+        const plugin = all[i];
+
+        if (plugin.builtin) {
+          continue;
+        }
 
         try {
-          await this.removePlugin(name);
+          await this.removePlugin(plugin.name);
         } catch (e) {
           console.error('Error removing plugin', e); // eslint-disable-line no-console
         }
-      }
 
-      plugins = {};
-      pluginRoutes = new PluginRoutes(app.router);
+        delete plugins[plugin.name];
+      }
     },
 
     // Remove the plugin
@@ -245,6 +255,18 @@ export default function({
       Object.keys(plugin.types).forEach((typ) => {
         Object.keys(plugin.types[typ]).forEach((name) => {
           this.register(typ, name, plugin.types[typ][name]);
+        });
+      });
+
+      // UI Configuration - copy UI config from a plugin into the global uiConfig object
+      Object.keys(plugin.uiConfig).forEach((actionType) => {
+        Object.keys(plugin.uiConfig[actionType]).forEach((actionLocation) => {
+          plugin.uiConfig[actionType][actionLocation].forEach((action) => {
+            if (!uiConfig[actionType][actionLocation]) {
+              uiConfig[actionType][actionLocation] = [];
+            }
+            uiConfig[actionType][actionLocation].push(action);
+          });
         });
       });
 
@@ -329,6 +351,20 @@ export default function({
 
     getValidator(name) {
       return validators[name];
+    },
+
+    /**
+     * Return the UI configuration for the given type and location
+     */
+    getUIConfig(type, uiArea) {
+      return uiConfig[type][uiArea] || [];
+    },
+
+    /**
+     * Returns all UI Configuration (useful for debugging)
+     */
+    getAllUIConfig() {
+      return uiConfig;
     },
 
     // Timestamp that a UI package was last loaded

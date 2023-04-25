@@ -54,7 +54,7 @@ export default {
 
     this.fetchInProgress = false;
   },
-  computed:   {
+  computed: {
     ...mapGetters(['currentCluster']),
     podSchema() {
       return this.$store.getters['cluster/schemaFor'](POD);
@@ -144,7 +144,11 @@ export default {
     <h3>
       {{ t('verrazzano.common.titles.componentDetails') }}
     </h3>
-    <div v-if="value.pods || value.jobGauges" class="gauges mb-20" :class="{'gauges__pods': !!value.pods}">
+    <div
+      v-if="value.pods || value.jobGauges"
+      class="gauges mb-20"
+      :class="{'gauges__pods': !!value.pods}"
+    >
       <template v-if="value.jobGauges">
         <CountGauge
           v-for="(group, key) in value.jobGauges"
@@ -170,7 +174,11 @@ export default {
     </div>
     <ResourceTabs :value="value">
       <div>
-        <Tab name="pods" :label="t('tableHeaders.pods')" :weight="4">
+        <Tab
+          name="pods"
+          :label="t('tableHeaders.pods')"
+          :weight="4"
+        >
           <SortableTable
             v-if="displayPods"
             :rows="displayPods"
@@ -181,7 +189,11 @@ export default {
             :search="false"
           />
         </Tab>
-        <Tab name="apps" :label="t('verrazzano.common.tabs.referringApplications')" :weight="3">
+        <Tab
+          name="apps"
+          :label="t('verrazzano.common.tabs.referringApplications')"
+          :weight="3"
+        >
           <SortableTable
             v-if="referringApplications"
             :rows="referringApplications"

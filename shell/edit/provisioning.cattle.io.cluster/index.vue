@@ -18,6 +18,7 @@ import { CAPI, MANAGEMENT, DEFAULT_WORKSPACE } from '@shell/config/types';
 import { mapFeature, RKE2 as RKE2_FEATURE } from '@shell/store/features';
 import { allHash } from '@shell/utils/promise';
 import { BLANK_CLUSTER } from '@shell/store';
+import { ELEMENTAL_PRODUCT_NAME, ELEMENTAL_CLUSTER_PROVIDER } from '../../config/elemental-types';
 import Rke2Config from './rke2';
 import Import from './import';
 
@@ -32,7 +33,7 @@ const SORT_GROUPS = {
   custom2:   5,
 };
 
-// uSed to proxy stylesheets for custom drviers that provide custom UI (RKE1)
+// uSed to proxy stylesheets for custom drivers that provide custom UI (RKE1)
 const PROXY_ENDPOINT = '/meta/proxy';
 
 export default {
@@ -64,14 +65,23 @@ export default {
     value: {
       type:    Object,
       default: null,
+    },
+
+    /**
+     * Inherited global identifier prefix for tests
+     * Define a term based on the parent component to avoid conflicts on multiple components
+     */
+    componentTestid: {
+      type:    String,
+      default: 'cluster-manager-create'
     }
   },
 
   async fetch() {
     const hash = {
       // These aren't explicitly used, but need to be listening for change events
-      mgmtClusters:     this.$store.dispatch('management/findAll', { type: MANAGEMENT.CLUSTER }),
-      provClusters:     this.$store.dispatch('management/findAll', { type: CAPI.RANCHER_CLUSTER }),
+      mgmtClusters: this.$store.dispatch('management/findAll', { type: MANAGEMENT.CLUSTER }),
+      provClusters: this.$store.dispatch('management/findAll', { type: CAPI.RANCHER_CLUSTER }),
 
       catalog: this.$store.dispatch('catalog/load'),
     };
@@ -148,6 +158,7 @@ export default {
 
   computed: {
     ...mapGetters({ allCharts: 'catalog/charts' }),
+    ...mapGetters('type-map', ['activeProducts']),
     preferredProvisioner: mapPref(PROVISIONER),
     _RKE1:                () => _RKE1,
     _RKE2:                () => _RKE2,
@@ -196,10 +207,6 @@ export default {
 
     rke2Enabled: mapFeature(RKE2_FEATURE),
 
-    showRkeToggle() {
-      return this.rke2Enabled && !this.isImport;
-    },
-
     provisioner: {
       get() {
         // This can incorrectly return rke1 instead
@@ -237,6 +244,7 @@ export default {
     subTypes() {
       const getters = this.$store.getters;
       const isImport = this.isImport;
+      const isElementalActive = !!this.activeProducts.find(item => item.name === ELEMENTAL_PRODUCT_NAME);
 
       const out = [];
 
@@ -278,6 +286,10 @@ export default {
           });
 
           addType('custom', 'custom2', false);
+
+          if (isElementalActive) {
+            addType(ELEMENTAL_CLUSTER_PROVIDER, 'custom2', false);
+          }
         }
       }
 
@@ -343,9 +355,29 @@ export default {
 
       return sortBy(Object.values(out), 'sort');
     },
+
+    firstNodeDriverItem() {
+      return this.groupedSubTypes.findIndex(obj => [_RKE1, _RKE2].includes(obj.name));
+    },
+
+    firstCustomClusterItem() {
+      return this.groupedSubTypes.findIndex(obj => ['custom', 'custom1', 'custom2'].includes(obj.name));
+    },
   },
 
   methods: {
+    showRkeToggle(i) {
+      if (this.isImport || !this.rke2Enabled) {
+        return false;
+      }
+
+      if (this.firstNodeDriverItem >= 0) {
+        return i === this.firstNodeDriverItem;
+      }
+
+      return i === this.firstCustomClusterItem;
+    },
+
     loadStylesheet(url, id) {
       if ( !id ) {
         console.error('loadStylesheet called without an id'); // eslint-disable-line no-console
@@ -460,7 +492,7 @@ export default {
       >
         <h4>
           <div
-            v-if="showRkeToggle && [_RKE1,_RKE2].includes(obj.name)"
+            v-if="showRkeToggle(i)"
             class="grouped-type"
           >
             <ToggleSwitch

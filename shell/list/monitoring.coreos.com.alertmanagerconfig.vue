@@ -1,7 +1,6 @@
 <script>
 import ResourceTable from '@shell/components/ResourceTable';
 import { Banner } from '@components/Banner';
-import { MONITORING } from '@shell/config/types';
 import ResourceFetch from '@shell/mixins/resource-fetch';
 export default {
   name:       'ListApps',
@@ -17,15 +16,15 @@ export default {
       type:     Object,
       required: true,
     },
+
+    useQueryParamsForSimpleFiltering: {
+      type:    Boolean,
+      default: false
+    }
   },
 
   async fetch() {
-    try {
-      await this.$store.dispatch('cluster/findAll', { type: MONITORING.ALERTMANAGERCONFIG });
-      await this.$fetchType(this.resource);
-    } catch (err) {
-      throw new Error(err);
-    }
+    await this.$fetchType(this.resource);
   }
 };
 </script>
@@ -39,6 +38,8 @@ export default {
       :schema="schema"
       :rows="rows"
       :loading="loading"
+      :use-query-params-for-simple-filtering="useQueryParamsForSimpleFiltering"
+      :force-update-live-and-delayed="forceUpdateLiveAndDelayed"
     />
   </div>
 

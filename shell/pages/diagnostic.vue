@@ -284,12 +284,13 @@ export default {
     },
 
     promptDownload(btnCb) {
-      const resources = [{ downloadData: this.downloadData, gatherResponseTimes: this.gatherResponseTimes }];
-
       if ( !this.responseTimes ) {
         this.$store.dispatch('management/promptModal', {
-          component: 'DiagnosticTimingsDialog',
-          resources
+          component:      'DiagnosticTimingsDialog',
+          componentProps: {
+            downloadData:        this.downloadData,
+            gatherResponseTimes: this.gatherResponseTimes
+          }
         })
           .then(() => btnCb(true))
           .catch(() => btnCb(false));
@@ -330,7 +331,10 @@ export default {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(item, objKey) in systemInformation" :key="objKey">
+          <tr
+            v-for="(item, objKey) in systemInformation"
+            :key="objKey"
+          >
             <template v-if="item.value.length">
               <td>{{ item.label }}</td>
               <td>{{ item.value }}</td>
@@ -364,7 +368,7 @@ export default {
                     'icon-chevron-down': !cluster.isTableVisible,
                     'icon-chevron-up': cluster.isTableVisible
                   }"
-                ></i>
+                />
               </div>
             </th>
           </thead>
@@ -381,7 +385,10 @@ export default {
               </th>
             </tr>
 
-            <tr v-for="item in cluster.counts" :key="item.resource">
+            <tr
+              v-for="item in cluster.counts"
+              :key="item.resource"
+            >
               <template v-if="item.count > 0">
                 <td scope="row">
                   {{ item.resource }}

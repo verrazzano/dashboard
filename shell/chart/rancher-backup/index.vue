@@ -10,6 +10,7 @@ import { allHash } from '@shell/utils/promise';
 import { STORAGE_CLASS, SECRET, PV } from '@shell/config/types';
 import { mapGetters } from 'vuex';
 import { STORAGE } from '@shell/config/labels-annotations';
+import ChartPsp from '@shell/components/ChartPsp';
 
 export default {
   components: {
@@ -18,7 +19,8 @@ export default {
     S3,
     LabeledInput,
     LabeledSelect,
-    Banner
+    Banner,
+    ChartPsp
   },
 
   hasTabs: true,
@@ -84,8 +86,7 @@ export default {
       return { options, labels };
     },
 
-    ...mapGetters({ t: 'i18n/t' })
-
+    ...mapGetters(['currentCluster'], { t: 'i18n/t' }),
   },
 
   watch: {
@@ -161,8 +162,20 @@ export default {
 
 <template>
   <div>
-    <Tab label="Chart Options" name="chartOptions">
-      <Banner color="info" :label="t('backupRestoreOperator.deployment.storage.tip')" />
+    <Tab
+      label="Chart Options"
+      name="chartOptions"
+    >
+      <!-- Conditionally display PSP checkbox -->
+      <ChartPsp
+        :value="value"
+        :cluster="currentCluster"
+      />
+
+      <Banner
+        color="info"
+        :label="t('backupRestoreOperator.deployment.storage.tip')"
+      />
       <RadioGroup
         v-model="storageSource"
         name="storageSource"
@@ -171,7 +184,12 @@ export default {
         :options="radioOptions.options"
         :labels="radioOptions.labels"
       />
-      <S3 v-if="storageSource==='s3'" :value="value.s3" :secrets="secrets" :mode="mode" />
+      <S3
+        v-if="storageSource==='s3'"
+        :value="value.s3"
+        :secrets="secrets"
+        :mode="mode"
+      />
       <template v-else>
         <div class="row">
           <template v-if="storageSource === 'pickSC'">
@@ -189,10 +207,17 @@ export default {
               />
             </div>
             <div class="col span-6">
-              <LabeledInput v-model="value.persistence.size" :mode="mode" :label="t('backupRestoreOperator.deployment.size')" />
+              <LabeledInput
+                v-model="value.persistence.size"
+                :mode="mode"
+                :label="t('backupRestoreOperator.deployment.size')"
+              />
             </div>
           </template>
-          <div v-else-if="storageSource === 'pickPV'" class="col span-6">
+          <div
+            v-else-if="storageSource === 'pickPV'"
+            class="col span-6"
+          >
             <LabeledSelect
               :key="storageSource"
               v-model="persistentVolume"

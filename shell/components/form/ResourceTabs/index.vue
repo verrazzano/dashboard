@@ -11,6 +11,8 @@ import { EVENT } from '@shell/config/types';
 import SortableTable from '@shell/components/SortableTable';
 import { _VIEW } from '@shell/config/query-params';
 import RelatedResources from '@shell/components/RelatedResources';
+import { ExtensionPoint, TabLocation } from '@shell/core/types';
+import { getApplicableExtensionEnhancements } from '@shell/core/plugin-helpers';
 
 export default {
 
@@ -58,11 +60,6 @@ export default {
     needRelated: {
       type:    Boolean,
       default: true
-    },
-
-    alwaysShowEvents: {
-      type:    Boolean,
-      default: false
     }
   },
 
@@ -74,6 +71,7 @@ export default {
       allEvents:     [],
       selectedTab:   this.defaultTab,
       didLoadEvents: false,
+      extensionTabs: getApplicableExtensionEnhancements(this, ExtensionPoint.TAB, TabLocation.RESOURCE_DETAIL, this.$route),
     };
   },
 
@@ -92,7 +90,7 @@ export default {
       return false;
     },
     showEvents() {
-      return this.isView && this.needEvents && this.hasEvents && (this.events.length || this.alwaysShowEvents);
+      return this.isView && this.needEvents && this.hasEvents;
     },
     showRelated() {
       return this.isView && this.needRelated;
@@ -168,14 +166,29 @@ export default {
 </script>
 
 <template>
-  <Tabbed v-bind="$attrs" :default-tab="defaultTab" @changed="tabChange">
+  <Tabbed
+    v-bind="$attrs"
+    :default-tab="defaultTab"
+    @changed="tabChange"
+  >
     <slot />
 
-    <Tab v-if="showConditions" label-key="resourceTabs.conditions.tab" name="conditions" :weight="-1" :display-alert-icon="conditionsHaveIssues">
+    <Tab
+      v-if="showConditions"
+      label-key="resourceTabs.conditions.tab"
+      name="conditions"
+      :weight="-1"
+      :display-alert-icon="conditionsHaveIssues"
+    >
       <Conditions :value="value" />
     </Tab>
 
-    <Tab v-if="showEvents" label-key="resourceTabs.events.tab" name="events" :weight="-2">
+    <Tab
+      v-if="showEvents"
+      label-key="resourceTabs.events.tab"
+      name="events"
+      :weight="-2"
+    >
       <SortableTable
         v-if="selectedTab === 'events'"
         :rows="events"
@@ -188,12 +201,48 @@ export default {
       />
     </Tab>
 
-    <Tab v-if="showRelated" name="related" label-key="resourceTabs.related.tab" :weight="-3">
+    <Tab
+      v-if="showRelated"
+      name="related"
+      label-key="resourceTabs.related.tab"
+      :weight="-3"
+    >
       <h3 v-t="'resourceTabs.related.from'" />
-      <RelatedResources :ignore-types="[value.type]" :value="value" direction="from" />
+      <RelatedResources
+        :ignore-types="[value.type]"
+        :value="value"
+        direction="from"
+      />
 
-      <h3 v-t="'resourceTabs.related.to'" class="mt-20" />
-      <RelatedResources :ignore-types="[value.type]" :value="value" direction="to" />
+      <h3
+        v-t="'resourceTabs.related.to'"
+        class="mt-20"
+      />
+      <RelatedResources
+        :ignore-types="[value.type]"
+        :value="value"
+        direction="to"
+      />
+    </Tab>
+
+    <!-- Extension tabs -->
+    <Tab
+      v-for="tab, i in extensionTabs"
+      :key="`${tab.name}${i}`"
+      :name="tab.name"
+      :label="tab.label"
+      :label-key="tab.labelKey"
+      :weight="tab.weight"
+      :tooltip="tab.tooltip"
+      :show-header="tab.showHeader"
+      :display-alert-icon="tab.displayAlertIcon"
+      :error="tab.error"
+      :badge="tab.badge"
+    >
+      <component
+        :is="tab.component"
+        :resource="value"
+      />
     </Tab>
   </Tabbed>
 </template>

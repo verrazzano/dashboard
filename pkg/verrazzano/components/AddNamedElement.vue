@@ -115,10 +115,10 @@ export default {
       </div>
     </div>
     <div v-if="!isView && errorMessage">
-      <br />
+      <br>
       <span class="named-error">{{ errorMessage }}</span>
     </div>
-    <br />
+    <br>
     <button
       type="button"
       class="btn role-tertiary add"

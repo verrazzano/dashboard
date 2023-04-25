@@ -8,7 +8,7 @@ import { LabeledInput } from '@components/Form/LabeledInput';
 import LabeledSelect from '@shell/components/form/LabeledSelect';
 import { HCI as HCI_LABELS_ANNOTATIONS } from '@shell/config/labels-annotations';
 import { isHarvesterSatisfiesVersion } from '@shell/utils/cluster';
-import { HARVESTER_NAME as HARVESTER } from '@shell/config/product/harvester-manager';
+import { HARVESTER_NAME as HARVESTER } from '@shell/config/features';
 import { CAPI, SERVICE } from '@shell/config/types';
 
 export default {
@@ -17,7 +17,7 @@ export default {
     LabeledSelect,
   },
 
-  props:      {
+  props: {
     value: {
       type:    Array,
       default: null,
@@ -259,6 +259,12 @@ export default {
 
 <template>
   <div :style="{'width':'100%'}">
+    <p
+      v-if="rows.length > 0"
+      class="padded"
+    >
+      {{ t('workload.container.ports.detailedDescription') }}
+    </p>
     <div
       v-for="(row, idx) in rows"
       :key="idx"
@@ -317,7 +323,10 @@ export default {
         />
       </div>
 
-      <div v-if="row._showHost" class="targetPort">
+      <div
+        v-if="row._showHost"
+        class="targetPort"
+      >
         <LabeledInput
           ref="port"
           v-model.number="row.hostPort"
@@ -331,7 +340,10 @@ export default {
         />
       </div>
 
-      <div v-if="row._showHost" class="hostip">
+      <div
+        v-if="row._showHost"
+        class="hostip"
+      >
         <LabeledInput
           ref="port"
           v-model="row.hostIP"
@@ -342,8 +354,16 @@ export default {
         />
       </div>
 
-      <div v-if="!row._showHost && row._serviceType !== 'LoadBalancer' && row._serviceType !== 'NodePort'" class="add-host">
-        <button :disabled="mode==='view'" type="button" class="btn btn-sm role-tertiary" @click="row._showHost = true">
+      <div
+        v-if="!row._showHost && row._serviceType !== 'LoadBalancer' && row._serviceType !== 'NodePort'"
+        class="add-host"
+      >
+        <button
+          :disabled="mode==='view'"
+          type="button"
+          class="btn btn-sm role-tertiary"
+          @click="row._showHost = true"
+        >
           {{ t('workloadPorts.addHost') }}
         </button>
       </div>
@@ -383,14 +403,28 @@ export default {
         </div>
       </div>
 
-      <div v-if="showRemove" class="remove">
-        <button type="button" class="btn role-link" @click="remove(idx)">
+      <div
+        v-if="showRemove"
+        class="remove"
+      >
+        <button
+          type="button"
+          class="btn role-link"
+          @click="remove(idx)"
+        >
           {{ t('workloadPorts.remove') }}
         </button>
       </div>
     </div>
-    <div v-if="showAdd" class="footer">
-      <button type="button" class="btn role-tertiary add" @click="add()">
+    <div
+      v-if="showAdd"
+      class="footer"
+    >
+      <button
+        type="button"
+        class="btn role-tertiary add"
+        @click="add()"
+      >
         {{ t('workloadPorts.addPort') }}
       </button>
     </div>

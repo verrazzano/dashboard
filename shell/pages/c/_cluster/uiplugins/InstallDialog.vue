@@ -36,7 +36,7 @@ export default {
 
   computed: {
     showVersionSelector() {
-      return this.plugin?.versions.length > 1;
+      return this.versionOptions?.length > 1;
     },
 
     versionOptions() {
@@ -44,8 +44,8 @@ export default {
         return [];
       }
 
-      // Don't allow update/rollback to curent version
-      const versions = this.plugin.versions.filter((v) => {
+      // Don't allow update/rollback to current version
+      const versions = this.plugin?.installableVersions?.filter((v) => {
         if (this.currentVersion) {
           return v.version !== this.currentVersion;
         }
@@ -78,12 +78,12 @@ export default {
         this.currentVersion = plugin.displayVersion;
 
         // Update to latest version, so take the first version
-        if (plugin.versions.length > 0) {
-          this.version = plugin.versions[0].version;
+        if (plugin.installableVersions?.length > 0) {
+          this.version = plugin.installableVersions?.[0]?.version;
         }
       } else if (mode === 'rollback') {
         // Find the newest version once we remove the current version
-        const versionNames = plugin.versions.filter(v => v.version !== plugin.displayVersion);
+        const versionNames = plugin.installableVersions.filter(v => v.version !== plugin.displayVersion);
 
         this.currentVersion = plugin.displayVersion;
 
@@ -93,10 +93,10 @@ export default {
       }
 
       // Make sure we have the version available
-      const versionChart = plugin.versions?.find(v => v.version === this.version);
+      const versionChart = plugin.installableVersions?.find(v => v.version === this.version);
 
       if (!versionChart) {
-        this.version = plugin.versions[0].version;
+        this.version = plugin.installableVersions?.[0]?.version;
       }
 
       this.busy = false;
@@ -146,7 +146,7 @@ export default {
 
       try {
         const app = await this.$store.dispatch('management/find', {
-          type:  CATALOG.APP,
+          type: CATALOG.APP,
           id:   `${ UI_PLUGIN_NAMESPACE }/${ plugin.chart.chartName }`,
           opt:  { force: true },
         });
@@ -220,7 +220,10 @@ export default {
     height="auto"
     :scrollable="true"
   >
-    <div v-if="plugin" class="plugin-install-dialog">
+    <div
+      v-if="plugin"
+      class="plugin-install-dialog"
+    >
       <h4 class="mt-10">
         {{ t(`plugins.${ mode }.title`, { name: plugin.label }) }}
       </h4>
@@ -229,24 +232,35 @@ export default {
           <p>
             {{ t(`plugins.${ mode }.prompt`) }}
           </p>
-          <Banner v-if="!plugin.certified" color="warning" :label="t('plugins.install.warnNotCertified')" />
+          <Banner
+            v-if="!plugin.certified"
+            color="warning"
+            :label="t('plugins.install.warnNotCertified')"
+          />
           <LabeledSelect
             v-if="showVersionSelector"
             v-model="version"
             label-key="plugins.install.version"
             :options="versionOptions"
             class="version-selector mt-10"
+            data-testid="install-ext-modal-select-version"
           />
           <div v-else>
             {{ t('plugins.install.version') }} {{ version }}
           </div>
         </div>
         <div class="dialog-buttons">
-          <button :disabled="busy" class="btn role-secondary" @click="closeDialog(false)">
+          <button
+            :disabled="busy"
+            class="btn role-secondary"
+            data-testid="install-ext-modal-cancel-btn"
+            @click="closeDialog(false)"
+          >
             {{ t('generic.cancel') }}
           </button>
           <AsyncButton
             :mode="buttonMode"
+            data-testid="install-ext-modal-install-btn"
             @click="install"
           />
         </div>

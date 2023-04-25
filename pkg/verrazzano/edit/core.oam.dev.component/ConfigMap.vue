@@ -41,7 +41,7 @@ export default {
 
     return { allData: { ...decodedBinaryData, ...data } };
   },
-  methods:  {
+  methods: {
     initSpec() {
       this.setField('spec', {
         workload: {
@@ -88,7 +88,10 @@ export default {
 <template>
   <TreeTabbed>
     <template #nestedTabs>
-      <TreeTab name="data" :label="t('configmap.tabs.data.label')">
+      <TreeTab
+        name="data"
+        :label="t('configmap.tabs.data.label')"
+      >
         <template #default>
           <div class="row">
             <div class="col span-6">

@@ -75,6 +75,14 @@ export default {
       default: () => []
     },
 
+    /**
+     * Set of maps to convert error messages to something more user friendly and apply icons
+     */
+    errorsMap: {
+      type:    Object,
+      default: null
+    },
+
     // Is the edit as yaml button allowed
     canYaml: {
       type:    Boolean,
@@ -98,7 +106,7 @@ export default {
       default: null,
     },
     steps: {
-      type:     Array,
+      type:    Array,
       default: () => []
     },
 
@@ -128,6 +136,11 @@ export default {
     componentTestid: {
       type:    String,
       default: 'form'
+    },
+
+    description: {
+      type:    String,
+      default: ''
     }
   },
 
@@ -152,7 +165,7 @@ export default {
         4: '18px',
         5: '16px',
         6: '14px'
-      }
+      },
     };
   },
 
@@ -224,6 +237,19 @@ export default {
      */
     hasErrors() {
       return this.errors?.length && Array.isArray(this.errors);
+    },
+
+    /**
+     * Replace returned string with new picked value and icon
+     */
+    mappedErrors() {
+      return !this.errors ? {} : this.errorsMap || this.errors.reduce((acc, error) => ({
+        ...acc,
+        [error]: {
+          message: error,
+          icon:    null
+        }
+      }), {});
     },
   },
 
@@ -332,6 +358,10 @@ export default {
       const newNamespaceName = get(this.resource, this.namespaceKey);
       let namespaceAlreadyExists = false;
 
+      if (!this.createNamespace) {
+        return;
+      }
+
       try {
         // This is in a try-catch block because the call to fetch
         // a namespace throws an error if the namespace is not found.
@@ -358,10 +388,17 @@ export default {
 <template>
   <section class="cru">
     <slot name="noticeBanner" />
+    <p
+      v-if="description"
+      class="description"
+    >
+      {{ description }}
+    </p>
     <form
       :is="(isView? 'div' : 'form')"
       class="create-resource-container cru__form"
       @submit.prevent
+      @keydown.enter.prevent
     >
       <div
         v-if="hasErrors"
@@ -372,8 +409,8 @@ export default {
           v-for="(err, i) in errors"
           :key="i"
           color="error"
-          :label="stringify(err)"
-          :stacked="true"
+          :label="stringify(mappedErrors[err].message)"
+          :icon="mappedErrors[err].icon"
           :closable="true"
           @close="closeError(i)"
         />
@@ -382,7 +419,10 @@ export default {
         v-if="showSubtypeSelection"
         class="subtypes-container cru__content"
       >
-        <slot name="subtypes" :subtypes="subtypes">
+        <slot
+          name="subtypes"
+          :subtypes="subtypes"
+        >
           <div
             v-for="subtype in subtypes"
             :key="subtype.id"
@@ -397,14 +437,20 @@ export default {
                     v-if="subtype.bannerImage"
                     :src="subtype.bannerImage"
                     :alt="(resource.type ? resource.type + ': ' : '') + (subtype.label || '')"
-                  />
-                  <div v-else class="round-image">
+                  >
+                  <div
+                    v-else
+                    class="round-image"
+                  >
                     <div
                       v-if="subtype.bannerAbbrv"
                       class="banner-abbrv"
                     >
                       <span v-if="$store.getters['i18n/exists'](subtype.bannerAbbrv)">{{ t(subtype.bannerAbbrv) }}</span>
-                      <span v-else :style="{fontSize: abbrSizes[subtype.bannerAbbrv.length]}">{{ subtype.bannerAbbrv }}</span>
+                      <span
+                        v-else
+                        :style="{fontSize: abbrSizes[subtype.bannerAbbrv.length]}"
+                      >{{ subtype.bannerAbbrv }}</span>
                     </div>
                     <div v-else>
                       {{ subtype.id.slice(0, 1).toUpperCase() }}
@@ -412,22 +458,34 @@ export default {
                   </div>
                 </div>
                 <div class="subtype-body">
-                  <div class="title" :class="{'with-description': !!subtype.description}">
+                  <div
+                    class="title"
+                    :class="{'with-description': !!subtype.description}"
+                  >
                     <h5>
                       <span
                         v-if="$store.getters['i18n/exists'](subtype.label)"
                         v-html="t(subtype.label)"
-                      ></span>
+                      />
                       <span v-else>{{ subtype.label }}</span>
                     </h5>
-                    <a v-if="subtype.docLink" :href="subtype.docLink" target="_blank" rel="noopener nofollow" class="flex-right">{{ t('generic.moreInfo') }} <i class="icon icon-external-link" /></a>
+                    <a
+                      v-if="subtype.docLink"
+                      :href="subtype.docLink"
+                      target="_blank"
+                      rel="noopener nofollow"
+                      class="flex-right"
+                    >{{ t('generic.moreInfo') }} <i class="icon icon-external-link" /></a>
                   </div>
-                  <hr v-if="subtype.description" />
-                  <div v-if="subtype.description" class="description">
+                  <hr v-if="subtype.description">
+                  <div
+                    v-if="subtype.description"
+                    class="description"
+                  >
                     <span
                       v-if="$store.getters['i18n/exists'](subtype.description)"
                       v-html="t(subtype.description, {}, true)"
-                    ></span>
+                    />
                     <span v-else>{{ subtype.description }}</span>
                   </div>
                 </div>
@@ -452,10 +510,21 @@ export default {
             class="wizard"
             @error="e=>errors = e"
           >
-            <template #stepContainer="{activeStep}" class="step-container">
+            <template
+              #stepContainer="{activeStep}"
+              class="step-container"
+            >
               <template v-for="step in steps">
-                <div v-if="step.name === activeStep.name || step.hidden" :key="step.name" class="step-container__step" :class="{'hide': step.name !== activeStep.name && step.hidden}">
-                  <slot :step="step" :name="step.name" />
+                <div
+                  v-if="step.name === activeStep.name || step.hidden"
+                  :key="step.name"
+                  class="step-container__step"
+                  :class="{'hide': step.name !== activeStep.name && step.hidden}"
+                >
+                  <slot
+                    :step="step"
+                    :name="step.name"
+                  />
                 </div>
               </template>
             </template>
@@ -469,8 +538,14 @@ export default {
                   @cancel-confirmed="confirmCancel"
                 >
                   <!-- Pass down templates provided by the caller -->
-                  <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
-                    <slot :name="slot" v-bind="scope" />
+                  <template
+                    v-for="(_, slot) of $scopedSlots"
+                    v-slot:[slot]="scope"
+                  >
+                    <slot
+                      :name="slot"
+                      v-bind="scope"
+                    />
                   </template>
                   <div class="controls-steps">
                     <button
@@ -481,12 +556,22 @@ export default {
                     >
                       <t k="cruResource.previewYaml" />
                     </button>
-                    <template v-if="showPrevious" name="back">
-                      <button type="button" class="btn role-secondary" @click="back()">
+                    <template
+                      v-if="showPrevious"
+                      name="back"
+                    >
+                      <button
+                        type="button"
+                        class="btn role-secondary"
+                        @click="back()"
+                      >
                         <t k="wizard.previous" />
                       </button>
                     </template>
-                    <template v-if="activeStepIndex === visibleSteps.length-1" name="finish">
+                    <template
+                      v-if="activeStepIndex === visibleSteps.length-1"
+                      name="finish"
+                    >
                       <AsyncButton
                         v-if="!showSubtypeSelection && !isView"
                         ref="save"
@@ -495,8 +580,16 @@ export default {
                         @click="$emit('finish', $event)"
                       />
                     </template>
-                    <template v-else name="next">
-                      <button :disabled="!canNext" type="button" class="btn role-primary" @click="next()">
+                    <template
+                      v-else
+                      name="next"
+                    >
+                      <button
+                        :disabled="!canNext"
+                        type="button"
+                        class="btn role-primary"
+                        @click="next()"
+                      >
                         <t k="wizard.next" />
                       </button>
                     </template>
@@ -526,8 +619,14 @@ export default {
             @cancel-confirmed="confirmCancel"
           >
             <!-- Pass down templates provided by the caller -->
-            <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope">
-              <slot :name="slot" v-bind="scope" />
+            <template
+              v-for="(_, slot) of $scopedSlots"
+              v-slot:[slot]="scope"
+            >
+              <slot
+                :name="slot"
+                v-bind="scope"
+              />
             </template>
 
             <template #default>
@@ -556,7 +655,7 @@ export default {
       </template>
       <!------ YAML ------>
       <section
-        v-else
+        v-else-if="showYaml"
         class="cru-resource-yaml-container resource-container cru__content"
       >
         <ResourceYaml
@@ -604,7 +703,10 @@ export default {
                       <t k="resourceYaml.buttons.diff" />
                     </button>
                   </div>
-                  <div v-if="_selectedSubtype || !subtypes.length" class="controls-right">
+                  <div
+                    v-if="_selectedSubtype || !subtypes.length"
+                    class="controls-right"
+                  >
                     <button
                       :data-testid="componentTestid + '-yaml-cancel'"
                       type="button"
@@ -737,6 +839,11 @@ form.create-resource-container .cru {
     background-color: var(--header-bg);
     margin: 10px 0;
   }
+}
+
+.description {
+  margin-bottom: 15px;
+  margin-top: 5px;
 }
 
 </style>

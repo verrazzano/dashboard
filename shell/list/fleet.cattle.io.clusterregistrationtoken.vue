@@ -18,11 +18,17 @@ export default {
       type:     Object,
       required: true,
     },
+    useQueryParamsForSimpleFiltering: {
+      type:    Boolean,
+      default: false
+    }
   },
 
   async fetch() {
-    await this.$fetchType(FLEET.TOKEN);
-    this.allFleet = await this.$store.dispatch('management/findAll', { type: FLEET.CLUSTER });
+    await this.$fetchType(this.resource);
+    if (this.$store.getters['management/schemaFor']( FLEET.CLUSTER )) {
+      this.allFleet = await this.$store.getters['management/all'](FLEET.CLUSTER);
+    }
   },
 
   data() {
@@ -63,23 +69,26 @@ export default {
   },
   // override with relevant info for the loading indicator since this doesn't use it's own masthead
   $loadingResources() {
-    return {
-      loadResources:     [FLEET.TOKEN],
-      loadIndeterminate: true, // results are filtered so we wouldn't get the correct count on indicator...
-    };
+    // results are filtered so we wouldn't get the correct count on indicator...
+    return { loadIndeterminate: true };
   },
 };
 </script>
 
 <template>
   <div>
-    <Banner v-if="hidden" color="info" :label="t('fleet.tokens.harvester', {count: hidden} )" />
+    <Banner
+      v-if="hidden"
+      color="info"
+      :label="t('fleet.tokens.harvester', {count: hidden} )"
+    />
     <ResourceTable
       v-bind="$attrs"
       :schema="schema"
       :rows="tokens"
       :loading="loading"
-    >
-    </ResourceTable>
+      :use-query-params-for-simple-filtering="useQueryParamsForSimpleFiltering"
+      :force-update-live-and-delayed="forceUpdateLiveAndDelayed"
+    />
   </div>
 </template>

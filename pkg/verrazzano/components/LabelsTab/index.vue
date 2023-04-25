@@ -53,7 +53,11 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel" :title="t('verrazzano.common.titles.labels')">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+    :title="t('verrazzano.common.titles.labels')"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"

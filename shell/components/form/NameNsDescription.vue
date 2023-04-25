@@ -20,6 +20,7 @@ export function normalizeName(str) {
 }
 
 export default {
+  name:       'NameNsDescription',
   components: {
     LabeledInput,
     LabeledSelect
@@ -222,12 +223,15 @@ export default {
     namespaces() {
       const currentStore = this.$store.getters['currentStore'](this.namespaceType);
       const namespaces = this.namespacesOverride || this.$store.getters[`${ currentStore }/all`](this.namespaceType);
+      const filterNamespace = this.$store.getters['allNamespaces'];
 
       const filtered = namespaces.filter( this.namespaceFilter || ((namespace) => {
         // By default, include the namespace in the dropdown.
         let out = true;
 
-        if (this.currentProduct?.hideSystemResources) {
+        if (this.currentProduct?.customNamespaceFilter && this.currentProduct?.inStore) {
+          out = filterNamespace.find(NS => NS.metadata.name === namespace.metadata.name);
+        } else if (this.currentProduct?.hideSystemResources) {
           // Filter out the namespace
           // if it is a system namespace or if it is managed by
           // Fleet.
@@ -262,7 +266,8 @@ export default {
       if (this.canCreateNamespace) {
         out.push({
           label: this.t('namespace.createNamespace'),
-          value: ''
+          value: '',
+          kind:  'highlighted'
         });
       }
       out.push({
@@ -294,7 +299,7 @@ export default {
 
     canCreateNamespace() {
       // Check if user can push to namespaces... and as the ns is outside of a project restrict to admins and cluster owners
-      return (this.nsSchema?.collectionMethods || []).includes('POST') && this.currentCluster.canUpdate;
+      return (this.nsSchema?.collectionMethods || []).includes('POST') && this.currentCluster?.canUpdate;
     }
   },
 
@@ -357,6 +362,12 @@ export default {
       this.namespace = e.selected;
     },
 
+    cancelCreateNamespace(e) {
+      this.createNamespace = false;
+      this.$parent.$emit('createNamespace', false);
+      this.namespace = this.$store.getters['defaultNamespace'];
+    },
+
     selectNamespace(e) {
       if (!e || e.value === '') { // The blank value in the dropdown is labeled "Create a New Namespace"
         this.createNamespace = true;
@@ -384,7 +395,7 @@ export default {
         ref="namespace"
         v-model="namespace"
         :label="t('namespace.label')"
-        :placeholder="t('namespace.selectOrCreate')"
+        :placeholder="t('namespace.createNamespace')"
         :disabled="namespaceReallyDisabled"
         :mode="mode"
         :min-height="30"
@@ -393,14 +404,11 @@ export default {
       />
       <button
         aria="Cancel create"
-        @click="() => {
-          createNamespace = false
-          $parent.$emit('createNamespace', false)
-        }"
+        @click="cancelCreateNamespace"
       >
         <i
           v-tooltip="t('generic.cancel')"
-          class="icon icon-lg icon-close align-value"
+          class="icon icon-close align-value"
         />
       </button>
     </div>
@@ -467,10 +475,12 @@ export default {
       :key="slot"
       :class="{ col: true, [colSpan]: true }"
     >
-      <slot :name="slot">
-      </slot>
+      <slot :name="slot" />
     </div>
-    <div v-if="showSpacer" class="spacer"></div>
+    <div
+      v-if="showSpacer"
+      class="spacer"
+    />
   </div>
 </template>
 
@@ -489,7 +499,6 @@ button {
     padding-top: 7px;
   }
 }
-
 .row {
   &.name-ns-description {
     max-height: $input-height;

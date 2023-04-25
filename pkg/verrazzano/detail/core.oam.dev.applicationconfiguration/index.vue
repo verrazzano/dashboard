@@ -47,7 +47,7 @@ export default {
       });
     }
   },
-  computed:   {
+  computed: {
     ...mapGetters(['currentCluster']),
     isJob() {
       return this.value.type === WORKLOAD_TYPES.JOB;
@@ -159,7 +159,11 @@ export default {
     <h3>
       {{ t('verrazzano.common.titles.applicationDetails') }}
     </h3>
-    <div v-if="displayPods" class="gauges mb-20" :class="{'gauges__pods': !!displayPods}">
+    <div
+      v-if="displayPods"
+      class="gauges mb-20"
+      :class="{'gauges__pods': !!displayPods}"
+    >
       <template>
         <CountGauge
           v-for="(group, key) in value.podGauges"
@@ -173,7 +177,11 @@ export default {
       </template>
     </div>
     <ResourceTabs :value="value">
-      <Tab name="pods" :label="t('tableHeaders.pods')" :weight="4">
+      <Tab
+        name="pods"
+        :label="t('tableHeaders.pods')"
+        :weight="4"
+      >
         <SortableTable
           v-if="displayPods"
           :rows="displayPods"

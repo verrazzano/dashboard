@@ -89,7 +89,10 @@ export default {
 
 <template>
   <Loading v-if="$fetchState.pending" />
-  <form v-else class="tree-tabbed-form">
+  <form
+    v-else
+    class="tree-tabbed-form"
+  >
     <CruResource
       :validation-passed="true"
       :resource="value"
@@ -120,7 +123,10 @@ export default {
             :tab-label="t('verrazzano.common.tabs.metadata')"
             @input="setFieldIfNotEmpty('metadata', $event)"
           />
-          <TreeTab name="general" :label="t('verrazzano.common.tabs.general')">
+          <TreeTab
+            name="general"
+            :label="t('verrazzano.common.tabs.general')"
+          >
             <template #default>
               <div class="row">
                 <div class="col span-6">
@@ -146,7 +152,10 @@ export default {
             @input="setFieldIfNotEmpty('spec.template.namespaces', $event)"
             @delete="emptySpecParentField('template', 'namespaces')"
           />
-          <TreeTab name="security" :label="t('verrazzano.common.tabs.security')">
+          <TreeTab
+            name="security"
+            :label="t('verrazzano.common.tabs.security')"
+          >
             <template #beside-header>
               <TabDeleteButton
                 :element-name="t('verrazzano.common.tabs.security')"

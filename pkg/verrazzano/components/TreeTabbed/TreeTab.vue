@@ -70,10 +70,10 @@ export default {
     return {
       active:         null,
       navigationNode: {
-        name:         this.name,
-        label:        this.label,
-        weight:       this.weight,
-        children:     []
+        name:     this.name,
+        label:    this.label,
+        weight:   this.weight,
+        children: []
       },
     };
   },
@@ -153,15 +153,25 @@ export default {
     :aria-hidden="!active"
     role="tabpanel"
   >
-    <div v-show="active" class="top-header">
+    <div
+      v-show="active"
+      class="top-header"
+    >
       <h2 v-if="shouldShowHeader">
         {{ titleDisplay }}
-        <i v-if="tooltip" v-tooltip="tooltip" class="icon icon-info icon-lg" />
+        <i
+          v-if="tooltip"
+          v-tooltip="tooltip"
+          class="icon icon-info icon-lg"
+        />
       </h2>
       <slot name="beside-header" />
     </div>
     <div v-show="active">
-      <slot v-show="active" v-bind="{active}" />
+      <slot
+        v-show="active"
+        v-bind="{active}"
+      />
     </div>
     <slot name="nestedTabs" />
   </section>

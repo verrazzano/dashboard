@@ -18,8 +18,8 @@ import VerrazzanoWebLogicWorkload from '@pkg/edit/core.oam.dev.component/Verrazz
 import Secret from '@pkg/edit/core.oam.dev.component/Secret';
 
 const TAB_WEIGHT_MAP = {
-  general:              99,
-  containers:           98,
+  general:    99,
+  containers: 98,
 };
 
 const creatableTypes = [
@@ -109,8 +109,15 @@ export default {
       @select-type="selectType"
       @error="e => errors = e"
     >
-      <NameNsDescription v-model="value" :mode="mode" />
-      <component :is="componentType" :value="value" :mode="mode" />
+      <NameNsDescription
+        v-model="value"
+        :mode="mode"
+      />
+      <component
+        :is="componentType"
+        :value="value"
+        :mode="mode"
+      />
     </CruResource>
   </form>
 </template>

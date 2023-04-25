@@ -52,7 +52,7 @@ export const CLUSTER = create('cluster', '');
 export const LAST_NAMESPACE = create('last-namespace', '');
 export const NAMESPACE_FILTERS = create('ns-by-cluster', {}, { parseJSON });
 export const WORKSPACE = create('workspace', '');
-export const EXPANDED_GROUPS = create('open-groups', ['cluster', 'rbac', 'serviceDiscovery', 'storage', 'workload'], { parseJSON });
+export const EXPANDED_GROUPS = create('open-groups', ['cluster', 'policy', 'rbac', 'serviceDiscovery', 'storage', 'workload'], { parseJSON });
 export const FAVORITE_TYPES = create('fav-type', [], { parseJSON });
 export const GROUP_RESOURCES = create('group-by', 'namespace');
 export const DIFF = create('diff', 'unified', { options: ['unified', 'split'] });
@@ -74,7 +74,7 @@ export const HIDE_REPOS = create('hide-repos', [], { parseJSON });
 export const HIDE_DESC = create('hide-desc', [], { parseJSON });
 export const HIDE_SENSITIVE = create('hide-sensitive', true, { options: [true, false], parseJSON });
 export const SHOW_PRE_RELEASE = create('show-pre-release', false, { options: [false, true], parseJSON });
-export const SHOW_CHART_MODE = create('chartMode', 'featured', { parseJSON });
+export const SHOW_CHART_MODE = create('chart-mode', 'featured', { parseJSON });
 
 export const DATE_FORMAT = create('date-format', 'ddd, MMM D YYYY', {
   options: [
@@ -109,7 +109,7 @@ export const PLUGIN_DEVELOPER = create('plugin-developer', false, { parseJSON, i
 
 export const _RKE1 = 'rke1';
 export const _RKE2 = 'rke2';
-export const PROVISIONER = create('provisioner', _RKE1, { options: [_RKE1, _RKE2] });
+export const PROVISIONER = create('provisioner', _RKE2, { options: [_RKE1, _RKE2] });
 
 // Promo for Cluster Tools feature on Cluster Dashboard page
 export const CLUSTER_TOOLS_TIP = create('hide-cluster-tools-tip', false, { parseJSON });
@@ -120,6 +120,8 @@ export const PSP_DEPRECATION_BANNER = create('hide-psp-deprecation-banner', fals
 // Maximum number of clusters to show in the slide-in menu
 export const MENU_MAX_CLUSTERS = create('menu-max-clusters', 4, { options: [2, 3, 4, 5, 6, 7, 8, 9, 10], parseJSON });
 
+// Prompt for confirm when scaling down node pool in GUI and save the pref
+export const SCALE_POOL_PROMPT = create('scale-pool-prompt', null, { parseJSON });
 // --------------------
 
 const cookiePrefix = 'R_';
@@ -134,12 +136,13 @@ export const state = function() {
   return {
     cookiesLoaded: false,
     data:          {},
+    definitions,
   };
 };
 
 export const getters = {
   get: state => (key) => {
-    const definition = definitions[key];
+    const definition = state.definitions[key];
 
     if (!definition) {
       throw new Error(`Unknown preference: ${ key }`);
@@ -157,7 +160,7 @@ export const getters = {
   },
 
   defaultValue: state => (key) => {
-    const definition = definitions[key];
+    const definition = state.definitions[key];
 
     if (!definition) {
       throw new Error(`Unknown preference: ${ key }`);
@@ -167,7 +170,7 @@ export const getters = {
   },
 
   options: state => (key) => {
-    const definition = definitions[key];
+    const definition = state.definitions[key];
 
     if (!definition) {
       throw new Error(`Unknown preference: ${ key }`);
@@ -250,19 +253,25 @@ export const mutations = {
   },
 
   reset(state) {
-    for (const key in definitions) {
-      if ( definitions[key]?.asCookie ) {
+    for (const key in state.definitions) {
+      if ( state.definitions[key]?.asCookie ) {
         continue;
       }
       delete state.data[key];
     }
-  }
+  },
+
+  setDefinition(state, { name, definition = {} }) {
+    state.definitions[name] = definition;
+  },
 };
 
 export const actions = {
-  async set({ dispatch, commit, rootGetters }, opt) {
+  async set({
+    dispatch, commit, rootGetters, state
+  }, opt) {
     let { key, value } = opt; // eslint-disable-line prefer-const
-    const definition = definitions[key];
+    const definition = state.definitions[key];
     let server;
 
     if ( opt.val ) {
@@ -324,8 +333,8 @@ export const actions = {
       return;
     }
 
-    for (const key in definitions) {
-      const definition = definitions[key];
+    for (const key in state.definitions) {
+      const definition = state.definitions[key];
 
       if ( !definition.asCookie ) {
         continue;
@@ -439,8 +448,8 @@ export const actions = {
       prefsBeforeLogin = {};
     }
 
-    for (const key in definitions) {
-      const definition = definitions[key];
+    for (const key in state.definitions) {
+      const definition = state.definitions[key];
       let value = clone(server.data[key]);
 
       if (value === undefined && definition.inheritFrom) {
@@ -470,8 +479,16 @@ export const actions = {
     return server;
   },
 
-  setLastVisited({ state, dispatch }, route) {
+  setLastVisited({ state, dispatch, getters }, route) {
     if (!route) {
+      return;
+    }
+
+    // Only save the last visited page if the user has that set as the login route preference
+    const afterLoginRoutePref = getters['get'](AFTER_LOGIN_ROUTE);
+    const doNotTrackLastVisited = typeof afterLoginRoutePref !== 'string' || afterLoginRoutePref !== 'last-visited';
+
+    if (doNotTrackLastVisited) {
       return;
     }
 

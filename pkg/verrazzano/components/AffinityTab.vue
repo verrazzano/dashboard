@@ -36,8 +36,8 @@ export default {
       required: true
     },
     tabLabel: {
-      type:     String,
-      default:  '',
+      type:    String,
+      default: '',
     },
   },
   data() {
@@ -444,7 +444,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -492,7 +495,11 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab v-if="showNodeAffinityTab" :name="createTabName(treeTabName, 'nodeAffinity')" :label="t('verrazzano.common.tabs.nodeAffinity')">
+      <TreeTab
+        v-if="showNodeAffinityTab"
+        :name="createTabName(treeTabName, 'nodeAffinity')"
+        :label="t('verrazzano.common.tabs.nodeAffinity')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.common.tabs.nodeAffinity')"
@@ -553,7 +560,11 @@ export default {
           </TreeTab>
         </template>
       </TreeTab>
-      <TreeTab v-if="showPodAffinityTab" :name="createTabName(treeTabName, 'podAffinity')" :label="t('verrazzano.common.tabs.podAffinity')">
+      <TreeTab
+        v-if="showPodAffinityTab"
+        :name="createTabName(treeTabName, 'podAffinity')"
+        :label="t('verrazzano.common.tabs.podAffinity')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.common.tabs.podAffinity')"
@@ -614,7 +625,11 @@ export default {
           </TreeTab>
         </template>
       </TreeTab>
-      <TreeTab v-if="showPodAntiAffinityTab" :name="createTabName(treeTabName, 'podAntiAffinity')" :label="t('verrazzano.common.tabs.podAntiAffinity')">
+      <TreeTab
+        v-if="showPodAntiAffinityTab"
+        :name="createTabName(treeTabName, 'podAntiAffinity')"
+        :label="t('verrazzano.common.tabs.podAntiAffinity')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.common.tabs.podAntiAffinity')"

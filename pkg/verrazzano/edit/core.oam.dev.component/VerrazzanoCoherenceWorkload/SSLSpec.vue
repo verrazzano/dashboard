@@ -36,11 +36,11 @@ export default {
   },
   data() {
     return {
-      fetchInProgress:    true,
-      namespace:          this.namespacedObject.metadata?.namespace,
-      allNamespaces:      [],
-      allSecrets:         {},
-      secrets:            [],
+      fetchInProgress: true,
+      namespace:       this.namespacedObject.metadata?.namespace,
+      allNamespaces:   [],
+      allSecrets:      {},
+      secrets:         [],
     };
   },
   async fetch() {

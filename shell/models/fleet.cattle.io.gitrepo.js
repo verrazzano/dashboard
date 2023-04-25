@@ -39,27 +39,27 @@ export default class GitRepo extends SteveModel {
     const out = super._availableActions;
 
     insertAt(out, 0, {
-      action:     'pause',
-      label:      'Pause',
-      icon:       'icon icon-pause',
-      bulkable:    true,
-      enabled:    !!this.links.update && !this.spec?.paused
+      action:   'pause',
+      label:    'Pause',
+      icon:     'icon icon-pause',
+      bulkable: true,
+      enabled:  !!this.links.update && !this.spec?.paused
     });
 
     insertAt(out, 1, {
-      action:     'unpause',
-      label:      'Unpause',
-      icon:       'icon icon-play',
-      bulkable:    true,
-      enabled:    !!this.links.update && this.spec?.paused === true
+      action:   'unpause',
+      label:    'Unpause',
+      icon:     'icon icon-play',
+      bulkable: true,
+      enabled:  !!this.links.update && this.spec?.paused === true
     });
 
     insertAt(out, 2, {
-      action:     'forceUpdate',
-      label:      'Force Update',
-      icon:       'icon icon-refresh',
-      bulkable:    true,
-      enabled:    !!this.links.update
+      action:   'forceUpdate',
+      label:    'Force Update',
+      icon:     'icon icon-refresh',
+      bulkable: true,
+      enabled:  !!this.links.update
     });
 
     insertAt(out, 3, { divider: true });
@@ -96,9 +96,8 @@ export default class GitRepo extends SteveModel {
     const workspace = this.$getters['byId'](FLEET.WORKSPACE, this.metadata.namespace);
     const clusters = workspace?.clusters || [];
     const groups = workspace?.clusterGroups || [];
-    const out = [];
 
-    if ( workspace.id === 'fleet-local' ) {
+    if ( workspace?.id === 'fleet-local' ) {
       const local = findBy(groups, 'id', 'fleet-local/default');
 
       if ( local ) {
@@ -107,6 +106,12 @@ export default class GitRepo extends SteveModel {
 
       return [];
     }
+
+    if (!this.spec.targets) {
+      return [];
+    }
+
+    const out = [];
 
     for ( const tgt of this.spec.targets ) {
       if ( tgt.clusterName ) {

@@ -69,7 +69,7 @@ export default {
         @input="setFieldIfNotEmpty('labels', $event)"
       />
     </div>
-    <div class="spacer"></div>
+    <div class="spacer" />
     <div :class="sectionClass">
       <KeyValue
         key="annotations"

@@ -3,6 +3,7 @@ import AsyncButton from '@shell/components/AsyncButton';
 import { Card } from '@components/Card';
 import { Banner } from '@components/Banner';
 import { exceptionToErrorsArray } from '@shell/utils/error';
+import { decodeHtml } from '@shell/utils/string';
 
 export default {
   components: {
@@ -10,67 +11,93 @@ export default {
     AsyncButton,
     Banner,
   },
-  props:      {
-    resources: {
-      type:     Array,
-      required: true
-    }
+  props: {
+    applyAction: {
+      type:    Function,
+      default: () => {}
+    },
+    applyMode: {
+      type:    String,
+      default: 'create'
+    },
+    title: {
+      type:    String,
+      default: ''
+    },
+    body: {
+      type:    String,
+      default: ''
+    },
+
+    /**
+     * Callback to identify response of the prompt
+     */
+    confirm: {
+      type:    Function,
+      default: () => { }
+    },
   },
   data() {
     return { errors: [] };
   },
-  computed: {
-    config() {
-      return this.resources[0];
-    },
-    applyAction() {
-      return this.config.applyAction;
-    },
-    applyMode() {
-      return this.config.applyMode || 'create';
-    },
-    title() {
-      return this.config.title;
-    },
-    body() {
-      return this.config.body;
-    },
 
-  },
   methods: {
+    decodeHtml,
     close() {
-      this.$emit('close');
+      this.confirm(false);
+      this.$emit('close', false);
     },
 
     async apply(buttonDone) {
       try {
         await this.applyAction(buttonDone);
-        this.close();
+        this.confirm(true);
+        this.$emit('close', true);
       } catch (err) {
         console.error(err); // eslint-disable-line
         this.errors = exceptionToErrorsArray(err);
         buttonDone(false);
       }
     }
-  }
+  },
 };
 </script>
 
 <template>
-  <Card class="prompt-restore" :show-highlight-border="false">
-    <h4 slot="title" class="text-default-text" v-html="title" />
+  <Card
+    class="prompt-restore"
+    :show-highlight-border="false"
+  >
+    <h4
+      slot="title"
+      class="text-default-text"
+      v-html="title"
+    />
 
     <template slot="body">
       <slot name="body">
-        <div class="pl-10 pr-10" style="min-height: 50px; display: flex;" v-html="body">
-        </div>
+        <div
+          class="pl-10 pr-10"
+          v-html="decodeHtml(body)"
+        />
       </slot>
     </template>
 
-    <div slot="actions" class="bottom">
-      <Banner v-for="(err, i) in errors" :key="i" color="error" :label="err" />
+    <div
+      slot="actions"
+      class="bottom"
+    >
+      <Banner
+        v-for="(err, i) in errors"
+        :key="i"
+        color="error"
+        :label="err"
+      />
       <div class="buttons">
-        <button class="btn role-secondary mr-10" @click="close">
+        <button
+          class="btn role-secondary mr-10"
+          @click="close"
+        >
           {{ t('generic.cancel') }}
         </button>
 

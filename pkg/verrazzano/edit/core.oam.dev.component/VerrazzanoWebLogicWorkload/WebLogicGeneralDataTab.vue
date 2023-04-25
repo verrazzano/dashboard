@@ -46,12 +46,12 @@ export default {
   },
   data() {
     return {
-      treeTabName:        this.tabName,
-      treeTabLabel:       this.tabLabel,
-      fetchInProgress:    true,
-      allNamespaces:      [],
-      allSecrets:         {},
-      secrets:            [],
+      treeTabName:     this.tabName,
+      treeTabLabel:    this.tabLabel,
+      fetchInProgress: true,
+      allNamespaces:   [],
+      allSecrets:      {},
+      secrets:         [],
     };
   },
   async fetch() {
@@ -115,7 +115,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #default>
       <div>
         <div class="row">

@@ -7,7 +7,7 @@ export default {
     Card,
     AsyncButton,
   },
-  props:      {
+  props: {
     resources: {
       type:     Array,
       required: true
@@ -45,8 +45,14 @@ export default {
 </script>
 
 <template>
-  <Card class="addon-config-confirmation" :show-highlight-border="false">
-    <h4 slot="title" class="text-default-text">
+  <Card
+    class="prompt-restore"
+    :show-highlight-border="false"
+  >
+    <h4
+      slot="title"
+      class="text-default-text"
+    >
       {{ t('addonConfigConfirmation.title') }}
     </h4>
 
@@ -56,21 +62,40 @@ export default {
       </slot>
     </template>
 
-    <div slot="actions" class="bottom">
-      <button type="button" class="btn role-secondary mr-10" @click="close">
-        {{ t('generic.cancel') }}
-      </button>
-      <AsyncButton
-        mode="continue"
-        @click="apply"
-      />
+    <div
+      slot="actions"
+      class="bottom"
+    >
+      <div class="buttons">
+        <button
+          type="button"
+          class="btn role-secondary mr-10"
+          @click="close"
+        >
+          {{ t('generic.cancel') }}
+        </button>
+        <AsyncButton
+          mode="continue"
+          @click="apply"
+        />
+      </div>
     </div>
   </Card>
 </template>
 <style lang='scss' scoped>
-  ::v-deep .card-actions {
+.prompt-restore {
+  margin: 0;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .buttons {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
+    justify-content: flex-end;
+    width: 100%;
   }
+}
 </style>

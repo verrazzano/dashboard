@@ -53,8 +53,12 @@ export default {
       default: 'Key'
     },
     mode: {
-      type:     String,
+      type:    String,
       default: _EDIT
+    },
+    inStore: {
+      type:    String,
+      default: 'cluster',
     }
   },
 
@@ -86,7 +90,7 @@ export default {
       }
     },
     secrets() {
-      const allSecrets = this.$store.getters['cluster/all'](SECRET);
+      const allSecrets = this.$store.getters[`${ this.inStore }/all`](SECRET);
 
       return allSecrets
         .filter(secret => this.types.includes(secret._type) && secret.namespace === this.namespace);
@@ -119,7 +123,10 @@ export default {
 </script>
 
 <template>
-  <div class="secret-selector" :class="{'show-key-selector': showKeySelector}">
+  <div
+    class="secret-selector"
+    :class="{'show-key-selector': showKeySelector}"
+  >
     <div class="input-container">
       <LabeledSelect
         v-model="name"

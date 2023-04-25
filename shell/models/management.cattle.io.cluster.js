@@ -9,7 +9,7 @@ import jsyaml from 'js-yaml';
 import { eachLimit } from '@shell/utils/promise';
 import { addParams } from '@shell/utils/url';
 import { isEmpty } from '@shell/utils/object';
-import { HARVESTER_NAME as HARVESTER } from '@shell/config/product/harvester-manager';
+import { HARVESTER_NAME as HARVESTER } from '@shell/config/features';
 import { isHarvesterCluster } from '@shell/utils/cluster';
 import HybridModel from '@shell/plugins/steve/hybrid-class';
 import { LINUX, WINDOWS } from '@shell/store/catalog';
@@ -43,10 +43,10 @@ export default class MgmtCluster extends HybridModel {
     const out = super._availableActions;
 
     insertAt(out, 0, {
-      action:     'openShell',
-      label:      this.t('nav.shell'),
-      icon:       'icon icon-terminal',
-      enabled:    !!this.links.shell,
+      action:  'openShell',
+      label:   this.t('nav.shell'),
+      icon:    'icon icon-terminal',
+      enabled: !!this.links.shell,
     });
 
     insertAt(out, 1, {
@@ -59,11 +59,11 @@ export default class MgmtCluster extends HybridModel {
     });
 
     insertAt(out, 2, {
-      action:     'copyKubeConfig',
-      label:      this.t('cluster.copyConfig'),
-      bulkable:   false,
-      enabled:    this.$rootGetters['isRancher'] && this.hasAction('generateKubeconfig'),
-      icon:       'icon icon-copy',
+      action:   'copyKubeConfig',
+      label:    this.t('cluster.copyConfig'),
+      bulkable: false,
+      enabled:  this.$rootGetters['isRancher'] && this.hasAction('generateKubeconfig'),
+      icon:     'icon icon-copy',
     });
 
     return out;
@@ -196,7 +196,7 @@ export default class MgmtCluster extends HybridModel {
   }
 
   get kubernetesVersionExtension() {
-    if ( this.kubernetesVersion.match(/[+-]]/) ) {
+    if ( this.kubernetesVersion.match(/[+-]/) ) {
       return this.kubernetesVersion.replace(/^.*([+-])/, '$1');
     }
 

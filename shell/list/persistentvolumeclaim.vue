@@ -17,14 +17,17 @@ export default {
       type:     Object,
       required: true,
     },
+
+    useQueryParamsForSimpleFiltering: {
+      type:    Boolean,
+      default: false
+    }
   },
 
   async fetch() {
-    const inStore = this.$store.getters['currentStore']();
+    this.$initializeFetchData(this.resource);
 
-    // Fetch storage classes so we can determine if a PVC can be expanded
-    this.$store.dispatch(`${ inStore }/findAll`, { type: STORAGE_CLASS });
-
+    this.$fetchType(STORAGE_CLASS);
     await this.$fetchType(this.resource);
   }
 };
@@ -35,5 +38,7 @@ export default {
     :loading="loading"
     :schema="schema"
     :rows="rows"
+    :use-query-params-for-simple-filtering="useQueryParamsForSimpleFiltering"
+    :force-update-live-and-delayed="forceUpdateLiveAndDelayed"
   />
 </template>

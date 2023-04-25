@@ -1,6 +1,6 @@
 <script>
 import AsyncButton from '@shell/components/AsyncButton';
-import { MANAGEMENT, NORMAN } from '@shell/config/types';
+import { NORMAN } from '@shell/config/types';
 import { NAME } from '@shell/config/product/auth';
 import ResourceTable from '@shell/components/ResourceTable';
 import Masthead from '@shell/components/ResourceList/Masthead';
@@ -19,11 +19,6 @@ export default {
       required: true,
     },
 
-    loadResources: {
-      type:    Array,
-      default: () => []
-    },
-
     loadIndeterminate: {
       type:    Boolean,
       default: false
@@ -33,6 +28,11 @@ export default {
       type:    Boolean,
       default: false
     },
+
+    useQueryParamsForSimpleFiltering: {
+      type:    Boolean,
+      default: false
+    }
   },
   async fetch() {
     const store = this.$store;
@@ -57,10 +57,8 @@ export default {
   },
 
   $loadingResources() {
-    return {
-      loadResources:     [MANAGEMENT.USER],
-      loadIndeterminate: true, // results are filtered so we wouldn't get the correct count on indicator...
-    };
+    // results are filtered so we wouldn't get the correct count on indicator...
+    return { loadIndeterminate: true };
   },
 
   computed: {
@@ -132,7 +130,14 @@ export default {
       </template>
     </Masthead>
 
-    <ResourceTable :schema="schema" :rows="users" :group-by="groupBy" :loading="loading" />
+    <ResourceTable
+      :schema="schema"
+      :rows="users"
+      :group-by="groupBy"
+      :loading="loading"
+      :use-query-params-for-simple-filtering="useQueryParamsForSimpleFiltering"
+      :force-update-live-and-delayed="forceUpdateLiveAndDelayed"
+    />
   </div>
 </template>
 

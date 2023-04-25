@@ -80,7 +80,7 @@ export default {
           :class="{'fold-button': true, open: navNode.showChildren}"
           @click.stop.prevent="toggleChildren(navNode, $event)"
         >
-          <Indicator></Indicator>
+          <Indicator />
         </div>
       </a>
     </div>
@@ -105,8 +105,7 @@ export default {
           :nav-node="navChild"
           :navigator="navigator"
           :active-tab-name="activeTabName"
-        >
-        </NavigationNode>
+        />
       </li>
     </ul>
   </div>

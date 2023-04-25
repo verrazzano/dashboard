@@ -12,6 +12,7 @@ import CreateEditView from '@shell/mixins/create-edit-view';
 import jsyaml from 'js-yaml';
 import ButtonDropdown from '@shell/components/ButtonDropdown';
 import { _CREATE, _VIEW } from '@shell/config/query-params';
+import FormValidation from '@shell/mixins/form-validation';
 
 export const RECEIVERS_TYPES = [
   {
@@ -45,11 +46,11 @@ export const RECEIVERS_TYPES = [
     logo:  require(`@shell/assets/images/vendor/email.svg`)
   },
   {
-    name:         'webhook',
-    label:        'monitoringReceiver.webhook.label',
-    title:        'monitoringReceiver.webhook.title',
-    key:          'webhookConfigs',
-    logo:         require(`@shell/assets/images/vendor/webhook.svg`),
+    name:  'webhook',
+    label: 'monitoringReceiver.webhook.label',
+    title: 'monitoringReceiver.webhook.title',
+    key:   'webhookConfigs',
+    logo:  require(`@shell/assets/images/vendor/webhook.svg`),
   },
   {
     name:  'custom',
@@ -77,14 +78,14 @@ export default {
   props: {
 
     value: {
-      type:     Object,
-      default:  () => {
+      type:    Object,
+      default: () => {
         return {};
       }
     },
     mode: {
-      type:     String,
-      default:  ''
+      type:    String,
+      default: ''
     },
     alertmanagerConfigResource: {
       type:     Object,
@@ -96,11 +97,11 @@ export default {
     },
     saveOverride: {
       type:     Function,
-      required:  true
+      required: true
     },
   },
 
-  mixins: [CreateEditView],
+  mixins: [CreateEditView, FormValidation],
 
   data(props) {
     const currentReceiver = {};
@@ -144,14 +145,18 @@ export default {
     }
 
     return {
-      create:               _CREATE,
+      create:         _CREATE,
       EDITOR_MODES,
       expectedFields,
-      fileFound:            false,
-      receiverTypes:        RECEIVERS_TYPES,
+      fileFound:      false,
+      receiverTypes:  RECEIVERS_TYPES,
       suffixYaml,
-      view:                 _VIEW,
-      yamlError:            '',
+      view:           _VIEW,
+      yamlError:      '',
+      fvFormRuleSets: [
+        { path: 'name', rules: ['required', 'duplicateName'] }
+      ],
+      fvReportedValidationPaths: ['value']
     };
   },
 
@@ -178,7 +183,19 @@ export default {
     receiverNameDisabled() {
       return this.$route.query.mode === _VIEW;
     },
+    fvExtraRules() {
+      return {
+        duplicateName: () => {
+          const receiversArray = this.alertmanagerConfigResource.spec.receivers;
+          const receiverNamesArray = receiversArray.map(R => R.name);
+          const receiversSet = new Set(receiverNamesArray);
 
+          if (receiversArray.length !== receiversSet.size) {
+            return this.$store.getters['i18n/t']('monitoring.alerting.validation.duplicatedReceiverName', { name: this.value.name });
+          }
+        }
+      };
+    }
   },
 
   watch: {
@@ -235,6 +252,14 @@ export default {
     createAddOptions(receiverType) {
       return receiverType.addOptions.map();
     },
+
+    setError(err) {
+      if (!err) {
+        this.errors = [];
+      } else {
+        this.errors = [err];
+      }
+    }
   }
 };
 </script>
@@ -249,28 +274,54 @@ export default {
     :can-yaml="true"
     :errors="errors"
     :cancel-event="true"
+    :validation-passed="fvFormIsValid"
     @error="e=>errors = e"
-    @finish="saveOverride()"
+    @finish="saveOverride"
     @cancel="redirectAfterCancel"
   >
     <div class="row mb-10">
       <div class="col span-6">
-        <LabeledInput v-model="value.name" :is-disabled="receiverNameDisabled" :label="t('generic.name')" :mode="mode" />
+        <LabeledInput
+          v-model="value.name"
+          :is-disabled="receiverNameDisabled"
+          :label="t('generic.name')"
+          :required="true"
+          :mode="mode"
+          :rules="fvGetAndReportPathRules('name')"
+        />
       </div>
     </div>
-    <Tabbed ref="tabbed" :side-tabs="true" default-tab="overview" @changed="tabChanged">
-      <Tab :label="t('generic.overview')" :weight="receiverTypes.length" name="overview">
+    <Tabbed
+      ref="tabbed"
+      :side-tabs="true"
+      default-tab="overview"
+      @changed="tabChanged"
+    >
+      <Tab
+        :label="t('generic.overview')"
+        :weight="receiverTypes.length"
+        name="overview"
+      >
         <div class="box-container create-resource-container ">
-          <div v-for="(receiverType, i) in receiverTypes" :key="i" class="mb-10 subtype-banner" primary-color-var="--primary-color" @click="navigateTo(receiverType)">
+          <div
+            v-for="(receiverType, i) in receiverTypes"
+            :key="i"
+            class="mb-10 subtype-banner"
+            primary-color-var="--primary-color"
+            @click="navigateTo(receiverType)"
+          >
             <div class="left">
               <div class="logo">
-                <img :src="receiverType.logo" />
+                <img :src="receiverType.logo">
               </div>
               <h4 class="name ml-10">
                 <t :k="receiverType.label" />
               </h4>
             </div>
-            <div v-if="receiverType.name !== 'custom'" class="right">
+            <div
+              v-if="receiverType.name !== 'custom'"
+              class="right"
+            >
               {{ getCount(receiverType) }}
             </div>
           </div>

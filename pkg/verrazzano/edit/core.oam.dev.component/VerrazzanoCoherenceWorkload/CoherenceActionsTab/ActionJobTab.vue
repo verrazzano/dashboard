@@ -50,7 +50,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #nestedTabs>
       <LabelsTab
         :value="value"

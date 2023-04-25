@@ -13,7 +13,7 @@ export default {
     return { opened: false, backgroundClosing: null };
   },
 
-  computed:   {
+  computed: {
     ...mapState('action-menu', ['showModal', 'modalData']),
 
     resources() {
@@ -87,7 +87,14 @@ export default {
     :scrollable="true"
     @closed="close()"
   >
-    <component :is="component" v-if="opened && component" :resources="resources" :register-background-closing="registerBackgroundClosing" @close="close()" />
+    <component
+      v-bind="modalData.componentProps || {}"
+      :is="component"
+      v-if="opened && component"
+      :resources="resources"
+      :register-background-closing="registerBackgroundClosing"
+      @close="close()"
+    />
   </modal>
 </template>
 

@@ -40,6 +40,9 @@ import { isEmpty } from '@shell/utils/object';
 import ConfigBadge from './ConfigBadge';
 import EventsTable from './EventsTable';
 import { fetchClusterResources } from './explorer-utils';
+import SimpleBox from '@shell/components/SimpleBox';
+import { ExtensionPoint, CardLocation } from '@shell/core/types';
+import { getApplicableExtensionEnhancements } from '@shell/core/plugin-helpers';
 
 export const RESOURCES = [NAMESPACE, INGRESS, PV, WORKLOAD_TYPES.DEPLOYMENT, WORKLOAD_TYPES.STATEFUL_SET, WORKLOAD_TYPES.JOB, WORKLOAD_TYPES.DAEMON_SET, SERVICE];
 
@@ -71,6 +74,7 @@ export default {
     EmberPage,
     ConfigBadge,
     EventsTable,
+    SimpleBox,
   },
 
   mixins: [metricPoller],
@@ -78,27 +82,29 @@ export default {
   fetch() {
     fetchClusterResources(this.$store, NODE);
 
-    setPromiseResult(
-      allDashboardsExist(this.$store, this.currentCluster.id, [CLUSTER_METRICS_DETAIL_URL, CLUSTER_METRICS_SUMMARY_URL]),
-      this,
-      'showClusterMetrics',
-      `Determine cluster metrics`
-    );
-    setPromiseResult(
-      allDashboardsExist(this.$store, this.currentCluster.id, [K8S_METRICS_DETAIL_URL, K8S_METRICS_SUMMARY_URL]),
-      this,
-      'showK8sMetrics',
-      `Determine k8s metrics`
-    );
-    setPromiseResult(
-      allDashboardsExist(this.$store, this.currentCluster.id, [ETCD_METRICS_DETAIL_URL, ETCD_METRICS_SUMMARY_URL]),
-      this,
-      'showEtcdMetrics',
-      `Determine etcd metrics`
-    );
+    if (this.currentCluster) {
+      setPromiseResult(
+        allDashboardsExist(this.$store, this.currentCluster.id, [CLUSTER_METRICS_DETAIL_URL, CLUSTER_METRICS_SUMMARY_URL]),
+        this,
+        'showClusterMetrics',
+        `Determine cluster metrics`
+      );
+      setPromiseResult(
+        allDashboardsExist(this.$store, this.currentCluster.id, [K8S_METRICS_DETAIL_URL, K8S_METRICS_SUMMARY_URL]),
+        this,
+        'showK8sMetrics',
+        `Determine k8s metrics`
+      );
+      setPromiseResult(
+        allDashboardsExist(this.$store, this.currentCluster.id, [ETCD_METRICS_DETAIL_URL, ETCD_METRICS_SUMMARY_URL]),
+        this,
+        'showEtcdMetrics',
+        `Determine etcd metrics`
+      );
 
-    if (this.currentCluster.isLocal) {
-      this.$store.dispatch('management/findAll', { type: MANAGEMENT.NODE });
+      if (this.currentCluster.isLocal) {
+        this.$store.dispatch('management/findAll', { type: MANAGEMENT.NODE });
+      }
     }
   },
 
@@ -112,12 +118,12 @@ export default {
 
     return {
       nodeHeaders,
-      constraints:                 [],
-      events:                      [],
-      nodeMetrics:                 [],
-      showClusterMetrics:          false,
-      showK8sMetrics:              false,
-      showEtcdMetrics:             false,
+      constraints:        [],
+      events:             [],
+      nodeMetrics:        [],
+      showClusterMetrics: false,
+      showK8sMetrics:     false,
+      showEtcdMetrics:    false,
       CLUSTER_METRICS_DETAIL_URL,
       CLUSTER_METRICS_SUMMARY_URL,
       K8S_METRICS_DETAIL_URL,
@@ -125,7 +131,8 @@ export default {
       ETCD_METRICS_DETAIL_URL,
       ETCD_METRICS_SUMMARY_URL,
       clusterCounts,
-      selectedTab:                 'cluster-events',
+      selectedTab:        'cluster-events',
+      extensionCards:     getApplicableExtensionEnhancements(this, ExtensionPoint.CARD, CardLocation.CLUSTER_DASHBOARD_CARD, this.$route),
     };
   },
 
@@ -179,7 +186,7 @@ export default {
     displayProvider() {
       const other = 'other';
 
-      let provider = this.currentCluster.status.provider || other;
+      let provider = this.currentCluster?.status?.provider || other;
 
       if (provider === 'rke.windows') {
         provider = 'rkeWindows';
@@ -213,8 +220,8 @@ export default {
 
       COMPONENT_STATUS.forEach((cs) => {
         status.push({
-          name:      cs,
-          healthy:   this.isComponentStatusHealthy(cs),
+          name:     cs,
+          healthy:  this.isComponentStatusHealthy(cs),
           labelKey: `clusterIndexPage.sections.componentStatus.${ cs }`,
         });
       });
@@ -224,11 +231,11 @@ export default {
 
     totalCountGaugeInput() {
       const totalInput = {
-        name:            this.t('clusterIndexPage.resourceGauge.totalResources'),
-        total:           0,
-        useful:          0,
-        warningCount:    0,
-        errorCount:      0
+        name:         this.t('clusterIndexPage.resourceGauge.totalResources'),
+        total:        0,
+        useful:       0,
+        warningCount: 0,
+        errorCount:   0
       };
 
       this.accessibleResources.forEach((resource) => {
@@ -247,9 +254,12 @@ export default {
     },
 
     cpuReserved() {
+      const total = parseSi(this.currentCluster?.status?.allocatable?.cpu);
+
       return {
-        total:  parseSi(this.currentCluster?.status?.allocatable?.cpu),
-        useful: parseSi(this.currentCluster?.status?.requested?.cpu)
+        total,
+        useful: parseSi(this.currentCluster?.status?.requested?.cpu),
+        units:  this.t('clusterIndexPage.hardwareResourceGauge.units.cores', { count: total })
       };
     },
 
@@ -308,9 +318,12 @@ export default {
     },
 
     cpuUsed() {
+      const total = parseSi(this.currentCluster?.status?.capacity?.cpu);
+
       return {
-        total:  parseSi(this.currentCluster?.status?.capacity?.cpu),
-        useful: this.metricAggregations?.cpu
+        total,
+        useful: this.metricAggregations?.cpu,
+        units:  this.t('clusterIndexPage.hardwareResourceGauge.units.cores', { count: total })
       };
     },
 
@@ -410,7 +423,10 @@ export default {
       color="warning"
       @close="hidePspDeprecationBanner = true"
     >
-      <t k="landing.deprecatedPsp" :raw="true" />
+      <t
+        k="landing.deprecatedPsp"
+        :raw="true"
+      />
     </Banner>
     <Banner
       v-if="!hideClusterToolsTip"
@@ -430,12 +446,19 @@ export default {
       </div>
       <div>
         <label>{{ t('glance.version') }}: </label>
-        <span v-if="currentCluster.kubernetesVersionExtension" style="font-size: 0.5em">{{ currentCluster.kubernetesVersionExtension }}</span>
         <span>{{ currentCluster.kubernetesVersionBase }}</span>
+        <span
+          v-if="currentCluster.kubernetesVersionExtension"
+          style="font-size: 0.75em"
+        >{{ currentCluster.kubernetesVersionExtension }}</span>
       </div>
       <div>
         <label>{{ t('glance.created') }}: </label>
-        <span><LiveDate :value="currentCluster.metadata.creationTimestamp" :add-suffix="true" :show-tooltip="true" /></span>
+        <span><LiveDate
+          :value="currentCluster.metadata.creationTimestamp"
+          :add-suffix="true"
+          :show-tooltip="true"
+        /></span>
       </div>
       <p
         v-if="displayPspDeprecationBanner && hidePspDeprecationBanner"
@@ -447,7 +470,10 @@ export default {
       </p>
       <div :style="{'flex':1}" />
       <div v-if="!monitoringStatus.v2 && !monitoringStatus.v1">
-        <n-link :to="{name: 'c-cluster-explorer-tools'}" class="monitoring-install">
+        <n-link
+          :to="{name: 'c-cluster-explorer-tools'}"
+          class="monitoring-install"
+        >
           <i class="icon icon-gear" />
           <span>{{ t('glance.installMonitoring') }}</span>
         </n-link>
@@ -455,39 +481,110 @@ export default {
       <div v-if="monitoringStatus.v1">
         <span>{{ t('glance.v1MonitoringInstalled') }}</span>
       </div>
-      <ConfigBadge v-if="currentCluster.canUpdate" :cluster="currentCluster" />
+      <ConfigBadge
+        v-if="currentCluster.canUpdate"
+        :cluster="currentCluster"
+      />
     </div>
 
     <div class="resource-gauges">
       <ResourceSummary :spoofed-counts="totalCountGaugeInput" />
-      <ResourceSummary v-if="canAccessNodes" resource="node" />
-      <ResourceSummary v-if="canAccessDeployments" resource="apps.deployment" />
+      <ResourceSummary
+        v-if="canAccessNodes"
+        resource="node"
+      />
+      <ResourceSummary
+        v-if="canAccessDeployments"
+        resource="apps.deployment"
+      />
     </div>
 
-    <h3 v-if="!hasV1Monitoring && hasStats" class="mt-40">
+    <!-- extension cards -->
+    <div
+      v-if="extensionCards.length"
+      class="extension-card-container mt-20"
+    >
+      <SimpleBox
+        v-for="item, i in extensionCards"
+        :key="`extensionCards${i}`"
+        class="extension-card"
+        :style="item.style"
+      >
+        <h3>
+          {{ item.label }}
+        </h3>
+        <component
+          :is="item.component"
+          :resource="currentCluster"
+        />
+      </SimpleBox>
+    </div>
+
+    <h3
+      v-if="!hasV1Monitoring && hasStats"
+      class="mt-40"
+    >
       {{ t('clusterIndexPage.sections.capacity.label') }}
     </h3>
-    <div v-if="!hasV1Monitoring && hasStats" class="hardware-resource-gauges">
-      <HardwareResourceGauge :name="t('clusterIndexPage.hardwareResourceGauge.pods')" :used="podsUsed" />
-      <HardwareResourceGauge :name="t('clusterIndexPage.hardwareResourceGauge.cores')" :reserved="cpuReserved" :used="cpuUsed" />
-      <HardwareResourceGauge :name="t('clusterIndexPage.hardwareResourceGauge.ram')" :reserved="ramReserved" :used="ramUsed" :units="ramReserved.units" />
+    <div
+      v-if="!hasV1Monitoring && hasStats"
+      class="hardware-resource-gauges"
+    >
+      <HardwareResourceGauge
+        :name="t('clusterIndexPage.hardwareResourceGauge.pods')"
+        :used="podsUsed"
+      />
+      <HardwareResourceGauge
+        :name="t('clusterIndexPage.hardwareResourceGauge.cores')"
+        :reserved="cpuReserved"
+        :used="cpuUsed"
+        :units="cpuReserved.units"
+      />
+      <HardwareResourceGauge
+        :name="t('clusterIndexPage.hardwareResourceGauge.ram')"
+        :reserved="ramReserved"
+        :used="ramUsed"
+        :units="ramReserved.units"
+      />
     </div>
 
     <div v-if="!hasV1Monitoring && componentServices">
-      <div v-for="status in componentServices" :key="status.name" class="k8s-component-status" :class="{'k8s-component-status-healthy': status.healthy, 'k8s-component-status-unhealthy': !status.healthy}">
-        <i v-if="status.healthy" class="icon icon-checkmark" />
-        <i v-else class="icon icon-warning" />
+      <div
+        v-for="status in componentServices"
+        :key="status.name"
+        class="k8s-component-status"
+        :class="{'k8s-component-status-healthy': status.healthy, 'k8s-component-status-unhealthy': !status.healthy}"
+      >
+        <i
+          v-if="status.healthy"
+          class="icon icon-checkmark"
+        />
+        <i
+          v-else
+          class="icon icon-warning"
+        />
         <div>{{ t(status.labelKey) }}</div>
       </div>
     </div>
 
-    <div v-if="hasV1Monitoring" id="ember-anchor" class="mt-20">
-      <EmberPage inline="ember-anchor" :src="v1MonitoringURL" />
+    <div
+      v-if="hasV1Monitoring"
+      id="ember-anchor"
+      class="mt-20"
+    >
+      <EmberPage
+        inline="ember-anchor"
+        :src="v1MonitoringURL"
+      />
     </div>
 
     <div class="mt-30">
       <Tabbed @changed="tabChange">
-        <Tab name="cluster-events" :label="t('clusterIndexPage.sections.events.label')" :weight="2">
+        <Tab
+          name="cluster-events"
+          :label="t('clusterIndexPage.sections.events.label')"
+          :weight="2"
+        >
           <span class="events-table-link">
             <n-link :to="allEventsLink">
               <span>{{ t('glance.eventsTable') }}</span>
@@ -495,13 +592,28 @@ export default {
           </span>
           <EventsTable />
         </Tab>
-        <Tab v-if="hasMonitoring" name="cluster-alerts" :label="t('clusterIndexPage.sections.alerts.label')" :weight="1">
+        <Tab
+          v-if="hasMonitoring"
+          name="cluster-alerts"
+          :label="t('clusterIndexPage.sections.alerts.label')"
+          :weight="1"
+        >
           <AlertTable v-if="selectedTab === 'cluster-alerts'" />
         </Tab>
       </Tabbed>
     </div>
-    <Tabbed v-if="hasMetricsTabs" class="mt-30">
-      <Tab v-if="showClusterMetrics" name="cluster-metrics" :label="t('clusterIndexPage.sections.clusterMetrics.label')" :weight="2">
+    <Tabbed
+      v-if="hasMetricsTabs"
+      default-tab="cluster-metrics"
+      :use-hash="false"
+      class="mt-30"
+    >
+      <Tab
+        v-if="showClusterMetrics"
+        name="cluster-metrics"
+        :label="t('clusterIndexPage.sections.clusterMetrics.label')"
+        :weight="2"
+      >
         <template #default="props">
           <DashboardMetrics
             v-if="props.active"
@@ -511,7 +623,12 @@ export default {
           />
         </template>
       </Tab>
-      <Tab v-if="showK8sMetrics" name="k8s-metrics" :label="t('clusterIndexPage.sections.k8sMetrics.label')" :weight="1">
+      <Tab
+        v-if="showK8sMetrics"
+        name="k8s-metrics"
+        :label="t('clusterIndexPage.sections.k8sMetrics.label')"
+        :weight="1"
+      >
         <template #default="props">
           <DashboardMetrics
             v-if="props.active"
@@ -521,7 +638,12 @@ export default {
           />
         </template>
       </Tab>
-      <Tab v-if="showEtcdMetrics" name="etcd-metrics" :label="t('clusterIndexPage.sections.etcdMetrics.label')" :weight="0">
+      <Tab
+        v-if="showEtcdMetrics"
+        name="etcd-metrics"
+        :label="t('clusterIndexPage.sections.etcdMetrics.label')"
+        :weight="0"
+      >
         <template #default="props">
           <DashboardMetrics
             v-if="props.active"
@@ -539,6 +661,19 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.extension-card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc((100%/3) - 40px), 1fr));
+  grid-column-gap: 15px;
+  grid-row-gap: 20px;
+}
+
+@media only screen and (max-width: map-get($breakpoints, "--viewport-9")) {
+  .extension-card-container {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 .cluster-dashboard-glance {
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
@@ -574,7 +709,7 @@ export default {
 }
 
 .etcd-metrics ::v-deep .external-link {
-  top: -102px;
+  top: -107px;
 }
 
 .cluster-tools-tip {
@@ -627,7 +762,6 @@ export default {
 
   > I {
     text-align: center;
-    font-size: 20px;
     padding: 5px 10px;
     border-right: 1px solid var(--border);
   }

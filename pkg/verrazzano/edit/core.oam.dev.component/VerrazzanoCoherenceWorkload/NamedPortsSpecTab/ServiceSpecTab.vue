@@ -151,7 +151,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -224,7 +227,10 @@ export default {
             @input="setNumberField('port', $event)"
           />
         </div>
-        <div v-if="showHealthCheckNodePort" class="col span-4">
+        <div
+          v-if="showHealthCheckNodePort"
+          class="col span-4"
+        >
           <LabeledInput
             :value="getField('healthCheckNodePort')"
             :mode="mode"

@@ -21,6 +21,7 @@ import { CATALOG } from '@shell/config/labels-annotations';
 import { isUIPlugin } from '@shell/config/uiplugins';
 
 export default {
+  name:       'Charts',
   components: {
     AsyncButton,
     Banner,
@@ -34,7 +35,7 @@ export default {
   },
 
   async fetch() {
-    await this.$store.dispatch('catalog/load');
+    await this.$store.dispatch('catalog/load', { force: true, reset: true });
 
     const query = this.$route.query;
 
@@ -47,17 +48,17 @@ export default {
 
   data() {
     return {
-      allRepos:            null,
-      category:            null,
-      operatingSystem:     null,
-      searchQuery:         null,
-      showDeprecated:      null,
-      showHidden:          null,
-      chartMode:           this.$store.getters['prefs/get'](SHOW_CHART_MODE),
+      allRepos:        null,
+      category:        null,
+      operatingSystem: null,
+      searchQuery:     null,
+      showDeprecated:  null,
+      showHidden:      null,
+      isPspLegacy:     false,
       chartOptions:    [
         {
-          label:       'Browse',
-          value:       'browse',
+          label: 'Browse',
+          value: 'browse',
         },
         {
           label: 'Featured',
@@ -70,6 +71,8 @@ export default {
   computed: {
     ...mapGetters(['currentCluster']),
     ...mapGetters({ allCharts: 'catalog/charts', loadingErrors: 'catalog/errors' }),
+
+    chartMode: mapPref(SHOW_CHART_MODE),
 
     hideRepos: mapPref(HIDE_REPOS),
 
@@ -164,13 +167,13 @@ export default {
 
       return filterAndArrangeCharts(enabledCharts, {
         clusterProvider,
-        category:         this.category,
-        searchQuery:      this.searchQuery,
-        showDeprecated:   this.showDeprecated,
-        showHidden:       this.showHidden,
-        hideRepos:        this.hideRepos,
-        hideTypes:        [CATALOG._CLUSTER_TPL],
-        showPrerelease:   this.$store.getters['prefs/get'](SHOW_PRE_RELEASE),
+        category:       this.category,
+        searchQuery:    this.searchQuery,
+        showDeprecated: this.showDeprecated,
+        showHidden:     this.showHidden,
+        hideRepos:      this.hideRepos,
+        hideTypes:      [CATALOG._CLUSTER_TPL],
+        showPrerelease: this.$store.getters['prefs/get'](SHOW_PRE_RELEASE),
       });
     },
 
@@ -236,6 +239,14 @@ export default {
     if ( typeof window !== 'undefined' ) {
       window.c = this;
     }
+  },
+
+  created() {
+    const release = this.currentCluster?.status?.version.gitVersion || '';
+    const isRKE2 = release.includes('rke2');
+    const version = release.match(/\d+/g);
+
+    this.isPspLegacy = version?.length ? isRKE2 && (+version[0] === 1 && +version[1] < 25) : false;
   },
 
   methods: {
@@ -304,8 +315,8 @@ export default {
       this.$router.push({
         name:   'c-cluster-apps-charts-chart',
         params: {
-          cluster:  this.$route.params.cluster,
-          product:  this.$store.getters['productId'],
+          cluster: this.$route.params.cluster,
+          product: this.$store.getters['productId'],
         },
         query: {
           [REPO_TYPE]: chart.repoType,
@@ -345,7 +356,10 @@ export default {
           {{ t('catalog.charts.header') }}
         </h1>
       </div>
-      <div v-if="getFeaturedCharts.length > 0" class="actions-container">
+      <div
+        v-if="getFeaturedCharts.length > 0"
+        class="actions-container"
+      >
         <ButtonGroup
           v-model="chartMode"
           :options="chartOptions"
@@ -359,6 +373,13 @@ export default {
         @clicked="(row) => selectChart(row)"
       />
     </div>
+
+    <Banner
+      v-if="isPspLegacy"
+      color="warning"
+      :label="t('catalog.chart.banner.legacy')"
+    />
+
     <TypeDescription resource="chart" />
     <div class="left-right-split">
       <Select
@@ -381,7 +402,11 @@ export default {
             :color="repo.color"
           >
             <template #label>
-              <span>{{ repo.label }}</span><i v-if="!repo.all" class=" pl-5 icon icon-dot icon-sm" :class="{[repo.color]: true}" />
+              <span>{{ repo.label }}</span><i
+                v-if="!repo.all"
+                class=" pl-5 icon icon-dot icon-sm"
+                :class="{[repo.color]: true}"
+              />
             </template>
           </Checkbox>
         </template>
@@ -411,15 +436,32 @@ export default {
           :placeholder="t('catalog.charts.search')"
         >
 
-        <button v-shortkey.once="['/']" class="hide" @shortkey="focusSearch()" />
-        <AsyncButton class="refresh-btn" mode="refresh" size="sm" @click="refresh" />
+        <button
+          v-shortkey.once="['/']"
+          class="hide"
+          @shortkey="focusSearch()"
+        />
+        <AsyncButton
+          class="refresh-btn"
+          mode="refresh"
+          size="sm"
+          @click="refresh"
+        />
       </div>
     </div>
 
-    <Banner v-for="err in loadingErrors" :key="err" color="error" :label="err" />
+    <Banner
+      v-for="err in loadingErrors"
+      :key="err"
+      color="error"
+      :label="err"
+    />
 
     <div v-if="allCharts.length">
-      <div v-if="filteredCharts.length === 0" style="width: 100%;">
+      <div
+        v-if="filteredCharts.length === 0"
+        style="width: 100%;"
+      >
         <div class="m-50 text-center">
           <h1>{{ t('catalog.charts.noCharts') }}</h1>
         </div>
@@ -433,7 +475,10 @@ export default {
         @clicked="(row) => selectChart(row)"
       />
     </div>
-    <div v-else class="m-50 text-center">
+    <div
+      v-else
+      class="m-50 text-center"
+    >
       <h1>{{ t('catalog.charts.noCharts') }}</h1>
     </div>
   </div>

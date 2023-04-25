@@ -98,7 +98,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"

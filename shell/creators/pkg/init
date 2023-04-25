@@ -18,6 +18,7 @@ const files = [
 const topLevelScripts = {
   'build-pkg':  './node_modules/@rancher/shell/scripts/build-pkg.sh',
   'serve-pkgs': './node_modules/@rancher/shell/scripts/serve-pkgs',
+  'publish-pkgs': './node_modules/@rancher/shell/scripts/extension/publish',
 };
 
 const typeFolders = [
@@ -95,7 +96,7 @@ if (addTypeFolders) {
 
 // Copy base files
 files.forEach((file) => {
-  const src = path.join(__dirname, file);
+  const src = path.join(__dirname, 'files', file);
   const dest = path.join(path.join(pkgFolder, file));
 
   if (!fs.existsSync(dest)) {

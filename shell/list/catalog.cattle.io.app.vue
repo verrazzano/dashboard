@@ -17,6 +17,10 @@ export default {
       type:     Object,
       required: true,
     },
+    useQueryParamsForSimpleFiltering: {
+      type:    Boolean,
+      default: false
+    }
   },
 
   async fetch() {
@@ -33,13 +37,23 @@ export default {
     :schema="schema"
     :rows="rows"
     :loading="loading"
+    :use-query-params-for-simple-filtering="useQueryParamsForSimpleFiltering"
+    :force-update-live-and-delayed="forceUpdateLiveAndDelayed"
   >
     <template #cell:upgrade="{row}">
-      <span v-if="row.upgradeAvailable" class="badge-state bg-warning hand" @click="row.goToUpgrade(row.upgradeAvailable)">
+      <span
+        v-if="row.upgradeAvailable"
+        class="badge-state bg-warning hand"
+        @click="row.goToUpgrade(row.upgradeAvailable)"
+      >
         {{ row.upgradeAvailable }}
         <i class="icon icon-upload" />
       </span>
-      <span v-else-if="row.upgradeAvailable === false" v-t="'catalog.app.managed'" class="text-muted" />
+      <span
+        v-else-if="row.upgradeAvailable === false"
+        v-t="'catalog.app.managed'"
+        class="text-muted"
+      />
     </template>
   </ResourceTable>
 </template>

@@ -37,8 +37,8 @@ export default {
   },
   data() {
     return {
-      treeTabName:   this.tabName,
-      treeTabLabel:  this.tabLabel,
+      treeTabName:  this.tabName,
+      treeTabLabel: this.tabLabel,
     };
   },
   computed: {
@@ -57,7 +57,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -128,7 +131,10 @@ export default {
               @input="setBooleanField('cloudNativeBuildPack.enabled', $event)"
             />
           </div>
-          <div v-if="cloudNativeBuildPackEnabled" class="col span-6">
+          <div
+            v-if="cloudNativeBuildPackEnabled"
+            class="col span-6"
+          >
             <LabeledInput
               :value="getField('cloudNativeBuildPack.launcher')"
               :mode="mode"

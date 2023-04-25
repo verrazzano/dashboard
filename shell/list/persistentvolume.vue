@@ -17,18 +17,30 @@ export default {
       type:     Object,
       required: true,
     },
+
+    useQueryParamsForSimpleFiltering: {
+      type:    Boolean,
+      default: false
+    }
   },
 
   async fetch() {
-    const inStore = this.$store.getters['currentStore']();
-    const pvcPromise = this.$store.dispatch(`${ inStore }/findAll`, { type: PVC });
+    this.$initializeFetchData(this.resource);
 
+    this.$fetchType(PVC);
     await this.$fetchType(this.resource);
-    await pvcPromise;
   }
 };
 </script>
 
 <template>
-  <ResourceTable :schema="schema" :rows="rows" :headers="$attrs.headers" :group-by="$attrs.groupBy" :loading="loading" />
+  <ResourceTable
+    :schema="schema"
+    :rows="rows"
+    :headers="$attrs.headers"
+    :group-by="$attrs.groupBy"
+    :loading="loading"
+    :use-query-params-for-simple-filtering="useQueryParamsForSimpleFiltering"
+    :force-update-live-and-delayed="forceUpdateLiveAndDelayed"
+  />
 </template>

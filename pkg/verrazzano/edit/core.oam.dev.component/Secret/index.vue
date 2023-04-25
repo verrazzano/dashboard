@@ -12,13 +12,13 @@ import { sortBy } from '@shell/utils/sort';
 
 // For now, support these 5 basic types of secrets.
 const TYPES = {
-  OPAQUE:           'Opaque',
+  OPAQUE: 'Opaque',
   // SERVICE_ACCT:     'kubernetes.io/service-account-token',
-  DOCKER:           'kubernetes.io/dockercfg',
+  DOCKER: 'kubernetes.io/dockercfg',
   // DOCKER_JSON:      'kubernetes.io/dockerconfigjson',
-  BASIC:            'kubernetes.io/basic-auth',
-  SSH:              'kubernetes.io/ssh-auth',
-  TLS:              'kubernetes.io/tls',
+  BASIC:  'kubernetes.io/basic-auth',
+  SSH:    'kubernetes.io/ssh-auth',
+  TLS:    'kubernetes.io/tls',
   // BOOTSTRAP:        'bootstrap.kubernetes.io/token',
   // ISTIO_TLS:        'istio.io/key-and-cert',
   // HELM_RELEASE:     'helm.sh/release.v1',
@@ -147,7 +147,10 @@ export default {
     <div class="spacer-small" />
     <TreeTabbed>
       <template #nestedTabs>
-        <TreeTab name="data" :label="dataLabel">
+        <TreeTab
+          name="data"
+          :label="dataLabel"
+        >
           <template #default>
             <div class="row">
               <div class="col span-6">
@@ -177,8 +180,7 @@ export default {
           tab-name="labels"
           @input="setWorkloadFieldIfNotEmpty('metadata', $event)"
         />
-        <template>
-        </template>
+        <template />
       </template>
     </TreeTabbed>
   </form>

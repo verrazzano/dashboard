@@ -123,27 +123,50 @@ export default {
 <template>
   <div>
     <div v-if="rows.length">
-      <div class="ports-headers" :class="{'show-protocol':showProtocol, 'show-node-port':showNodePort}">
-        <span v-if="padLeft" class="left"></span>
+      <div
+        class="ports-headers"
+        :class="{'show-protocol':showProtocol, 'show-node-port':showNodePort}"
+      >
+        <span
+          v-if="padLeft"
+          class="left"
+        />
         <span class="port-name">
           <t k="servicePorts.rules.name.label" />
         </span>
         <span class="port">
           <t k="servicePorts.rules.listening.label" />
+          <i
+            v-tooltip="t('servicesPage.listeningPorts')"
+            class="icon icon-info flex"
+          />
           <span class="text-error">*</span>
         </span>
-        <span v-if="showProtocol" class="port-protocol">
+        <span
+          v-if="showProtocol"
+          class="port-protocol"
+        >
           <t k="servicePorts.rules.protocol.label" />
         </span>
         <span class="target-port">
           <t k="servicePorts.rules.target.label" />
+          <i
+            v-tooltip="t('servicesPage.targetPorts')"
+            class="icon icon-info flex"
+          />
           <span class="text-error">*</span>
 
         </span>
-        <span v-if="showNodePort" class="node-port">
+        <span
+          v-if="showNodePort"
+          class="node-port"
+        >
           <t k="servicePorts.rules.node.label" />
         </span>
-        <span v-if="showRemove" class="remove"></span>
+        <span
+          v-if="showRemove"
+          class="remove"
+        />
       </div>
       <div
         v-for="(row, idx) in rows"
@@ -151,7 +174,10 @@ export default {
         class="ports-row"
         :class="{'show-protocol':showProtocol, 'show-node-port':showNodePort}"
       >
-        <div v-if="padLeft" class="left"></div>
+        <div
+          v-if="padLeft"
+          class="left"
+        />
         <div class="port-name">
           <span v-if="isView">{{ row.name }}</span>
           <input
@@ -161,7 +187,7 @@ export default {
             type="text"
             :placeholder="t('servicePorts.rules.name.placeholder')"
             @input="queueUpdate"
-          />
+          >
         </div>
         <div class="port">
           <span v-if="isView">{{ row.port }}</span>
@@ -174,9 +200,12 @@ export default {
             max="65535"
             :placeholder="t('servicePorts.rules.listening.placeholder')"
             @input="queueUpdate"
-          />
+          >
         </div>
-        <div v-if="showProtocol" class="port-protocol">
+        <div
+          v-if="showProtocol"
+          class="port-protocol"
+        >
           <span v-if="isView">{{ row.protocol }}</span>
           <Select
             v-else
@@ -192,9 +221,12 @@ export default {
             v-model="row.targetPort"
             :placeholder="t('servicePorts.rules.target.placeholder')"
             @input="queueUpdate"
-          />
+          >
         </div>
-        <div v-if="showNodePort" class="node-port">
+        <div
+          v-if="showNodePort"
+          class="node-port"
+        >
           <span v-if="isView">{{ row.nodePort }}</span>
           <input
             v-else
@@ -204,18 +236,35 @@ export default {
             max="65535"
             :placeholder="t('servicePorts.rules.node.placeholder')"
             @input="queueUpdate"
-          />
+          >
         </div>
-        <div v-if="showRemove" class="remove">
-          <button type="button" class="btn role-link" @click="remove(idx)">
+        <div
+          v-if="showRemove"
+          class="remove"
+        >
+          <button
+            type="button"
+            class="btn role-link"
+            @click="remove(idx)"
+          >
             <t k="generic.remove" />
           </button>
         </div>
-        <Error :value="{...row, idx}" :rules="rules" />
+        <Error
+          :value="{...row, idx}"
+          :rules="rules"
+        />
       </div>
     </div>
-    <div v-if="showAdd" class="footer">
-      <button type="button" class="btn role-tertiary add" @click="add()">
+    <div
+      v-if="showAdd"
+      class="footer"
+    >
+      <button
+        type="button"
+        class="btn role-tertiary add"
+        @click="add()"
+      >
         <t k="generic.add" />
       </button>
     </div>

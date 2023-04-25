@@ -3,15 +3,16 @@ import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import { AUTO, CENTER, fitOnScreen } from '@shell/utils/position';
 import { isAlternate } from '@shell/utils/platform';
+import IconOrSvg from '@shell/components/IconOrSvg';
 
 const HIDDEN = 'hide';
 const CALC = 'calculate';
 const SHOW = 'show';
 
 export default {
-  name: 'ActionMenu',
-
-  props: {
+  name:       'ActionMenu',
+  components: { IconOrSvg },
+  props:      {
     customActions: {
       // Custom actions can be used if you need the action
       // menu to work for something that is not a Kubernetes
@@ -194,7 +195,23 @@ export default {
         return;
       }
 
-      if (this.useCustomTargetElement) {
+      // this will come from extensions...
+      if (action.invoke) {
+        const fn = action.invoke;
+
+        if (fn && action.enabled) {
+          const resources = this.$store.getters['action-menu/resources'];
+          const opts = {
+            event,
+            action,
+            isAlt: isAlternate(event)
+          };
+
+          if (resources.length === 1) {
+            fn.apply(this, [opts, resources]);
+          }
+        }
+      } else if (this.useCustomTargetElement) {
         // If the state of this component is controlled
         // by props instead of Vuex, we assume you wouldn't want
         // the mutation to have a dependency on Vuex either.
@@ -230,8 +247,15 @@ export default {
 
 <template>
   <div v-if="showing || open">
-    <div class="background" @click="hide" @contextmenu.prevent></div>
-    <ul class="list-unstyled menu" :style="style">
+    <div
+      class="background"
+      @click="hide"
+      @contextmenu.prevent
+    />
+    <ul
+      class="list-unstyled menu"
+      :style="style"
+    >
       <li
         v-for="(opt, i) in menuOptions"
         :key="opt.action"
@@ -240,10 +264,20 @@ export default {
         :data-testid="componentTestid + '-' + i + '-item'"
         @click="execute(opt, $event)"
       >
-        <i v-if="opt.icon" :class="{icon: true, [opt.icon]: true}" />
+        <IconOrSvg
+          v-if="opt.icon || opt.svg"
+          :icon="opt.icon"
+          :src="opt.svg"
+          class="icon"
+          color="header"
+        />
         <span v-html="opt.label" />
       </li>
-      <li v-if="!hasOptions(menuOptions)" class="no-actions">
+
+      <li
+        v-if="!hasOptions(menuOptions)"
+        class="no-actions"
+      >
         <span v-t="'sortableTable.noActions'" />
       </li>
     </ul>

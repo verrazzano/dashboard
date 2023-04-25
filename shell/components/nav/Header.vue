@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex';
 import debounce from 'lodash/debounce';
 import { NORMAN, STEVE } from '@shell/config/types';
 import { ucFirst } from '@shell/utils/string';
-import { isMac } from '@shell/utils/platform';
+import { isAlternate, isMac } from '@shell/utils/platform';
 import Import from '@shell/components/Import';
 import BrandImage from '@shell/components/BrandImage';
 import { getProduct } from '@shell/config/private-label';
@@ -15,6 +15,9 @@ import WorkspaceSwitcher from './WorkspaceSwitcher';
 import TopLevelMenu from './TopLevelMenu';
 import Jump from './Jump';
 import { allHash } from '@shell/utils/promise';
+import { ActionLocation, ExtensionPoint } from '@shell/core/types';
+import { getApplicableExtensionEnhancements } from '@shell/core/plugin-helpers';
+import IconOrSvg from '@shell/components/IconOrSvg';
 
 const PAGE_HEADER_ACTION = 'page-action';
 
@@ -29,6 +32,7 @@ export default {
     BrandImage,
     ClusterBadge,
     ClusterProviderIcon,
+    IconOrSvg
   },
 
   props: {
@@ -43,13 +47,15 @@ export default {
     const shellShortcut = '(Ctrl+`)';
 
     return {
-      show:              false,
-      showTooltip:       false,
-      kubeConfigCopying: false,
+      show:                   false,
+      showTooltip:            false,
+      kubeConfigCopying:      false,
       searchShortcut,
       shellShortcut,
       LOGGED_OUT,
-      navHeaderRight:         null
+      navHeaderRight:         null,
+      extensionHeaderActions: getApplicableExtensionEnhancements(this, ExtensionPoint.ACTION, ActionLocation.HEADER, this.$route),
+      ctx:                    this
     };
   },
 
@@ -170,6 +176,12 @@ export default {
       if (nue && old && nue.id !== old.id) {
         this.checkClusterName();
       }
+    },
+    // since the Header is a "persistent component" we need to update it at every route change...
+    $route(nue) {
+      if (nue) {
+        this.extensionHeaderActions = getApplicableExtensionEnhancements(this, ExtensionPoint.ACTION, ActionLocation.HEADER, nue);
+      }
     }
   },
 
@@ -288,58 +300,143 @@ export default {
           button.classList.remove('header-btn-active');
         }
       });
+    },
+
+    handleExtensionAction(action, event) {
+      const fn = action.invoke;
+      const opts = {
+        event,
+        action,
+        isAlt:   isAlternate(event),
+        product: this.currentProduct.name,
+        cluster: this.currentCluster,
+      };
+      const enabled = action.enabled ? action.enabled.apply(this, [opts]) : true;
+
+      if (fn && enabled) {
+        fn.apply(this, [opts, []]);
+      }
+    },
+
+    handleExtensionTooltip(action) {
+      if (action.tooltipKey || action.tooltip) {
+        const tooltip = action.tooltipKey ? this.t(action.tooltipKey) : action.tooltip;
+        const shortcut = action.shortcutLabel ? action.shortcutLabel() : '';
+
+        return `${ tooltip } ${ shortcut }`;
+      }
+
+      return null;
     }
   }
 };
 </script>
 
 <template>
-  <header ref="header">
+  <header
+    ref="header"
+  >
     <div>
-      <TopLevelMenu v-if="isMultiCluster || !isSingleProduct"></TopLevelMenu>
+      <TopLevelMenu v-if="isMultiCluster || !isSingleProduct" />
     </div>
-    <div class="menu-spacer" :class="{'isSingleProduct': isSingleProduct }">
-      <n-link v-if="isSingleProduct" :to="singleProductLogoRoute">
+    <div
+      class="menu-spacer"
+      :class="{'isSingleProduct': isSingleProduct }"
+    >
+      <n-link
+        v-if="isSingleProduct"
+        :to="singleProductLogoRoute"
+      >
         <img
           class="side-menu-logo"
           :src="isSingleProduct.logo"
-        />
+        >
       </n-link>
     </div>
-    <div v-if="!simple" ref="product" class="product">
-      <div v-if="currentProduct && currentProduct.showClusterSwitcher" v-tooltip="nameTooltip" class="cluster cluster-clipped">
-        <div v-if="isSingleProduct" class="product-name">
+    <div
+      v-if="!simple"
+      ref="product"
+      class="product"
+    >
+      <div
+        v-if="currentProduct && currentProduct.showClusterSwitcher"
+        v-tooltip="nameTooltip"
+        class="cluster cluster-clipped"
+      >
+        <div
+          v-if="isSingleProduct"
+          class="product-name"
+        >
           {{ t(isSingleProduct.productNameKey) }}
         </div>
         <template v-else>
-          <ClusterProviderIcon v-if="currentCluster" :cluster="currentCluster" class="mr-10" />
-          <div v-if="currentCluster" ref="clusterName" class="cluster-name">
+          <ClusterProviderIcon
+            v-if="currentCluster"
+            :cluster="currentCluster"
+            class="mr-10"
+          />
+          <div
+            v-if="currentCluster"
+            ref="clusterName"
+            class="cluster-name"
+          >
             {{ currentCluster.spec.displayName }}
           </div>
-          <ClusterBadge v-if="currentCluster" :cluster="currentCluster" class="ml-10" />
-          <div v-if="!currentCluster" class="simple-title">
-            <BrandImage class="side-menu-logo-img" file-name="rancher-logo.svg" />
+          <ClusterBadge
+            v-if="currentCluster"
+            :cluster="currentCluster"
+            class="ml-10"
+          />
+          <div
+            v-if="!currentCluster"
+            class="simple-title"
+          >
+            <BrandImage
+              class="side-menu-logo-img"
+              file-name="rancher-logo.svg"
+            />
           </div>
         </template>
       </div>
-      <div v-if="currentProduct && !currentProduct.showClusterSwitcher" class="cluster">
-        <img v-if="currentProduct.iconHeader" v-bind="$attrs" :src="currentProduct.iconHeader" class="cluster-os-logo mr-10" style="width: 44px; height: 36px;" />
+      <div
+        v-if="currentProduct && !currentProduct.showClusterSwitcher"
+        class="cluster"
+      >
+        <img
+          v-if="currentProduct.iconHeader"
+          v-bind="$attrs"
+          :src="currentProduct.iconHeader"
+          class="cluster-os-logo mr-10"
+          style="width: 44px; height: 36px;"
+        >
         <div class="product-name">
           {{ prod }}
         </div>
       </div>
     </div>
-    <div v-else class="simple-title">
-      <div v-if="isSingleProduct" class="product-name">
+    <div
+      v-else
+      class="simple-title"
+    >
+      <div
+        v-if="isSingleProduct"
+        class="product-name"
+      >
         {{ t(isSingleProduct.productNameKey) }}
       </div>
 
-      <div v-else class="side-menu-logo">
-        <BrandImage class="side-menu-logo-img" file-name="rancher-logo.svg" />
+      <div
+        v-else
+        class="side-menu-logo"
+      >
+        <BrandImage
+          class="side-menu-logo-img"
+          file-name="rancher-logo.svg"
+        />
       </div>
     </div>
 
-    <div class="spacer"></div>
+    <div class="spacer" />
 
     <div class="rd-header-right">
       <component :is="navHeaderRight" />
@@ -351,7 +448,10 @@ export default {
         <NamespaceFilter v-if="clusterReady && currentProduct && (currentProduct.showNamespaceFilter || isExplorer)" />
         <WorkspaceSwitcher v-else-if="clusterReady && currentProduct && currentProduct.showWorkspaceSwitcher" />
       </div>
-      <div v-if="currentCluster && !simple" class="header-buttons">
+      <div
+        v-if="currentCluster && !simple"
+        class="header-buttons"
+      >
         <template v-if="currentProduct && currentProduct.showClusterSwitcher">
           <button
             v-if="showImportYaml"
@@ -370,7 +470,10 @@ export default {
             height="auto"
             styles="max-height: 90vh;"
           >
-            <Import :cluster="currentCluster" @close="closeImport" />
+            <Import
+              :cluster="currentCluster"
+              @close="closeImport"
+            />
           </modal>
 
           <button
@@ -405,8 +508,14 @@ export default {
             class="btn header-btn role-tertiary"
             @click="copyKubeConfig($event)"
           >
-            <i v-if="kubeConfigCopying" class="icon icon-checkmark icon-lg" />
-            <i v-else class="icon icon-copy icon-lg" />
+            <i
+              v-if="kubeConfigCopying"
+              class="icon icon-checkmark icon-lg"
+            />
+            <i
+              v-else
+              class="icon icon-copy icon-lg"
+            />
           </button>
         </template>
 
@@ -432,6 +541,31 @@ export default {
         </modal>
       </div>
 
+      <!-- Extension header actions -->
+      <div
+        v-if="extensionHeaderActions.length"
+        class="header-buttons"
+      >
+        <button
+          v-for="action, i in extensionHeaderActions"
+          :key="`${action.label}${i}`"
+          v-tooltip="handleExtensionTooltip(action)"
+          v-shortkey="action.shortcutKey"
+          :disabled="action.enabled ? !action.enabled(ctx) : false"
+          type="button"
+          class="btn header-btn role-tertiary"
+          @shortkey="handleExtensionAction(action, $event)"
+          @click="handleExtensionAction(action, $event)"
+        >
+          <IconOrSvg
+            class="icon icon-lg"
+            :icon="action.icon"
+            :src="action.svg"
+            color="header"
+          />
+        </button>
+      </div>
+
       <div
         v-if="showPageActions"
         id="page-actions"
@@ -453,15 +587,28 @@ export default {
           :popper-options="{modifiers: { flip: { enabled: false } } }"
           :container="false"
         >
-          <template slot="popover" class="user-menu">
+          <template
+            slot="popover"
+            class="user-menu"
+          >
             <ul
               data-testid="page-actions-dropdown"
               class="list-unstyled dropdown"
               @click.stop="showPageActionsMenu(false)"
             >
-              <li v-for="a in pageActions" :key="a.label" class="user-menu-item">
-                <a v-if="!a.separator" @click="pageAction(a)">{{ a.labelKey ? t(a.labelKey) : a.label }}</a>
-                <div v-else class="menu-separator">
+              <li
+                v-for="a in pageActions"
+                :key="a.label"
+                class="user-menu-item"
+              >
+                <a
+                  v-if="!a.separator"
+                  @click="pageAction(a)"
+                >{{ a.labelKey ? t(a.labelKey) : a.label }}</a>
+                <div
+                  v-else
+                  class="menu-separator"
+                >
                   <div class="menu-separator-line" />
                 </div>
               </li>
@@ -470,7 +617,7 @@ export default {
         </v-popover>
       </div>
 
-      <div class="header-spacer"></div>
+      <div class="header-spacer" />
       <div
         v-if="showUserMenu"
         class="user user-menu"
@@ -489,12 +636,30 @@ export default {
           :container="false"
         >
           <div class="user-image text-right hand">
-            <img v-if="principal && principal.avatarSrc" :src="principal.avatarSrc" :class="{'avatar-round': principal.roundAvatar}" width="36" height="36" />
-            <i v-else class="icon icon-user icon-3x avatar" />
+            <img
+              v-if="principal && principal.avatarSrc"
+              :src="principal.avatarSrc"
+              :class="{'avatar-round': principal.roundAvatar}"
+              width="36"
+              height="36"
+            >
+            <i
+              v-else
+              class="icon icon-user icon-3x avatar"
+            />
           </div>
-          <template slot="popover" class="user-menu">
-            <ul class="list-unstyled dropdown" @click.stop="showMenu(false)">
-              <li v-if="authEnabled" class="user-info">
+          <template
+            slot="popover"
+            class="user-menu"
+          >
+            <ul
+              class="list-unstyled dropdown"
+              @click.stop="showMenu(false)"
+            >
+              <li
+                v-if="authEnabled"
+                class="user-info"
+              >
                 <div class="user-name">
                   <i class="icon icon-lg icon-user" /> {{ principal.loginName }}
                 </div>
@@ -504,13 +669,28 @@ export default {
                   </template>
                 </div>
               </li>
-              <nuxt-link v-if="showPreferencesLink" tag="li" :to="{name: 'prefs'}" class="user-menu-item">
+              <nuxt-link
+                v-if="showPreferencesLink"
+                tag="li"
+                :to="{name: 'prefs'}"
+                class="user-menu-item"
+              >
                 <a>{{ t('nav.userMenu.preferences') }}</a>
               </nuxt-link>
-              <nuxt-link v-if="showAccountAndApiKeyLink" tag="li" :to="{name: 'account'}" class="user-menu-item">
+              <nuxt-link
+                v-if="showAccountAndApiKeyLink"
+                tag="li"
+                :to="{name: 'account'}"
+                class="user-menu-item"
+              >
                 <a>{{ t('nav.userMenu.accountAndKeys', {}, true) }}</a>
               </nuxt-link>
-              <nuxt-link v-if="authEnabled" tag="li" :to="{name: 'auth-logout', query: { [LOGGED_OUT]: true }}" class="user-menu-item">
+              <nuxt-link
+                v-if="authEnabled"
+                tag="li"
+                :to="{name: 'auth-logout', query: { [LOGGED_OUT]: true }}"
+                class="user-menu-item"
+              >
                 <a @blur="showMenu(false)">{{ t('nav.userMenu.logOut') }}</a>
               </nuxt-link>
             </ul>
@@ -555,8 +735,6 @@ export default {
 
         .vs__dropdown-toggle .vs__actions:after {
           color: var(--body-text) !important;
-          font-size: 1.5rem;
-          padding-right: 4px;
         }
 
         .vs__dropdown-toggle {
@@ -699,6 +877,11 @@ export default {
           &.header-btn-active, &.header-btn-active:hover {
             background-color: var(--success);
             color: var(--success-text);
+          }
+
+          img {
+            height: 20px;
+            width: 20px;
           }
         }
       }

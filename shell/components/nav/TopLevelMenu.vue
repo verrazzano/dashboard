@@ -1,6 +1,7 @@
 <script>
 import BrandImage from '@shell/components/BrandImage';
 import ClusterProviderIcon from '@shell/components/ClusterProviderIcon';
+import IconOrSvg from '../IconOrSvg';
 import { mapGetters } from 'vuex';
 import $ from 'jquery';
 import { CAPI, MANAGEMENT } from '@shell/config/types';
@@ -19,25 +20,23 @@ import { isRancherPrime } from '@shell/config/version';
 import { getVerrazzanoVersion } from '@pkg/verrazzano/utils/version';
 // Added by Verrazzano End
 
-const UNKNOWN = 'unknown';
-const UI_VERSION = process.env.VERSION || UNKNOWN;
-const UI_COMMIT = process.env.COMMIT || UNKNOWN;
-
 export default {
 
-  components: { BrandImage, ClusterProviderIcon },
+  components: {
+    BrandImage,
+    ClusterProviderIcon,
+    IconOrSvg
+  },
 
   data() {
     const { displayVersion, fullVersion } = getVersionInfo(this.$store);
     const hasProvCluster = this.$store.getters[`management/schemaFor`](CAPI.RANCHER_CLUSTER);
 
     return {
-      shown:          false,
+      shown:         false,
       displayVersion,
       fullVersion,
-      uiCommit:       UI_COMMIT,
-      uiVersion:      UI_VERSION,
-      clusterFilter:  '',
+      clusterFilter: '',
       hasProvCluster,
       // Added by Verrazzano Start
       vzVersion:     '',
@@ -162,6 +161,7 @@ export default {
         return {
           label:             this.$store.getters['i18n/withFallback'](`product."${ p.name }"`, null, ucFirst(p.name)),
           icon:              `icon-${ p.icon || 'copy' }`,
+          svg:               p.svg,
           value:             p.name,
           removable:         p.removable !== false,
           inStore:           p.inStore || 'cluster',
@@ -239,9 +239,22 @@ export default {
       :class="{'raised': shown, 'unraised':!shown}"
       @click="toggle()"
     >
-      <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none" /><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" /></svg>
+      <svg
+        class="menu-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        height="24"
+        viewBox="0 0 24 24"
+        width="24"
+      ><path
+        d="M0 0h24v24H0z"
+        fill="none"
+      /><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" /></svg>
     </div>
-    <div v-if="shown" class="side-menu-glass" @click="hide()"></div>
+    <div
+      v-if="shown"
+      class="side-menu-glass"
+      @click="hide()"
+    />
     <transition name="fade">
       <div
         v-if="shown"
@@ -250,7 +263,7 @@ export default {
         tabindex="-1"
       >
         <div class="title">
-          <div class="menu-spacer"></div>
+          <div class="menu-spacer" />
           <div class="side-menu-logo">
             <BrandImage file-name="rancher-logo.svg" />
           </div>
@@ -261,7 +274,15 @@ export default {
               class="option cluster selector home"
               :to="{ name: 'home' }"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none" /><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24"
+                viewBox="0 0 24 24"
+                width="24"
+              ><path
+                d="M0 0h24v24H0z"
+                fill="none"
+              /><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg>
               <div>
                 {{ t('nav.home') }}
               </div>
@@ -271,32 +292,60 @@ export default {
             <div class="category">
               {{ t('nav.categories.explore') }}
             </div>
-            <div v-if="showClusterSearch" class="search">
+            <div
+              v-if="showClusterSearch"
+              class="search"
+            >
               <input
                 ref="clusterFilter"
                 v-model="clusterFilter"
                 :placeholder="t('nav.search.placeholder')"
+              >
+              <i
+                v-if="clusterFilter"
+                class="icon icon-close"
+                @click="clusterFilter=''"
               />
-              <i v-if="clusterFilter" class="icon icon-close" @click="clusterFilter=''" />
             </div>
-            <div ref="clusterList" class="clusters">
-              <div v-for="c in clustersFiltered" :key="c.id" @click="hide()">
+            <div
+              ref="clusterList"
+              class="clusters"
+            >
+              <div
+                v-for="c in clustersFiltered"
+                :key="c.id"
+                @click="hide()"
+              >
                 <nuxt-link
                   v-if="c.ready"
                   class="cluster selector option"
                   :to="{ name: 'c-cluster', params: { cluster: c.id } }"
                 >
-                  <ClusterProviderIcon :small="true" :cluster="c" class="rancher-provider-icon mr-10" />
+                  <ClusterProviderIcon
+                    :small="true"
+                    :cluster="c"
+                    class="rancher-provider-icon mr-10"
+                  />
                   <div class="cluster-name">
                     {{ c.label }}
                   </div>
                 </nuxt-link>
-                <span v-else class="option-disabled cluster selector disabled">
-                  <ClusterProviderIcon :small="true" :cluster="c" class="rancher-provider-icon mr-10" />
+                <span
+                  v-else
+                  class="option-disabled cluster selector disabled"
+                >
+                  <ClusterProviderIcon
+                    :small="true"
+                    :cluster="c"
+                    class="rancher-provider-icon mr-10"
+                  />
                   <div class="cluster-name">{{ c.label }}</div>
                 </span>
               </div>
-              <div v-if="clustersFiltered.length === 0" class="none-matching">
+              <div
+                v-if="clustersFiltered.length === 0"
+                class="none-matching"
+              >
                 {{ t('nav.search.noResults') }}
               </div>
             </div>
@@ -306,9 +355,19 @@ export default {
             <div class="category">
               {{ t('nav.categories.multiCluster') }}
             </div>
-            <div v-for="a in multiClusterApps" :key="a.label" @click="hide()">
-              <nuxt-link class="option" :to="a.to">
-                <i class="icon group-icon" :class="a.icon" />
+            <div
+              v-for="a in multiClusterApps"
+              :key="a.label"
+              @click="hide()"
+            >
+              <nuxt-link
+                class="option"
+                :to="a.to"
+              >
+                <IconOrSvg
+                  :icon="a.icon"
+                  :src="a.svg"
+                />
                 <div>{{ a.label }}</div>
               </nuxt-link>
             </div>
@@ -317,9 +376,19 @@ export default {
             <div class="category">
               {{ t('nav.categories.legacy') }}
             </div>
-            <div v-for="a in legacyApps" :key="a.label" @click="hide()">
-              <nuxt-link class="option" :to="a.to">
-                <i class="icon group-icon" :class="a.icon" />
+            <div
+              v-for="a in legacyApps"
+              :key="a.label"
+              @click="hide()"
+            >
+              <nuxt-link
+                class="option"
+                :to="a.to"
+              >
+                <IconOrSvg
+                  :icon="a.icon"
+                  :src="a.svg"
+                />
                 <div>{{ a.label }}</div>
               </nuxt-link>
             </div>
@@ -328,14 +397,24 @@ export default {
             <div class="category">
               {{ t('nav.categories.configuration') }}
             </div>
-            <div v-for="a in configurationApps" :key="a.label" @click="hide()">
-              <nuxt-link class="option" :to="a.to">
-                <i class="icon group-icon" :class="a.icon" />
+            <div
+              v-for="a in configurationApps"
+              :key="a.label"
+              @click="hide()"
+            >
+              <nuxt-link
+                class="option"
+                :to="a.to"
+              >
+                <IconOrSvg
+                  :icon="a.icon"
+                  :src="a.svg"
+                />
                 <div>{{ a.label }}</div>
               </nuxt-link>
             </div>
           </template>
-          <div class="pad"></div>
+          <div class="pad" />
         </div>
         <div class="footer">
           <!-- Added by Verrazzano Start -->
@@ -348,11 +427,11 @@ export default {
           <div @click="hide()">
             <!-- Added by Verrazzano Start -->
             <!-- nuxt-link
-              v-tooltip="{ content: fullVersion, classes: 'footer-tooltip' }"
               :to="{ name: 'about' }"
-               class="version"
-              v-html="displayVersion"
-            /-->
+              class="version"
+            >
+              {{ t('about.title') }}
+            </nuxt-link -->
 
             <div
               v-tooltip="{ content: vzVersion, classes: 'footer-tooltip' }"
@@ -449,6 +528,9 @@ export default {
     svg {
       margin-right: 8px;
       fill: var(--link);
+    }
+    img {
+      margin-right: 8px;
     }
 
     > div {

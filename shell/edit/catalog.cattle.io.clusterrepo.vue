@@ -44,7 +44,11 @@ export default {
 
 <template>
   <form>
-    <NameNsDescription v-model="value" :mode="mode" :namespaced="isNamespaced" />
+    <NameNsDescription
+      v-model="value"
+      :mode="mode"
+      :namespaced="isNamespaced"
+    />
 
     <h2>{{ t('catalog.repo.target.label') }}</h2>
     <div class="row mb-10">
@@ -55,11 +59,15 @@ export default {
           :options="[false, true]"
           :labels="[t('catalog.repo.target.http'), t('catalog.repo.target.git')]"
           :mode="mode"
+          data-testid="clusterrepo-radio-input"
         />
       </div>
     </div>
 
-    <div v-if="isGit" class="row mb-10">
+    <div
+      v-if="isGit"
+      class="row mb-10"
+    >
       <div class="col span-6">
         <LabeledInput
           v-model.trim="value.spec.gitRepo"
@@ -67,6 +75,7 @@ export default {
           :label="t('catalog.repo.gitRepo.label')"
           :placeholder="t('catalog.repo.gitRepo.placeholder', null, true)"
           :mode="mode"
+          data-testid="clusterrepo-git-repo-input"
         />
       </div>
       <div class="col span-6">
@@ -76,6 +85,7 @@ export default {
           :label="t('catalog.repo.gitBranch.label')"
           :placeholder="t('catalog.repo.gitBranch.placeholder', null, true)"
           :mode="mode"
+          data-testid="clusterrepo-git-branch-input"
         />
       </div>
     </div>
@@ -104,6 +114,11 @@ export default {
       :display-side-by-side="false"
     />
 
-    <Footer :mode="mode" :errors="errors" @save="save" @done="done" />
+    <Footer
+      :mode="mode"
+      :errors="errors"
+      @save="save"
+      @done="done"
+    />
   </form>
 </template>

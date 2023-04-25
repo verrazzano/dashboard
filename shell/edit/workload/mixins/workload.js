@@ -47,6 +47,7 @@ import { BEFORE_SAVE_HOOKS } from '@shell/mixins/child-hook';
 import NameNsDescription from '@shell/components/form/NameNsDescription';
 import formRulesGenerator from '@shell/utils/validators/formRules';
 import { TYPES as SECRET_TYPES } from '@shell/models/secret';
+import { defaultContainer } from '@shell/models/workload';
 
 const TAB_WEIGHT_MAP = {
   general:              99,
@@ -63,6 +64,28 @@ const TAB_WEIGHT_MAP = {
 };
 
 const GPU_KEY = 'nvidia.com/gpu';
+const ID_KEY = Symbol('container-id');
+
+const serialMaker = function() {
+  let prefix = '';
+  let seq = 0;
+
+  return {
+    setPrefix(p) {
+      prefix = p;
+    },
+    setSeq(s) {
+      seq = s;
+    },
+    genSym() {
+      const result = prefix + seq;
+
+      seq += 1;
+
+      return result;
+    }
+  };
+}();
 
 export default {
   name:       'CruWorkload',
@@ -127,9 +150,10 @@ export default {
   },
 
   data() {
+    serialMaker.setPrefix('container-');
+    serialMaker.setSeq(0);
     let type = this.$route.params.resource;
     const createSidecar = !!this.$route.query.sidecar;
-    const isInitContainer = !!this.$route.query.init;
 
     if (type === 'workload') {
       type = null;
@@ -190,6 +214,7 @@ export default {
         podTemplateSpec.initContainers.push({
           imagePullPolicy: 'Always',
           name:            `container-${ allContainers.length }`,
+          _init:           true,
         });
 
         containers = podTemplateSpec.initContainers;
@@ -198,6 +223,7 @@ export default {
         container = {
           imagePullPolicy: 'Always',
           name:            `container-${ allContainers.length }`,
+          _init:           false,
         };
 
         containers.push(container);
@@ -209,76 +235,36 @@ export default {
     this.selectContainer(container);
 
     return {
-      secondaryResourceData:       {
-        namespace: this.value?.metadata?.namespace || null,
-        data:      {
-          [CONFIG_MAP]:      { applyTo: [{ var: 'namespacedConfigMaps' }] },
-          [PVC]:             { applyTo: [{ var: 'pvcs' }] },
-          [SERVICE_ACCOUNT]: { applyTo: [{ var: 'namespacedServiceNames' }] },
-          [SECRET]:          {
-            applyTo: [
-              { var: 'namespacedSecrets' },
-              {
-                var:         'imagePullNamespacedSecrets',
-                parsingFunc: (data) => {
-                  return data.filter(secret => (secret._type === SECRET_TYPES.DOCKER || secret._type === SECRET_TYPES.DOCKER_JSON));
-                }
-              }
-            ]
-          },
-          [NODE]:            {
-            applyTo: [
-              { var: 'allNodeObjects' },
-              {
-                var:         'allNodes',
-                parsingFunc: (data) => {
-                  return data.map(node => node.id);
-                }
-              }
-            ]
-          },
-          [SERVICE]: {
-            applyTo: [
-              { var: 'allServices' },
-              {
-                var:         'headlessServices',
-                parsingFunc: (data) => {
-                  return data.filter(service => service.spec.clusterIP === 'None');
-                }
-              }
-            ]
-          },
-        }
-      },
-      namespacedConfigMaps:        [],
-      allNodes:                    null,
-      allNodeObjects:              [],
-      namespacedSecrets:           [],
-      imagePullNamespacedSecrets:  [],
-      allServices:                 [],
-      headlessServices:            [],
-      name:                        this.value?.metadata?.name || null,
-      pvcs:                        [],
-      namespacedServiceNames:      [],
-      showTabs:                    false,
-      pullPolicyOptions:           ['Always', 'IfNotPresent', 'Never'],
+      secondaryResourceData:      this.secondaryResourceDataConfig(),
+      namespacedConfigMaps:       [],
+      allNodes:                   null,
+      allNodeObjects:             [],
+      namespacedSecrets:          [],
+      imagePullNamespacedSecrets: [],
+      allServices:                [],
+      headlessServices:           [],
+      name:                       this.value?.metadata?.name || null,
+      pvcs:                       [],
+      namespacedServiceNames:     [],
+      showTabs:                   false,
+      pullPolicyOptions:          ['Always', 'IfNotPresent', 'Never'],
       spec,
       type,
-      servicesOwned:               [],
-      servicesToRemove:            [],
-      portsForServices:            [],
-      isInitContainer,
+      servicesOwned:              [],
+      servicesToRemove:           [],
+      portsForServices:           [],
       container,
-      containerChange:             0,
-      tabChange:                   0,
-      podFsGroup:                  podTemplateSpec.securityContext?.fsGroup,
-      savePvcHookName:             'savePvcHook',
-      tabWeightMap:                TAB_WEIGHT_MAP,
-      fvFormRuleSets:              [{
+      containerChange:            0,
+      tabChange:                  0,
+      podFsGroup:                 podTemplateSpec.securityContext?.fsGroup,
+      savePvcHookName:            'savePvcHook',
+      tabWeightMap:               TAB_WEIGHT_MAP,
+      fvFormRuleSets:             [{
         path: 'image', rootObject: this.container, rules: ['required'], translationKey: 'workload.container.image'
       }],
       fvReportedValidationPaths: ['spec'],
       isNamespaceNew:            false,
+      idKey:                     ID_KEY
     };
   },
 
@@ -290,10 +276,12 @@ export default {
 
     defaultTab() {
       if (!!this.$route.query.sidecar || this.$route.query.init || this.mode === _CREATE) {
-        return 'container-0';
+        const container = this.allContainers.find(c => c.__active);
+
+        return container?.name ?? 'container-0';
       }
 
-      return this.allContainers.length ? this.allContainers[0].name : '';
+      return this.allContainers.length ? this.allContainers[0][this.idKey] : '';
     },
 
     isEdit() {
@@ -395,11 +383,22 @@ export default {
     allContainers() {
       const containers = this.podTemplateSpec?.containers || [];
       const initContainers = this.podTemplateSpec?.initContainers || [];
+      const key = this.idKey;
 
       return [
-        ...containers,
+        ...containers.map((each) => {
+          each._init = false;
+          if (!each[key]) {
+            each[key] = serialMaker.genSym();
+          }
+
+          return each;
+        }),
         ...initContainers.map((each) => {
           each._init = true;
+          if (!each[key]) {
+            each[key] = serialMaker.genSym();
+          }
 
           return each;
         }),
@@ -587,13 +586,6 @@ export default {
       this.$set(this.value, 'type', neu);
       delete this.value.apiVersion;
     },
-
-    container(neu) {
-      const containers = this.isInitContainer ? this.podTemplateSpec.initContainers : this.podTemplateSpec.containers;
-      const existing = containers.find(container => container.__active) || {};
-
-      Object.assign(existing, neu);
-    },
   },
 
   created() {
@@ -604,6 +596,49 @@ export default {
   },
 
   methods: {
+    secondaryResourceDataConfig() {
+      return {
+        namespace: this.value?.metadata?.namespace || null,
+        data:      {
+          [CONFIG_MAP]:      { applyTo: [{ var: 'namespacedConfigMaps' }] },
+          [PVC]:             { applyTo: [{ var: 'pvcs' }] },
+          [SERVICE_ACCOUNT]: { applyTo: [{ var: 'namespacedServiceNames' }] },
+          [SECRET]:          {
+            applyTo: [
+              { var: 'namespacedSecrets' },
+              {
+                var:         'imagePullNamespacedSecrets',
+                parsingFunc: (data) => {
+                  return data.filter(secret => (secret._type === SECRET_TYPES.DOCKER || secret._type === SECRET_TYPES.DOCKER_JSON));
+                }
+              }
+            ]
+          },
+          [NODE]: {
+            applyTo: [
+              { var: 'allNodeObjects' },
+              {
+                var:         'allNodes',
+                parsingFunc: (data) => {
+                  return data.map(node => node.id);
+                }
+              }
+            ]
+          },
+          [SERVICE]: {
+            applyTo: [
+              { var: 'allServices' },
+              {
+                var:         'headlessServices',
+                parsingFunc: (data) => {
+                  return data.filter(service => service.spec.clusterIP === 'None');
+                }
+              }
+            ]
+          },
+        }
+      };
+    },
     addContainerBtn() {
       this.selectContainer({ name: 'Add Container', __add: true });
     },
@@ -731,8 +766,24 @@ export default {
 
       this.fixNodeAffinity(nodeAffinity);
       this.fixPodAffinity(podAffinity);
+
+      // The fields are being removed because they are not allowed to be editabble
+      if (this.mode === _EDIT) {
+        if (template?.spec?.affinity && Object.keys(template?.spec?.affinity).length === 0) {
+          delete template.spec.affinity;
+        }
+
+        // Removing `affinity` fixes the issue with setting the `imagePullSecrets`
+        // However, this field should not be set. Therefore this is explicitly removed.
+        if (template?.spec?.imagePullSecrets && template?.spec?.imagePullSecrets.length === 0) {
+          delete template.spec.imagePullSecrets;
+        }
+      }
+
       this.fixPodAffinity(podAntiAffinity);
       this.fixPodSecurityContext(this.podTemplateSpec);
+
+      template.metadata.namespace = this.value.metadata.namespace;
 
       // delete this.value.kind;
       if (this.container && !this.container.name) {
@@ -855,7 +906,6 @@ export default {
       });
       container.__active = true;
       this.container = container;
-      this.isInitContainer = !!container._init;
       this.containerChange++;
     },
 
@@ -871,13 +921,16 @@ export default {
         nameNumber++;
       }
       const container = {
-        imagePullPolicy: 'Always',
-        name:            `container-${ nameNumber }`,
-        active:          true
+        ...defaultContainer,
+        name:   `container-${ nameNumber }`,
+        active: true
       };
 
       this.podTemplateSpec.containers.push(container);
       this.selectContainer(container);
+      this.$nextTick(() => {
+        this.$refs.containersTabbed?.select(container.name);
+      });
     },
 
     removeContainer(container) {
@@ -889,27 +942,27 @@ export default {
       this.selectContainer(this.allContainers[0]);
     },
 
-    updateInitContainer(neu) {
-      if (!this.container) {
+    updateInitContainer(neu, container) {
+      if (!container) {
         return;
       }
       const containers = this.podTemplateSpec.containers;
+      const initContainers = this.podTemplateSpec.initContainers ?? [];
 
       if (neu) {
-        if (!this.podTemplateSpec.initContainers) {
-          this.podTemplateSpec.initContainers = [];
+        this.podTemplateSpec.initContainers = initContainers;
+        container._init = true;
+        if (!initContainers.includes(container)) {
+          initContainers.push(container);
         }
-        this.podTemplateSpec.initContainers.push(this.container);
-
-        removeObject(containers, this.container);
+        removeObject(containers, container);
       } else {
-        delete this.container._init;
-        const initContainers = this.podTemplateSpec.initContainers;
-
-        removeObject(initContainers, this.container);
-        containers.push(this.container);
+        container._init = false;
+        removeObject(initContainers, container);
+        if (!containers.includes(container)) {
+          containers.push(container);
+        }
       }
-      this.isInitContainer = neu;
     },
     clearPvcFormState(hookName) {
       // On the `closePvcForm` event, remove the

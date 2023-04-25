@@ -23,6 +23,7 @@ import { _CREATE } from '@shell/config/query-params';
 import { isHarvesterCluster } from '@shell/utils/cluster';
 import { CAPI, CATALOG } from '@shell/config/labels-annotations';
 import { SECRET_TYPES } from '@shell/config/secret';
+import { checkSchemasForFindAllHash } from '@shell/utils/auth';
 
 const _VERIFY = 'verify';
 const _SKIP = 'skip';
@@ -48,8 +49,20 @@ export default {
   mixins: [CreateEditView],
 
   async fetch() {
-    this.allClusters = await this.$store.dispatch('management/findAll', { type: FLEET.CLUSTER });
-    this.allClusterGroups = await this.$store.dispatch('management/findAll', { type: FLEET.CLUSTER_GROUP });
+    const hash = await checkSchemasForFindAllHash({
+      allClusters: {
+        inStoreType: 'management',
+        type:        FLEET.CLUSTER
+      },
+
+      allClusterGroups: {
+        inStoreType: 'management',
+        type:        FLEET.CLUSTER_GROUP
+      }
+    }, this.$store);
+
+    this.allClusters = hash.allClusters || [];
+    this.allClusterGroups = hash.allClusterGroups || [];
 
     let tls = _VERIFY;
 
@@ -89,13 +102,13 @@ export default {
     }
 
     const stepRepoInfo = {
-      name:             'stepRepoInfo',
-      title:            this.t('fleet.gitRepo.add.steps.repoInfo.title'),
-      label:            this.t('fleet.gitRepo.add.steps.repoInfo.label'),
-      subtext:          this.t('fleet.gitRepo.add.steps.repoInfo.subtext'),
-      descriptionKey:   'fleet.gitRepo.add.steps.repoInfo.description',
-      ready:            false,
-      weight:           30
+      name:           'stepRepoInfo',
+      title:          this.t('fleet.gitRepo.add.steps.repoInfo.title'),
+      label:          this.t('fleet.gitRepo.add.steps.repoInfo.label'),
+      subtext:        this.t('fleet.gitRepo.add.steps.repoInfo.subtext'),
+      descriptionKey: 'fleet.gitRepo.add.steps.repoInfo.description',
+      ready:          false,
+      weight:         30
     };
 
     const stepTargetInfo = {
@@ -232,8 +245,7 @@ export default {
 
     stepOneRequires() {
       return !!this.value.metadata.name && !!this.refValue;
-    }
-
+    },
   },
 
   watch: {
@@ -243,8 +255,8 @@ export default {
     targetClusterGroup:         'updateTargets',
     targetAdvanced:             'updateTargets',
 
-    tlsMode:    'updateTls',
-    caBundle:   'updateTls',
+    tlsMode:  'updateTls',
+    caBundle: 'updateTls',
 
     workspace(neu) {
       if ( this.isCreate ) {
@@ -413,7 +425,7 @@ export default {
       await secret.save();
 
       await this.$nextTick(() => {
-        this.updateAuth(secret.id, name);
+        this.updateAuth(secret.metadata.name, name);
       });
 
       return secret;
@@ -489,9 +501,29 @@ export default {
       </Banner>
     </template>
     <template #stepRepoInfo>
-      <NameNsDescription v-if="!isView" v-model="value" :namespaced="false" :mode="mode" @change="onUpdateRepoName" />
+      <NameNsDescription
+        v-if="!isView"
+        v-model="value"
+        :namespaced="false"
+        :mode="mode"
+        @change="onUpdateRepoName"
+      />
 
-      <div class="row" :class="{'mt-20': isView}">
+      <div class="row">
+        <div class="col span-6">
+          <Banner
+            color="info col span-6"
+          >
+            <div>
+              {{ t('fleet.gitRepo.repo.protocolBanner') }}
+            </div>
+          </Banner>
+        </div>
+      </div>
+      <div
+        class="row"
+        :class="{'mt-20': isView}"
+      >
         <div class="col span-6">
           <LabeledInput
             v-model="value.spec.repo"
@@ -514,7 +546,6 @@ export default {
           />
         </div>
       </div>
-
       <SelectOrCreateAuthSecret
         :value="value.spec.clientSecretName"
         :register-before-hook="registerBeforeHook"
@@ -555,7 +586,10 @@ export default {
               @input="updateTlsMode($event)"
             />
           </div>
-          <div v-if="tlsMode === _SPECIFY" class="col span-6">
+          <div
+            v-if="tlsMode === _SPECIFY"
+            class="col span-6"
+          >
             <LabeledInput
               v-model="caBundle"
               :mode="mode"
@@ -608,13 +642,21 @@ export default {
           </div>
         </div>
 
-        <div v-if="targetMode === 'advanced'" class="row mt-10">
+        <div
+          v-if="targetMode === 'advanced'"
+          class="row mt-10"
+        >
           <div class="col span-12">
             <YamlEditor v-model="targetAdvanced" />
           </div>
         </div>
 
-        <Banner v-for="(err, i) in targetAdvancedErrors" :key="i" color="error" :label="err" />
+        <Banner
+          v-for="(err, i) in targetAdvancedErrors"
+          :key="i"
+          color="error"
+          :label="err"
+        />
       </template>
 
       <div class="row mt-20">

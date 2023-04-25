@@ -33,8 +33,8 @@ export default {
   },
   data() {
     return {
-      treeTabName:     this.tabName,
-      treeTabLabel:    this.tabLabel,
+      treeTabName:  this.tabName,
+      treeTabLabel: this.tabLabel,
     };
   },
   created() {
@@ -46,7 +46,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"

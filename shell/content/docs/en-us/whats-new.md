@@ -2,6 +2,16 @@
 title: What's New in 2.7
 ---
 
+## New in 2.7.2
+
+### Kubernetes 1.25 and PSAs
+
+- Kubernetes 1.25 GA takes PSAs (Pod Security Admissions) out of beta. PSAs replace the former PSP (Pod Security Policy) setup, which is a major change that impacts upgrades of Kubernetes. 
+
+## New in 2.7.1
+
+- This was a security release to address a few CVEs and other bugs. Please see https://github.com/rancher/rancher/releases/tag/v2.7.1 for the full list of what was addressed. 
+
 ## New in 2.7.0
 
 ### k3s provisioning is GA (x86 Only)
@@ -16,3 +26,4 @@ installed by administrators. Extensions are provided as Helm charts. A new top-l
 ### OCI Support for Helm for Fleet
 
 - Authentication for OCI-based registries is now supported. Note that the structure of the fleet.yaml is the same and the credentials are provided as a Kubernetes secret, which is described in the Private Helm Repo box in the Repo Structure docs.
+

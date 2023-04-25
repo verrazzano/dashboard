@@ -2,10 +2,13 @@
 import { mapGetters } from 'vuex';
 import { LabeledInput } from '@components/Form/LabeledInput';
 import { Checkbox } from '@components/Form/Checkbox';
+import ChartPsp from '@shell/components/ChartPsp';
 
 export default {
-  components: { Checkbox, LabeledInput },
-  props:      {
+  components: {
+    Checkbox, LabeledInput, ChartPsp
+  },
+  props: {
     value: {
       type:    Object,
       default: () => {
@@ -39,14 +42,23 @@ export default {
 
 <template>
   <div class="logging">
-    <div v-if="provider === 'k3s'" class="row mb-20">
+    <div
+      v-if="provider === 'k3s'"
+      class="row mb-20"
+    >
       <div class="col span-6">
-        <LabeledInput v-model="value.additionalLoggingSources.k3s.container_engine" :label="t('logging.install.k3sContainerEngine')" />
+        <LabeledInput
+          v-model="value.additionalLoggingSources.k3s.container_engine"
+          :label="t('logging.install.k3sContainerEngine')"
+        />
       </div>
     </div>
     <div class="row mb-20">
       <div class="col span-6">
-        <LabeledInput v-model="value.global.dockerRootDirectory" :label="t('logging.install.dockerRootDirectory')" />
+        <LabeledInput
+          v-model="value.global.dockerRootDirectory"
+          :label="t('logging.install.dockerRootDirectory')"
+        />
       </div>
     </div>
     <div class="row mb-20">
@@ -57,14 +69,25 @@ export default {
           :label="t('logging.install.systemdLogPath')"
           :tooltip="t('logging.install.tooltip', {}, true)"
         />
-        <p class="mt-6" v-html="t('logging.install.url', {}, true)">
-        </p>
+        <p
+          class="mt-6"
+          v-html="t('logging.install.url', {}, true)"
+        />
       </div>
     </div>
-    <div class="row">
+    <div class="row mb-20">
       <div class="col span-6">
-        <Checkbox v-model="value.additionalLoggingSources[provider].enabled" :label="t('logging.install.enableAdditionalLoggingSources')" />
+        <Checkbox
+          v-model="value.additionalLoggingSources[provider].enabled"
+          :label="t('logging.install.enableAdditionalLoggingSources')"
+        />
       </div>
     </div>
+
+    <!-- Conditionally display PSP checkbox -->
+    <ChartPsp
+      :value="value"
+      :cluster="currentCluster"
+    />
   </div>
 </template>

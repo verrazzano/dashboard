@@ -107,20 +107,36 @@ export default {
     name="confirm-uiplugins-remove"
     :title="t('plugins.setup.remove.title')"
     mode="disable"
+    data-testid="disable-ext-modal"
     @okay="doRemove"
   >
     <template>
       <p>
         {{ t('plugins.setup.remove.prompt') }}
       </p>
-      <div v-if="!!defaultRepo" class="mt-20">
-        <Checkbox v-model="removeRepo" :primary="true" label-key="plugins.setup.remove.registry.title" />
+      <div
+        v-if="!!defaultRepo"
+        class="mt-20"
+      >
+        <Checkbox
+          v-model="removeRepo"
+          :primary="true"
+          label-key="plugins.setup.remove.registry.title"
+          data-testid="disable-ext-modal-remove-repo"
+        />
         <div class="checkbox-info">
           {{ t('plugins.setup.remove.registry.prompt') }}
         </div>
       </div>
-      <div v-if="hasPluginsInstalled" class="mt-20">
-        <Checkbox v-model="removeCRD" :primary="true" label-key="plugins.setup.remove.crd.title" />
+      <div
+        v-if="hasPluginsInstalled"
+        class="mt-20"
+      >
+        <Checkbox
+          v-model="removeCRD"
+          :primary="true"
+          label-key="plugins.setup.remove.crd.title"
+        />
         <div class="checkbox-info">
           {{ t('plugins.setup.remove.crd.prompt') }}
         </div>

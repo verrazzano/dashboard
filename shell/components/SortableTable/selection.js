@@ -504,7 +504,7 @@ export default {
     },
 
     applyTableAction(action, args, event) {
-      const opts = { alt: event && isAlternate(event) };
+      const opts = { alt: event && isAlternate(event), event };
 
       // Go through the table selection and filter out those actions that can't run the chosen action
       const executableSelection = this.selectedRows.filter((row) => {
@@ -513,7 +513,7 @@ export default {
         return matchingResourceAction?.enabled;
       });
 
-      _execute(executableSelection, action, args, opts);
+      _execute(executableSelection, action, args, opts, this);
 
       this.actionOfInterest = null;
     },
@@ -547,14 +547,14 @@ function _add(map, act, incrementCounts = true) {
     obj.allEnabled = false;
   }
 
-  if ( act.enabled === false ) {
+  if ( !act.enabled ) {
     obj.allEnabled = false;
   } else {
     obj.anyEnabled = true;
   }
 
   if ( incrementCounts ) {
-    obj.available = (obj.available || 0) + (act.enabled === false ? 0 : 1 );
+    obj.available = (obj.available || 0) + (!act.enabled ? 0 : 1 );
     obj.total = (obj.total || 0) + 1;
   }
 
@@ -575,8 +575,20 @@ function _filter(map, disableAll = false) {
   return out;
 }
 
-function _execute(resources, action, args, opts = {}) {
+function _execute(resources, action, args, opts = {}, ctx) {
   args = args || [];
+
+  // New pattern for extensions - always call invoke
+  if (action.invoke) {
+    const actionOpts = {
+      action,
+      event: opts.event,
+      isAlt: !!opts.alt,
+    };
+
+    return action.invoke.apply(ctx, [actionOpts, resources || [], args]);
+  }
+
   if ( resources.length > 1 && action.bulkAction && !opts.alt ) {
     const fn = resources[0][action.bulkAction];
 

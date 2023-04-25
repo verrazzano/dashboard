@@ -21,11 +21,11 @@ export default {
   },
   props: {
     value: {
-      type:     [Array, Object],
+      type:    [Array, Object],
       default: null,
     },
     defaultValue: {
-      type:     [Array, Object],
+      type:    [Array, Object],
       default: null,
     },
     // If the user supplies this array, then it indicates which keys should be shown as binary
@@ -95,6 +95,20 @@ export default {
       default() {
         return this.$store.getters['i18n/t']('keyValue.keyPlaceholder');
       },
+    },
+    /**
+     * List of keys which needs to be disabled and hidden based on toggler
+     */
+    protectedKeys: {
+      type:    Array,
+      default: () => [],
+    },
+    /**
+     * Conditionally display protected keys, if any
+     */
+    toggleFilter: {
+      type:    Boolean,
+      default: false,
     },
     separatorLabel: {
       type:    String,
@@ -235,7 +249,6 @@ export default {
   },
 
   computed: {
-
     isView() {
       return this.mode === _VIEW;
     },
@@ -261,6 +274,12 @@ export default {
      */
     canRemove() {
       return !this.isView && this.removeAllowed;
+    },
+    /**
+     * Filter rows based on toggler, keeping to still emit all the values
+     */
+    filteredRows() {
+      return this.rows.filter(row => !(this.isProtected(row.key) && !this.toggleFilter));
     }
   },
   created() {
@@ -275,6 +294,10 @@ export default {
     }
   },
   methods: {
+    isProtected(key) {
+      return this.protectedKeys && this.protectedKeys.includes(key);
+    },
+
     getRows(value) {
       const rows = [];
 
@@ -325,7 +348,7 @@ export default {
           rows.push(entry);
         }
       }
-      if ( !rows.length && this.initialEmptyRow ) {
+      if ( rows && !rows.length && this.initialEmptyRow ) {
         rows.push({
           [this.keyName]:   '',
           [this.valueName]: '',
@@ -389,6 +412,10 @@ export default {
             this.add(key, value);
           }
         });
+
+        if (lines.length > 0) {
+          this.removeEmptyRows();
+        }
       }
     },
     download(idx, ev) {
@@ -497,27 +524,47 @@ export default {
 </script>
 <template>
   <div class="key-value">
-    <div v-if="title || $slots.title" class="clearfix">
+    <div
+      v-if="title || $slots.title"
+      class="clearfix"
+    >
       <slot name="title">
         <h3>
           {{ title }}
-          <i v-if="titleProtip" v-tooltip="titleProtip" class="icon icon-info" />
+          <i
+            v-if="titleProtip"
+            v-tooltip="titleProtip"
+            class="icon icon-info"
+          />
         </h3>
       </slot>
     </div>
-    <div class="kv-container" :style="containerStyle">
+    <div
+      class="kv-container"
+      :style="containerStyle"
+    >
       <template v-if="rows.length || isView">
         <label class="text-label">
           {{ keyLabel }}
-          <i v-if="protip && !isView && addAllowed" v-tooltip="protip" class="icon icon-info" />
+          <i
+            v-if="protip && !isView && addAllowed"
+            v-tooltip="protip"
+            class="icon icon-info"
+          />
         </label>
         <label class="text-label">
           {{ valueLabel }}
         </label>
-        <label v-for="c in extraColumns" :key="c">
+        <label
+          v-for="c in extraColumns"
+          :key="c"
+        >
           <slot :name="'label:'+c">{{ c }}</slot>
         </label>
-        <slot v-if="canRemove" name="remove">
+        <slot
+          v-if="canRemove"
+          name="remove"
+        >
           <span />
         </slot>
       </template>
@@ -529,8 +576,15 @@ export default {
           &mdash;
         </div>
       </template>
-      <template v-for="(row,i) in rows" v-else>
-        <div :key="i+'key'" class="kv-item key">
+      <template
+        v-for="(row,i) in filteredRows"
+        v-else
+      >
+        <!-- Key -->
+        <div
+          :key="i+'key'"
+          class="kv-item key"
+        >
           <slot
             name="key"
             :row="row"
@@ -544,6 +598,7 @@ export default {
               ref="key"
               v-model="row[keyName]"
               :searchable="true"
+              :disabled="isProtected(row.key)"
               :clearable="false"
               :taggable="keyTaggable"
               :options="calculateOptions(row[keyName])"
@@ -553,14 +608,19 @@ export default {
               v-else
               ref="key"
               v-model="row[keyName]"
-              :disabled="isView || !keyEditable"
+              :disabled="isView || !keyEditable || isProtected(row.key)"
               :placeholder="keyPlaceholder"
               @input="queueUpdate"
               @paste="onPaste(i, $event)"
-            />
+            >
           </slot>
         </div>
-        <div :key="i+'value'" class="kv-item value">
+
+        <!-- Value -->
+        <div
+          :key="i+'value'"
+          class="kv-item value"
+        >
           <slot
             name="value"
             :row="row"
@@ -579,6 +639,7 @@ export default {
               v-else-if="valueMultiline"
               v-model="row[valueName]"
               :class="{'conceal': valueConcealed}"
+              :disabled="isProtected(row.key)"
               :mode="mode"
               :placeholder="valuePlaceholder"
               :min-height="40"
@@ -588,18 +649,26 @@ export default {
             <input
               v-else
               v-model="row[valueName]"
-              :disabled="isView"
+              :disabled="isView || isProtected(row.key)"
               :type="valueConcealed ? 'password' : 'text'"
               :placeholder="valuePlaceholder"
               autocorrect="off"
               autocapitalize="off"
               spellcheck="false"
               @input="queueUpdate"
-            />
+            >
           </slot>
         </div>
-        <div v-for="c in extraColumns" :key="i + c" class="kv-item extra">
-          <slot :name="'col:' + c" :row="row" :queue-update="queueUpdate" />
+        <div
+          v-for="c in extraColumns"
+          :key="i + c"
+          class="kv-item extra"
+        >
+          <slot
+            :name="'col:' + c"
+            :row="row"
+            :queue-update="queueUpdate"
+          />
         </div>
         <div
           v-if="canRemove"
@@ -607,18 +676,43 @@ export default {
           class="kv-item remove"
           :data-testid="`remove-column-${i}`"
         >
-          <slot name="removeButton" :remove="remove" :row="row" :i="i">
-            <button type="button" :disabled="isView" class="btn role-link" @click="remove(i)">
+          <slot
+            name="removeButton"
+            :remove="remove"
+            :row="row"
+            :i="i"
+          >
+            <button
+              type="button"
+              :disabled="isView || isProtected(row.key)"
+              class="btn role-link"
+              @click="remove(i)"
+            >
               {{ removeLabel || t('generic.remove') }}
             </button>
           </slot>
         </div>
       </template>
     </div>
-    <div v-if="(addAllowed || readAllowed) && !isView" class="footer">
-      <slot name="add" :add="add">
-        <button v-if="addAllowed" type="button" class="btn role-tertiary add" :disabled="loading || (keyOptions && filteredKeyOptions.length === 0)" @click="add()">
-          <i v-if="loading" class="mr-5 icon icon-spinner icon-spin icon-lg" /> {{ addLabel }}
+    <div
+      v-if="(addAllowed || readAllowed) && !isView"
+      class="footer mt-20"
+    >
+      <slot
+        name="add"
+        :add="add"
+      >
+        <button
+          v-if="addAllowed"
+          type="button"
+          class="btn role-tertiary add"
+          :disabled="loading || (keyOptions && filteredKeyOptions.length === 0)"
+          @click="add()"
+        >
+          <i
+            v-if="loading"
+            class="mr-5 icon icon-spinner icon-spin icon-lg"
+          /> {{ addLabel }}
         </button>
         <FileSelector
           v-if="readAllowed"

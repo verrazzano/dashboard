@@ -28,21 +28,21 @@ export default class Pod extends WorkloadService {
 
   get openShellMenuItem() {
     return {
-      action:     'openShell',
-      enabled:    !!this.links.view && this.isRunning,
-      icon:       'icon icon-fw icon-chevron-right',
-      label:      'Execute Shell',
-      total:      1,
+      action:  'openShell',
+      enabled: !!this.links.view && this.isRunning,
+      icon:    'icon icon-fw icon-chevron-right',
+      label:   'Execute Shell',
+      total:   1,
     };
   }
 
   get openLogsMenuItem() {
     return {
-      action:     'openLogs',
-      enabled:    !!this.links.view,
-      icon:       'icon icon-fw icon-chevron-right',
-      label:      'View Logs',
-      total:      1,
+      action:  'openLogs',
+      enabled: !!this.links.view,
+      icon:    'icon icon-fw icon-chevron-right',
+      label:   'View Logs',
+      total:   1,
     };
   }
 
@@ -179,6 +179,21 @@ export default class Pod extends WorkloadService {
     }
 
     return 0;
+  }
+
+  processSaveResponse(res) {
+    if (res._headers && res._headers.warning) {
+      const warnings = res._headers.warning.split('299') || [];
+      const hasPsaWarnings = warnings.filter(warning => warning.includes('violate PodSecurity')).length;
+
+      if (hasPsaWarnings) {
+        this.$dispatch('growl/warning', {
+          title:   this.$rootGetters['i18n/t']('growl.podSecurity.title'),
+          message: this.$rootGetters['i18n/t']('growl.podSecurity.message'),
+          timeout: 5000,
+        }, { root: true });
+      }
+    }
   }
 
   save() {

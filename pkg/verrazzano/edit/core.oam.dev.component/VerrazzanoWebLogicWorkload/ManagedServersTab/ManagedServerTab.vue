@@ -56,7 +56,11 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel" :title="t('verrazzano.weblogic.tabs.managedServer')">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+    :title="t('verrazzano.weblogic.tabs.managedServer')"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"

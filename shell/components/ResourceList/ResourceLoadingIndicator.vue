@@ -16,7 +16,11 @@ export default {
     indeterminate: {
       type:    Boolean,
       default: false,
-    }
+    },
+    namespace: {
+      type:    String,
+      default: undefined
+    },
   },
 
   data() {
@@ -40,6 +44,10 @@ export default {
     // Have we loaded all resources for the types that are needed
     haveAll() {
       return this.resources.reduce((acc, r) => {
+        if (this.namespace) {
+          return acc && this.$store.getters[`${ this.inStore }/haveAllNamespace`](r, this.namespace);
+        }
+
         return acc && this.$store.getters[`${ this.inStore }/haveAll`](r);
       }, true);
     },
@@ -49,7 +57,9 @@ export default {
       const clusterCounts = this.$store.getters[`${ this.inStore }/all`](COUNT);
 
       return this.resources.reduce((acc, r) => {
-        const count = clusterCounts?.[0]?.counts?.[r]?.summary?.count || 0;
+        const resourceCounts = clusterCounts?.[0]?.counts?.[r];
+        const resourceCount = this.namespace ? resourceCounts?.namespaces?.[this.namespace]?.count : resourceCounts?.summary?.count;
+        const count = resourceCount || 0;
 
         return acc + count;
       }, 0);
@@ -73,14 +83,20 @@ export default {
 </script>
 
 <template>
-  <div v-if="count && !haveAll" class="ml-10 resource-loading-indicator">
+  <div
+    v-if="count && !haveAll"
+    class="ml-10 resource-loading-indicator"
+  >
     <div class="inner">
       <div class="resource-loader">
         <div class="rl-bg">
           <i class="icon icon-spinner icon-spin" /><span>{{ t( 'resourceLoadingIndicator.loading' ) }} <span v-if="!indeterminate">{{ count }} / {{ total }}</span></span>
         </div>
       </div>
-      <div class="resource-loader" :style="{width}">
+      <div
+        class="resource-loader"
+        :style="{width}"
+      >
         <div class="rl-fg">
           <i class="icon icon-spinner icon-spin" /><span>{{ t( 'resourceLoadingIndicator.loading' ) }} <span v-if="!indeterminate">{{ count }} / {{ total }}</span></span>
         </div>

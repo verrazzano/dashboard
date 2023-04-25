@@ -103,7 +103,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -276,7 +279,10 @@ export default {
         @input="setFieldIfNotEmpty('tlsConfig', $event)"
         @delete="setField('tlsConfig', undefined)"
       />
-      <TreeTab :name="createTabName(treeTabName, 'auth')" :label="t('verrazzano.coherence.titles.serviceMonitor.authentication')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'auth')"
+        :label="t('verrazzano.coherence.titles.serviceMonitor.authentication')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.coherence.titles.serviceMonitor.authentication')"
@@ -296,7 +302,10 @@ export default {
                 :label="t('verrazzano.coherence.fields.serviceMonitor.authType')"
               />
             </div>
-            <div v-if="showBearerTokenFile" class="col span-4">
+            <div
+              v-if="showBearerTokenFile"
+              class="col span-4"
+            >
               <LabeledInput
                 :value="getField('bearerTokenFile')"
                 :mode="mode"

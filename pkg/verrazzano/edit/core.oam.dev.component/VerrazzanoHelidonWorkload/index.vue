@@ -52,7 +52,10 @@ export default {
 <template>
   <TreeTabbed :side-tabs="false">
     <template #nestedTabs>
-      <TreeTab :label="t('verrazzano.common.tabs.workload')" name="workload">
+      <TreeTab
+        :label="t('verrazzano.common.tabs.workload')"
+        name="workload"
+      >
         <template #default>
           <div class="row">
             <div class="col span-4">
@@ -67,12 +70,18 @@ export default {
           </div>
           <div class="spacer" />
           <div>
-            <Labels v-model="workloadMetadata" :mode="mode" />
+            <Labels
+              v-model="workloadMetadata"
+              :mode="mode"
+            />
           </div>
         </template>
       </TreeTab>
 
-      <TreeTab :label="t('verrazzano.helidon.tabs.deployment')" name="deployment">
+      <TreeTab
+        :label="t('verrazzano.helidon.tabs.deployment')"
+        name="deployment"
+      >
         <template #default>
           <div class="row">
             <div class="col span-4">
@@ -87,11 +96,17 @@ export default {
           </div>
           <div class="spacer" />
           <div>
-            <Labels v-model="workloadDeploymentTemplateMetadata" :mode="mode" />
+            <Labels
+              v-model="workloadDeploymentTemplateMetadata"
+              :mode="mode"
+            />
           </div>
         </template>
         <template #nestedTabs>
-          <TreeTab :label="t('verrazzano.helidon.tabs.strategy')" name="strategy">
+          <TreeTab
+            :label="t('verrazzano.helidon.tabs.strategy')"
+            name="strategy"
+          >
             <DeploymentStrategy
               :value="getWorkloadDeploymentTemplateField('strategy')"
               :mode="mode"

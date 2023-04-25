@@ -21,8 +21,8 @@ export default {
     const normanType = this.$store.getters['plugins/credentialFieldForDriver'](this.driverName);
     const normanSchema = this.$store.getters['rancher/schemaFor'](`${ normanType }credentialconfig`);
 
-    if ( normanSchema ) {
-      keyOptions = Object.keys(normanSchema.resourceFields || {});
+    if ( normanSchema?.resourceFields ) {
+      keyOptions = Object.keys(normanSchema.resourceFields);
     } else {
       keyOptions = this.$store.getters['plugins/fieldNamesForDriver'](this.driverName);
     }
@@ -68,7 +68,12 @@ export default {
 
 <template>
   <div>
-    <Banner v-if="!hasSupport" color="info" label-key="cluster.selectCredential.genericDescription" class="mt-0" />
+    <Banner
+      v-if="!hasSupport"
+      color="info"
+      label-key="cluster.selectCredential.genericDescription"
+      class="mt-0"
+    />
     <KeyValue
       :value="value.decodedData"
       :key-options="hasSupport || !keyOptions.length ? null : keyOptions"

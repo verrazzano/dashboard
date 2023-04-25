@@ -27,7 +27,7 @@ export function init(store) {
 
   product({
     ifHaveType:          new RegExp(`${ MANAGEMENT.USER }|${ MANAGEMENT.AUTH_CONFIG }`, 'i'),
-    ifHaveVerb:          'PUT',
+    ifHaveVerb:          'GET',
     ifFeature:           MULTI_CLUSTER,
     inStore:             'management',
     icon:                'user',
@@ -37,22 +37,23 @@ export function init(store) {
   });
 
   virtualType({
-    labelKey:    'auth.config.label',
-    icon:        'lock',
-    namespaced:  false,
-    name:        'config',
-    weight:      -1,
-    route:       { name: 'c-cluster-auth-config' },
-    ifHaveType: MANAGEMENT.AUTH_CONFIG
+    labelKey:   'auth.config.label',
+    icon:       'lock',
+    namespaced: false,
+    name:       'config',
+    weight:     -1,
+    route:      { name: 'c-cluster-auth-config' },
+    ifHaveType: MANAGEMENT.AUTH_CONFIG,
+    ifHaveVerb: 'PUT'
   });
 
   virtualType({
-    label:       store.getters['type-map/labelFor']({ id: MANAGEMENT.USER }, 2),
-    name:           USERS_VIRTUAL_TYPE,
-    namespaced:     false,
-    weight:         102,
-    icon:           'user',
-    route:          {
+    labelKey:   'typeLabel."management.cattle.io.user"',
+    name:       USERS_VIRTUAL_TYPE,
+    namespaced: false,
+    weight:     103,
+    icon:       'user',
+    route:      {
       name:   'c-cluster-product-resource',
       params: {
         cluster:  'local',
@@ -64,8 +65,9 @@ export function init(store) {
   configureType(MANAGEMENT.USER, { showListMasthead: false });
 
   spoofedType({
-    label:             store.getters['type-map/labelFor']({ id: NORMAN.SPOOFED.GROUP_PRINCIPAL }, 2),
+    labelKey:          'typeLabel."group.principal"',
     type:              NORMAN.SPOOFED.GROUP_PRINCIPAL,
+    weight:            101,
     ifHaveType:        MANAGEMENT.GLOBAL_ROLE_BINDING,
     collectionMethods: [],
     schemas:           [
@@ -142,15 +144,15 @@ export function init(store) {
   weightType(NORMAN.SPOOFED.GROUP_PRINCIPAL, 101, true);
 
   virtualType({
-    label:       store.getters['i18n/t']('rbac.roletemplate.label'),
-    icon:        'user',
-    namespaced:  false,
-    name:        ROLES_VIRTUAL_TYPE,
-    weight:      101,
-    route:       { name: 'c-cluster-auth-roles' },
+    labelKey:   'rbac.roletemplate.label',
+    icon:       'user',
+    namespaced: false,
+    name:       ROLES_VIRTUAL_TYPE,
+    weight:     102,
+    route:      { name: 'c-cluster-auth-roles' },
     // There are two resource types shown on this page, MANAGEMENT.GLOBAL_ROLE and MANAGEMENT.ROLE_TEMPLATE
     // If there user can't see ROLE_TEMPLATE, they definitely can't see GLOBAL_ROLE
-    ifHaveType:  MANAGEMENT.ROLE_TEMPLATE
+    ifHaveType: MANAGEMENT.ROLE_TEMPLATE
   });
 
   configureType(MANAGEMENT.AUTH_CONFIG, {
@@ -188,7 +190,7 @@ export function init(store) {
   // A lot of the built in roles have nicer names returned by nameDisplay. In both tables we want to show both nicer and base names
   const DISPLAY_NAME = {
     ...HEADER_NAME,
-    name:          'displayName',
+    name:     'displayName',
     labelKey: 'tableHeaders.nameDisplay',
   };
 

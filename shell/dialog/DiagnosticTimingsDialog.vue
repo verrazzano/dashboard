@@ -12,9 +12,13 @@ export default {
     Banner,
   },
 
-  props:      {
-    resources: {
-      type:     Array,
+  props: {
+    downloadData: {
+      type:     Function,
+      required: true
+    },
+    gatherResponseTimes: {
+      type:     Function,
       required: true
     }
   },
@@ -24,9 +28,6 @@ export default {
   },
 
   computed: {
-    config() {
-      return this.resources[0];
-    },
 
     applyMode() {
       return 'diagnostic';
@@ -48,7 +49,7 @@ export default {
 
     apply(btnCb) {
       try {
-        this.config.downloadData(btnCb);
+        this.downloadData(btnCb);
         this.close();
       } catch (err) {
         console.error(err); // eslint-disable-line
@@ -61,12 +62,22 @@ export default {
 </script>
 
 <template>
-  <Card class="prompt-restore" :show-highlight-border="false">
-    <h4 slot="title" class="text-default-text" v-html="title" />
+  <Card
+    class="prompt-restore"
+    :show-highlight-border="false"
+  >
+    <h4
+      slot="title"
+      class="text-default-text"
+      v-html="title"
+    />
 
     <template slot="body">
       <slot name="body">
-        <div class="pl-10 pr-10" style="min-height: 50px;">
+        <div
+          class="pl-10 pr-10"
+          style="min-height: 50px;"
+        >
           <div class="row">
             {{ body }}
           </div>
@@ -74,16 +85,27 @@ export default {
           <AsyncButton
             mode="timing"
             class="row mt-20"
-            @click="config.gatherResponseTimes"
+            @click="gatherResponseTimes"
           />
         </div>
       </slot>
     </template>
 
-    <div slot="actions" class="bottom">
-      <Banner v-for="(err, i) in errors" :key="i" color="error" :label="err" />
+    <div
+      slot="actions"
+      class="bottom"
+    >
+      <Banner
+        v-for="(err, i) in errors"
+        :key="i"
+        color="error"
+        :label="err"
+      />
       <div class="buttons">
-        <button class="btn role-secondary mr-10" @click="close">
+        <button
+          class="btn role-secondary mr-10"
+          @click="close"
+        >
           {{ t('generic.cancel') }}
         </button>
 

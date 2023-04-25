@@ -89,7 +89,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -247,7 +250,10 @@ export default {
         @input="setFieldIfNotEmpty('persistence', $event)"
         @delete="setField('persistence', undefined)"
       />
-      <TreeTab :name="createTabName(treeTabName, 'management')" :label="t('verrazzano.coherence.tabs.restManagement')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'management')"
+        :label="t('verrazzano.coherence.tabs.restManagement')"
+      >
         <template #default>
           <PortSpecWithSSL
             :value="getField('management')"
@@ -257,7 +263,10 @@ export default {
           />
         </template>
       </TreeTab>
-      <TreeTab :name="createTabName(treeTabName, 'metrics')" :label="t('verrazzano.coherence.tabs.metricsPublishing')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'metrics')"
+        :label="t('verrazzano.coherence.tabs.metricsPublishing')"
+      >
         <template #default>
           <PortSpecWithSSL
             :value="getField('metrics')"

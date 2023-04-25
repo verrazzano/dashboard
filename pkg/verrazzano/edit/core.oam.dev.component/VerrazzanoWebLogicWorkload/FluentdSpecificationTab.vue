@@ -93,7 +93,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -162,7 +165,10 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab :name="createTabName(treeTabName, 'envVars')" :label="t('verrazzano.common.tabs.environmentVariables')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'envVars')"
+        :label="t('verrazzano.common.tabs.environmentVariables')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.common.tabs.environmentVariables')"

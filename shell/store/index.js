@@ -81,7 +81,13 @@ const getActiveNamespaces = (state, getters) => {
     return out;
   }
 
-  const namespaces = getters[`${ inStore }/all`](NAMESPACE);
+  let namespaces = [];
+
+  if (Array.isArray(state.allNamespaces) && state.allNamespaces.length > 0) {
+    namespaces = state.allNamespaces;
+  } else {
+    namespaces = getters[`${ inStore }/all`](NAMESPACE);
+  }
 
   const filters = state.namespaceFilters.filter(x => !!x && !`${ x }`.startsWith(NAMESPACED_PREFIX));
   const includeAll = getters.isAllNamespaces;
@@ -158,8 +164,8 @@ export const state = () => {
     namespaceFilters:        [],
     activeNamespaceCache:    {}, // Used to efficiently check if a resource should be displayed
     activeNamespaceCacheKey: '', // Fingerprint of activeNamespaceCache
-    allNamespaces:           null,
-    allWorkspaces:           null,
+    allNamespaces:           [],
+    allWorkspaces:           [],
     clusterId:               null,
     productId:               null,
     workspace:               null,
@@ -169,6 +175,7 @@ export const state = () => {
     serverVersion:           null,
     systemNamespaces:        [],
     isSingleProduct:         undefined,
+    namespaceFilterMode:     null,
   };
 };
 
@@ -205,6 +212,15 @@ export const getters = {
     return state.systemNamespaces;
   },
 
+  /**
+   * Namespace Filter Mode supplies a resource type to the NamespaceFilter.
+   *
+   * Only one of the resource type is allowed to be selected
+   */
+  namespaceFilterMode(state) {
+    return state.namespaceFilterMode;
+  },
+
   currentCluster(state, getters) {
     return getters['management/byId'](MANAGEMENT.CLUSTER, state.clusterId);
   },
@@ -223,6 +239,12 @@ export const getters = {
     }
 
     return out;
+  },
+
+  getStoreNameByProductId(state) {
+    const products = state['type-map']?.products;
+
+    return (products.find(p => p.name === state.productId) || {})?.inStore || 'cluster';
   },
 
   currentStore(state, getters) {
@@ -282,6 +304,34 @@ export const getters = {
     }
 
     return state.namespaceFilters.filter(x => !`${ x }`.startsWith(NAMESPACED_PREFIX)).length === 0;
+  },
+
+  isSingleNamespace(state, getters) {
+    const product = getters['currentProduct'];
+
+    if ( !product ) {
+      return false;
+    }
+
+    if ( product.showWorkspaceSwitcher ) {
+      return false;
+    }
+
+    if ( getters.isAllNamespaces ) {
+      return false;
+    }
+
+    const filters = state.namespaceFilters;
+
+    if ( filters.length !== 1 ) {
+      return false;
+    }
+
+    if (filters[0].startsWith('ns://')) {
+      return filters[0];
+    }
+
+    return false;
   },
 
   isMultipleNamespaces(state, getters) {
@@ -358,6 +408,10 @@ export const getters = {
 
   activeNamespaceFilters(state) {
     return state.namespaceFilters;
+  },
+
+  allNamespaces(state) {
+    return state.allNamespaces;
   },
 
   namespaces(state, getters) {
@@ -485,6 +539,19 @@ export const mutations = {
     getActiveNamespaces(state, getters);
   },
 
+  changeAllNamespaces(state, namespace) {
+    // `allNamespaces/changeAllNamespaces` allow products to restrict the namespaces shown to the user in the NamespaceFilter and NameNsDescription components.
+    // You can configure the `notFilterNamespace` parameter for each resource page to define namespaces that do not need to be filtered,  and then change `allNamespaces` by calling `changeAllNamespaces`
+    // eg:
+    // const notFilterNamespaces = this.$store.getters[`type-map/optionsFor`](resource).notFilterNamespace || [];
+    // const allNamespaces = this.$store.getters[`${ this.currentProduct.inStore }/filterNamespace`](notFilterNamespaces);
+    state.allNamespaces = namespace;
+  },
+
+  setNamespaceFilterMode(state, mode) {
+    state.namespaceFilterMode = mode;
+  },
+
   pageActions(state, pageActions) {
     state.pageActions = pageActions;
   },
@@ -504,7 +571,6 @@ export const mutations = {
     }
 
     state.workspace = value;
-
     getActiveNamespaces(state, getters);
   },
 
@@ -795,10 +861,10 @@ export const actions = {
     };
 
     const res = await allHash({
-      projects:          fetchProjects(),
-      counts:            dispatch('cluster/findAll', { type: COUNT }),
-      namespaces:        dispatch('cluster/findAll', { type: NAMESPACE }),
-      navLinks:          !!getters['cluster/schemaFor'](UI.NAV_LINK) && dispatch('cluster/findAll', { type: UI.NAV_LINK }),
+      projects:   fetchProjects(),
+      counts:     dispatch('cluster/findAll', { type: COUNT }),
+      namespaces: dispatch('cluster/findAll', { type: NAMESPACE }),
+      navLinks:   !!getters['cluster/schemaFor'](UI.NAV_LINK) && dispatch('cluster/findAll', { type: UI.NAV_LINK }),
     });
 
     await dispatch('cleanNamespaces');
@@ -808,7 +874,6 @@ export const actions = {
     commit('updateNamespaces', {
       filters: filters || [ALL_USER],
       all:     res.namespaces,
-      ...getters
     });
 
     commit('clusterReady', true);
@@ -826,7 +891,11 @@ export const actions = {
         [key]: ids
       }
     });
-    commit('updateNamespaces', { filters: ids, ...getters });
+    commit('updateNamespaces', { filters: ids });
+  },
+
+  setNamespaceFilterMode({ commit }, mode) {
+    commit('setNamespaceFilterMode', mode);
   },
 
   async cleanNamespaces({ getters, dispatch }) {

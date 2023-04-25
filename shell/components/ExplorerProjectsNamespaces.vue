@@ -85,10 +85,10 @@ export default {
     },
     headers() {
       const project = {
-        name:          'project',
-        label:         'Project',
-        value:         'project.nameDisplay',
-        sort:          ['projectNameSort', 'nameSort'],
+        name:  'project',
+        label: this.t('tableHeaders.project'),
+        value: 'project.nameDisplay',
+        sort:  ['projectNameSort', 'nameSort'],
       };
 
       return [
@@ -111,6 +111,10 @@ export default {
       // Get the list of projects from the store so that the list
       // is updated if a new project is created or removed.
       const projectsInAllClusters = this.$store.getters['management/all'](MANAGEMENT.PROJECT);
+
+      if (this.currentProduct?.customNamespaceFilter && this.currentProduct?.inStore && this.$store.getters[`${ this.currentProduct.inStore }/filterProject`]) {
+        return this.$store.getters[`${ this.currentProduct.inStore }/filterProject`];
+      }
 
       const clustersInProjects = projectsInAllClusters.filter(project => project.spec.clusterName === clusterId);
 
@@ -136,8 +140,8 @@ export default {
 
       if (this.showMockNotInProjectGroup) {
         fakeRows.push( {
-          groupByLabel:     this.t('resourceTable.groupLabel.notInAProject'), // Same as the groupByLabel for the namespace model
-          mainRowKey:       'fake-empty',
+          groupByLabel: this.t('resourceTable.groupLabel.notInAProject'), // Same as the groupByLabel for the namespace model
+          mainRowKey:   'fake-empty',
         });
       }
 
@@ -235,6 +239,19 @@ export default {
     }
   },
   methods: {
+    /**
+     * Get PSA HTML to be displayed in the tooltips
+     */
+    getPsaTooltip(row) {
+      const dictionary = row.psaTooltipsDescription;
+      const list = Object.values(dictionary)
+        .sort()
+        .map(text => `<li>${ text }</li>`).join('');
+      const title = `<p>${ this.t('podSecurityAdmission.name') }: </p>`;
+
+      return `${ title }<ul class="psa-tooltip">${ list }</ul>`;
+    },
+
     userIsFilteringForSpecificNamespaceOrProject() {
       const activeFilters = this.$store.getters['namespaceFilters'];
 
@@ -342,10 +359,22 @@ export default {
       v-on="$listeners"
     >
       <template #group-by="group">
-        <div class="project-bar" :class="{'has-description': projectDescription(group.group)}">
-          <div v-trim-whitespace class="group-tab">
-            <div class="project-name" v-html="projectLabel(group.group)" />
-            <div v-if="projectDescription(group.group)" class="description text-muted text-small">
+        <div
+          class="project-bar"
+          :class="{'has-description': projectDescription(group.group)}"
+        >
+          <div
+            v-trim-whitespace
+            class="group-tab"
+          >
+            <div
+              class="project-name"
+              v-html="projectLabel(group.group)"
+            />
+            <div
+              v-if="projectDescription(group.group)"
+              class="description text-muted text-small"
+            >
               {{ projectDescription(group.group) }}
             </div>
           </div>
@@ -357,7 +386,12 @@ export default {
             >
               {{ t('projectNamespaces.createNamespace') }}
             </n-link>
-            <button type="button" class="project-action btn btn-sm role-multi-action actions mr-10" :class="{invisible: !showProjectActionButton(group.group)}" @click="showProjectAction($event, group.group)">
+            <button
+              type="button"
+              class="project-action btn btn-sm role-multi-action actions mr-10"
+              :class="{invisible: !showProjectActionButton(group.group)}"
+              @click="showProjectAction($event, group.group)"
+            >
               <i class="icon icon-actions" />
             </button>
           </div>
@@ -365,18 +399,51 @@ export default {
       </template>
       <template #cell:project="{row}">
         <span v-if="row.project">{{ row.project.nameDisplay }}</span>
-        <span v-else class="text-muted">&ndash;</span>
+        <span
+          v-else
+          class="text-muted"
+        >&ndash;</span>
       </template>
-      <template v-for="project in projectsWithoutNamespaces" v-slot:[slotName(project)]>
-        <tr :key="project.id" class="main-row">
-          <td class="empty text-center" colspan="5">
+      <template #cell:name="{row}">
+        <div class="namespace-name">
+          <n-link
+            v-if="row.detailLocation && !row.hideDetailLocation"
+            :to="row.detailLocation"
+          >
+            {{ row.name }}
+          </n-link>
+          <span v-else>
+            {{ row.name }}
+          </span>
+          <i
+            v-if="row.hasSystemLabels"
+            v-tooltip="getPsaTooltip(row)"
+            class="icon icon-lock ml-5"
+          />
+        </div>
+      </template>
+      <template
+        v-for="project in projectsWithoutNamespaces"
+        v-slot:[slotName(project)]
+      >
+        <tr
+          :key="project.id"
+          class="main-row"
+        >
+          <td
+            class="empty text-center"
+            colspan="5"
+          >
             {{ t('projectNamespaces.noNamespaces') }}
           </td>
         </tr>
       </template>
       <template #main-row:fake-empty>
         <tr class="main-row">
-          <td class="empty text-center" colspan="5">
+          <td
+            class="empty text-center"
+            colspan="5"
+          >
             {{ t('projectNamespaces.noProjectNoNamespaces') }}
           </td>
         </tr>
@@ -416,6 +483,19 @@ export default {
         }
       }
     }
+
+    .namespace-name {
+      display: flex;
+      align-items: center;
+    }
   }
 }
+</style>
+<style lang="scss">
+  .psa-tooltip {
+    // These could pop up a lot as the mouse moves around, keep them as small and unintrusive as possible
+    // (easier to test with v-tooltip="{ content: getPSA(row), autoHide: false, show: true }")
+    margin: 3px 0;
+    padding: 0 8px 0 22px;
+  }
 </style>

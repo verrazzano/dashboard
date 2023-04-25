@@ -214,10 +214,15 @@ export default {
               :manual="true"
               :current-phase="buttonState"
               class="enable-plugin-support"
+              data-testid="extension-enable-operator"
               @click="enable"
             />
           </div>
-          <div v-for="(e, i) in errors" :key="i" class="plugin-setup-error">
+          <div
+            v-for="(e, i) in errors"
+            :key="i"
+            class="plugin-setup-error"
+          >
             {{ e }}
           </div>
         </div>
@@ -232,8 +237,15 @@ export default {
         <p>
           {{ t('plugins.setup.install.prompt') }}
         </p>
-        <div v-if="!hasRancherUIPluginsRepo" class="mt-20">
-          <Checkbox v-model="addRepo" :primary="true" label-key="plugins.setup.install.addRancherRepo" />
+        <div
+          v-if="!hasRancherUIPluginsRepo"
+          class="mt-20"
+        >
+          <Checkbox
+            v-model="addRepo"
+            :primary="true"
+            label-key="plugins.setup.install.addRancherRepo"
+          />
           <div class="checkbox-info">
             {{ t('plugins.setup.install.airgap') }}
           </div>

@@ -19,16 +19,17 @@ import { KEY } from '@shell/utils/platform';
 export default {
   data() {
     return {
-      isOpen:        false,
-      filter:        '',
-      hidden:        0,
-      total:         0,
-      activeElement: null,
+      isOpen:         false,
+      filter:         '',
+      hidden:         0,
+      total:          0,
+      activeElement:  null,
+      cachedFiltered: [],
     };
   },
 
   computed: {
-    ...mapGetters(['currentProduct']),
+    ...mapGetters(['currentProduct', 'namespaceFilterMode']),
 
     hasFilter() {
       return this.filter.length > 0;
@@ -37,11 +38,26 @@ export default {
     filtered() {
       let out = this.options;
 
-      // Filter by the current filter
-      if (this.hasFilter) {
-        out = out.filter((item) => {
+      out = out.filter((item) => {
+        // Filter out anything not applicable to singleton selection
+        if (this.namespaceFilterMode) {
+          // We always show dividers, projects and namespaces
+          if (!['divider', 'project', this.namespaceFilterMode].includes(item.kind)) {
+            // Hide any invalid option that's not selected
+            return this.value.findIndex(v => v.id === item.id) >= 0;
+          }
+        }
+
+        // Filter by the current filter
+        if (this.hasFilter) {
           return item.kind !== SPECIAL && item.label.toLowerCase().includes(this.filter.toLowerCase());
-        });
+        }
+
+        return true;
+      });
+
+      if (out?.[0]?.kind === 'divider') {
+        out.splice(0, 1);
       }
 
       const mapped = this.value.reduce((m, v) => {
@@ -54,6 +70,8 @@ export default {
       out.forEach((i) => {
         i.selected = !!mapped[i.id] || (i.id === ALL && this.value && this.value.length === 0);
         i.elementId = (i.id || '').replace('://', '_');
+        // Are we in singleton resource type mode, if so is this an allowed type?
+        i.enabled = !this.namespaceFilterMode || i.kind === this.namespaceFilterMode;
       });
 
       return out;
@@ -87,15 +105,31 @@ export default {
       const t = this.$store.getters['i18n/t'];
       let out = [];
 
-      if (this.currentProduct.customNamespaceFilter) {
+      const params = { ...this.$route.params };
+      const resource = params.resource;
+      // Sometimes, different pages may have different namespaces to filter
+      const notFilterNamespaces = this.$store.getters[`type-map/optionsFor`](resource).notFilterNamespace || [];
+
+      // TODO: Add return info
+      if (this.currentProduct?.customNamespaceFilter && this.currentProduct?.inStore) {
         // Sometimes the component can show before the 'currentProduct' has caught up, so access the product via the getter rather
         // than caching it in the `fetch`
+
+        // The namespace display on the list and edit pages should be the same as in the namespaceFilter component
+        if (this.$store.getters[`${ this.currentProduct.inStore }/filterNamespace`]) {
+          const allNamespaces = this.$store.getters[`${ this.currentProduct.inStore }/filterNamespace`](notFilterNamespaces);
+
+          this.$store.commit('changeAllNamespaces', allNamespaces);
+        }
+
         return this.$store.getters[`${ this.currentProduct.inStore }/namespaceFilterOptions`]({
           addNamespace,
-          divider
+          divider,
+          notFilterNamespaces
         });
       }
 
+      // TODO: Add return info
       if (!this.currentProduct?.hideSystemResources) {
         out = [
           {
@@ -129,6 +163,11 @@ export default {
       }
 
       const inStore = this.$store.getters['currentStore'](NAMESPACE);
+
+      if (!inStore) {
+        return out;
+      }
+
       let namespaces = sortBy(
         this.$store.getters[`${ inStore }/all`](NAMESPACE),
         ['nameDisplay']
@@ -249,19 +288,21 @@ export default {
 
     value: {
       get() {
+        // Use last picked filter from user preferences
         const prefs = this.$store.getters['prefs/get'](NAMESPACE_FILTERS);
-        const prefDefault = this.currentProduct.customNamespaceFilter ? [] : [ALL_USER];
-        const values = prefs[this.key] || prefDefault;
+
+        const prefDefault = this.currentProduct?.customNamespaceFilter ? [] : [ALL_USER];
+        const values = prefs && prefs[this.key] ? prefs[this.key] : prefDefault;
         const options = this.options;
 
         // Remove values that are not valid options
-        const out = values
+        const filters = values
           .map((value) => {
             return findBy(options, 'id', value);
           })
           .filter(x => !!x);
 
-        return out;
+        return filters;
       },
 
       set(neu) {
@@ -291,7 +332,7 @@ export default {
         // If there was something selected and you remove it, go back to user by default
         // Unless it was user or all
         if (neu.length === 0 && !hadUser && !hadAll) {
-          ids = this.currentProduct.customNamespaceFilter ? [] : [ALL_USER];
+          ids = this.currentProduct?.customNamespaceFilter ? [] : [ALL_USER];
         } else {
           ids = neu.map(x => x.id);
         }
@@ -317,6 +358,21 @@ export default {
   watch: {
     value(neu) {
       this.layout();
+    },
+
+    /**
+     * When there are thousands of entries certain actions (drop down opened, selection changed, etc) take a long time to complete (upwards
+     * of 5 seconds)
+     *
+     * This is caused by churn of the filtered and options computed properties causing multiple renders for each action.
+     *
+     * To break this multiple-render per cycle behaviour detatch `filtered` from the value used in `v-for`.
+     *
+     */
+    filtered(neu) {
+      if (!!neu) {
+        this.cachedFiltered = neu;
+      }
     }
   },
 
@@ -329,17 +385,7 @@ export default {
         return namespaces;
       }
 
-      const isVirtualCluster = this.$store.getters['isVirtualCluster'];
-
       return namespaces.filter((namespace) => {
-        const isSettingSystemNamespace = this.$store.getters['systemNamespaces'].includes(namespace.metadata.name);
-        const systemNS = namespace.isSystem || namespace.isFleetManaged || isSettingSystemNamespace;
-
-        // For Harvester, filter out system namespaces AND obscure namespaces.
-        if (isVirtualCluster) {
-          return !systemNS && !namespace.isObscure;
-        }
-
         // Otherwise only filter out obscure namespaces, such as namespaces
         // that Rancher uses to manage RBAC for projects, which should not be
         // edited or deleted by Rancher users.
@@ -418,7 +464,10 @@ export default {
         e.preventDefault();
         e.stopPropagation();
         this.up();
-      } else if (e.keyCode === KEY.SPACE) {
+      } else if (e.keyCode === KEY.SPACE || e.keyCode === KEY.CR) {
+        if (this.namespaceFilterMode && !opt.enabled) {
+          return;
+        }
         e.preventDefault();
         e.stopPropagation();
         this.selectOption(opt);
@@ -426,14 +475,23 @@ export default {
       }
     },
     inputKeyHandler(e) {
-      if (e.keyCode === KEY.DOWN ) {
+      switch (e.keyCode) {
+      case KEY.DOWN:
         e.preventDefault();
         e.stopPropagation();
         this.down(true);
-      } else if (e.keyCode === KEY.TAB) {
+        break;
+      case KEY.TAB:
         // Tab out of the input box
         this.close();
         e.target.blur();
+        break;
+      case KEY.CR:
+        if (this.filtered.length === 1) {
+          this.selectOption(this.filtered[0]);
+          this.filter = '';
+        }
+        break;
       }
     },
     mouseOver(event) {
@@ -527,9 +585,22 @@ export default {
 
       const current = this.value;
       const exists = current.findIndex(v => v.id === option.id);
+      const optionIsSelected = exists !== -1;
 
-      // Remove if it exists, add if it does not
-      if (exists !== -1) {
+      // Any type of mode means only a single resource can be selected. So clear out any stale
+      // values (multiple selected in another context OR a single one selected in this context)
+      if (this.namespaceFilterMode) {
+        if (current.length === 1 && optionIsSelected) {
+          // Don't deselect the only selected option
+          return;
+        }
+        current.length = 0;
+      }
+
+      const remove = !this.namespaceFilterMode && optionIsSelected;
+
+      // Remove if it exists (or always add if in singleton mode - we've reset the list above)
+      if (remove) {
         current.splice(exists, 1);
       } else {
         current.push(option);
@@ -541,6 +612,14 @@ export default {
         document.activeElement.blur();
       }
     },
+    handleValueMouseDown(ns, event) {
+      this.removeOption(ns, event);
+
+      if (this.value.length === 0) {
+        this.open();
+      }
+    },
+
     removeOption(ns, event) {
       this.selectOption(ns);
       event.preventDefault();
@@ -551,63 +630,190 @@ export default {
 </script>
 
 <template>
-  <div class="ns-filter" tabindex="0" @focus="open()">
-    <div v-if="isOpen" class="ns-glass" @click="close()"></div>
-    <!-- Dropdown control -->
-    <div ref="dropdown" class="ns-dropdown" :class="{ 'ns-open': isOpen }" @click="toggle()">
-      <div v-if="value.length === 0" ref="values" class="ns-values">
+  <div
+    class="ns-filter"
+    data-testid="namespaces-filter"
+    tabindex="0"
+    @focus="open()"
+  >
+    <div
+      v-if="isOpen"
+      class="ns-glass"
+      @click="close()"
+    />
+
+    <!-- Select Dropdown control -->
+    <div
+      ref="dropdown"
+      class="ns-dropdown"
+      data-testid="namespaces-dropdown"
+      :class="{ 'ns-open': isOpen }"
+      @click="toggle()"
+    >
+      <!-- No filters found or available -->
+      <div
+        v-if="value.length === 0"
+        ref="values"
+        data-testid="namespaces-values-none"
+        class="ns-values"
+      >
         {{ t('nav.ns.all') }}
       </div>
-      <div v-else-if="isSingleSpecial" ref="values" class="ns-values">
+
+      <!-- Filtered by set with custom label E.g. "All namespaces" -->
+      <div
+        v-else-if="isSingleSpecial"
+        ref="values"
+        data-testid="namespaces-values-label"
+        class="ns-values"
+      >
         {{ value[0].label }}
       </div>
-      <div v-else ref="values" v-tooltip="tooltip" class="ns-values">
-        <div v-if="total" ref="total" class="ns-value ns-abs">
+
+      <!-- All the selected namespaces -->
+      <div
+        v-else
+        ref="values"
+        v-tooltip="tooltip"
+        data-testid="namespaces-values"
+        class="ns-values"
+      >
+        <div
+          v-if="total"
+          ref="total"
+          data-testid="namespaces-values-total"
+          class="ns-value ns-abs"
+        >
           {{ t('namespaceFilter.selected.label', { total }) }}
         </div>
-        <div v-for="ns in value" ref="value" :key="ns.id" class="ns-value">
+        <div
+          v-for="(ns, j) in value"
+          ref="value"
+          :key="ns.id"
+          :data-testid="`namespaces-value-${j}`"
+          class="ns-value"
+        >
           <div>{{ ns.label }}</div>
-          <i class="icon icon-close" @click="removeOption(ns, $event)" />
+          <i
+            v-if="!namespaceFilterMode"
+            class="icon icon-close"
+            :data-testid="`namespaces-values-close-${j}`"
+            @click="removeOption(ns, $event)"
+            @mousedown="handleValueMouseDown(ns, $event)"
+          />
         </div>
       </div>
-      <div v-if="hidden > 0" ref="more" v-tooltip="tooltip" class="ns-more">
+
+      <!-- Inform user if more namespaces are selected -->
+      <div
+        v-if="hidden > 0"
+        ref="more"
+        v-tooltip="tooltip"
+        class="ns-more"
+      >
         {{ t('namespaceFilter.more', { more: hidden }) }}
       </div>
-      <i v-if="!isOpen" class="icon icon-chevron-down" />
-      <i v-else class="icon icon-chevron-up" />
+      <i
+        v-if="!isOpen"
+        class="icon icon-chevron-down"
+      />
+      <i
+        v-else
+        class="icon icon-chevron-up"
+      />
     </div>
-    <button v-shortkey.once="['n']" class="hide" @shortkey="open()" />
-    <div v-if="isOpen" class="ns-dropdown-menu">
+    <button
+      v-shortkey.once="['n']"
+      class="hide"
+      @shortkey="open()"
+    />
+
+    <!-- Dropdown menu -->
+    <div
+      v-if="isOpen"
+      class="ns-dropdown-menu"
+      data-testid="namespaces-menu"
+    >
       <div class="ns-controls">
         <div class="ns-input">
-          <input ref="filter" v-model="filter" tabindex="0" class="ns-filter-input" @keydown="inputKeyHandler($event)" />
-          <i v-if="hasFilter" class="ns-filter-clear icon icon-close" @click="filter = ''" />
+          <input
+            ref="filter"
+            v-model="filter"
+            tabindex="0"
+            class="ns-filter-input"
+            @keydown="inputKeyHandler($event)"
+          >
+          <i
+            v-if="hasFilter"
+            class="ns-filter-clear icon icon-close"
+            @click="filter = ''"
+          />
         </div>
-        <div class="ns-clear">
-          <i class="icon icon-close" @click="clear()" />
+        <div
+          v-if="namespaceFilterMode"
+          class="ns-singleton-info"
+        >
+          <i
+            v-tooltip="t('resourceList.nsFilterToolTip', { mode: namespaceFilterMode})"
+            class="icon icon-info"
+          />
+        </div>
+        <div
+          v-else
+          class="ns-clear"
+        >
+          <i
+            class="icon icon-close"
+            @click="clear()"
+          />
         </div>
       </div>
-      <div class="ns-divider mt-0"></div>
-      <div ref="options" class="ns-options" role="list">
+      <div class="ns-divider mt-0" />
+      <div
+        ref="options"
+        class="ns-options"
+        role="list"
+      >
         <div
-          v-for="opt in filtered"
+          v-for="(opt, i) in cachedFiltered"
           :id="opt.elementId"
           :key="opt.id"
           tabindex="0"
           class="ns-option"
-          :class="{'ns-selected': opt.selected}"
-          @click="selectOption(opt)"
-          @mouseover="mouseOver($event)"
+          :disabled="!opt.enabled"
+          :class="{
+            'ns-selected': opt.selected,
+            'ns-single-match': cachedFiltered.length === 1 && !opt.selected,
+          }"
+          :data-testid="`namespaces-option-${i}`"
+          @click="opt.enabled && selectOption(opt)"
+          @mouseover="opt.enabled && mouseOver($event)"
           @keydown="itemKeyHandler($event, opt)"
         >
-          <div v-if="opt.kind === 'divider'" class="ns-divider"></div>
-          <div v-else class="ns-item">
-            <i v-if="opt.kind === 'namespace'" class="icon icon-folder" />
+          <div
+            v-if="opt.kind === 'divider'"
+            class="ns-divider"
+          />
+          <div
+            v-else
+            class="ns-item"
+          >
+            <i
+              v-if="opt.kind === 'namespace'"
+              class="icon icon-folder"
+            />
             <div>{{ opt.label }}</div>
-            <i v-if="opt.selected" class="icon icon-checkmark" />
+            <i
+              v-if="opt.selected"
+              class="icon icon-checkmark"
+            />
           </div>
         </div>
-        <div v-if="filtered.length === 0" class="ns-none">
+        <div
+          v-if="cachedFiltered.length === 0"
+          class="ns-none"
+          data-testid="namespaces-option-none"
+        >
           {{ t('namespaceFilter.noMatchingOptions') }}
         </div>
       </div>
@@ -645,16 +851,17 @@ export default {
     }
 
     .ns-clear {
+      &:hover {
+        color: var(--primary);
+        cursor: pointer;
+      }
+    }
+
+    .ns-singleton-info, .ns-clear {
       align-items: center;
       display: flex;
       > i {
-        font-size: 24px;
-        padding: 0 5px;
-      }
-
-      &:hover {
-        color: var(--link);
-        cursor: pointer;
+        padding-right: 5px;
       }
     }
 
@@ -673,7 +880,6 @@ export default {
       position: absolute;
       right: 10px;
       top: 5px;
-      font-size: 16px;
       line-height: 24px;
       text-align: center;
       width: 24px;
@@ -681,7 +887,7 @@ export default {
 
     .ns-dropdown-menu {
       background-color: var(--header-bg);
-      border: 1px solid var(--link-border);
+      border: 1px solid var(--primary-border);
       border-bottom-left-radius: var(--border-radius);
       border-bottom-right-radius: var(--border-radius);
       color: var(--header-btn-text);
@@ -707,12 +913,49 @@ export default {
         padding-bottom: 10px;
       }
 
-      .ns-option:focus {
-        background-color: var(--dropdown-hover-bg);
-        color: var(--dropdown-hover-text);
-      }
-
       .ns-option {
+
+        &[disabled] {
+          cursor: default;
+        }
+
+        &:not([disabled]) {
+          &:focus {
+            background-color: var(--dropdown-hover-bg);
+            color: var(--dropdown-hover-text);
+          }
+          .ns-item {
+             &:hover, &:focus {
+              background-color: var(--dropdown-hover-bg);
+              color: var(--dropdown-hover-text);
+              cursor: pointer;
+
+              > i {
+                color: var(--dropdown-hover-text);
+              }
+            }
+          }
+
+          &.ns-selected {
+            &:hover,&:focus {
+              .ns-item {
+                > * {
+                  background-color: var(--dropdown-hover-bg);
+                  color: var(--dropdown-hover-text);
+                }
+              }
+            }
+          }
+
+          &.ns-selected:not(:hover) {
+            .ns-item {
+              > * {
+                color: var(--dropdown-hover-bg);
+              }
+            }
+          }
+        }
+
         .ns-item {
           align-items: center;
           display: flex;
@@ -732,34 +975,16 @@ export default {
             white-space: nowrap;
           }
 
-          &:hover, &:focus {
-            background-color: var(--dropdown-hover-bg);
-            color: var(--dropdown-hover-text);
-            cursor: pointer;
+        }
 
-            > i {
-              color: var(--dropdown-hover-text);
-            }
-          }
-        }
-      &.ns-selected:not(:hover) {
-        .ns-item {
-          > * {
-            color: var(--dropdown-hover-bg);
-          }
-        }
-      }
-      &.ns-selected {
-        &:hover,&:focus {
+        &.ns-single-match {
           .ns-item {
+            background-color: var(--dropdown-hover-bg);
             > * {
-              background-color: var(--dropdown-hover-bg);
               color: var(--dropdown-hover-text);
             }
           }
         }
-      }
-
       }
     }
 
@@ -778,7 +1003,7 @@ export default {
       &.ns-open {
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
-        border-color: var(--link-border);
+        border-color: var(--primary-border);
       }
 
       > .ns-values {
@@ -787,14 +1012,13 @@ export default {
 
       &:hover {
         > i {
-          color: var(--link);
+          color: var(--primary);
         }
       }
 
       > i {
         height: $ns_dropdown_size;
         width: $ns_dropdown_size;
-        font-size: 20px;
         cursor: pointer;
         text-align: center;
         line-height: $ns_dropdown_size;
@@ -826,7 +1050,7 @@ export default {
             margin-left: 5px;
 
             &:hover {
-              color: var(--link);
+              color: var(--primary);
             };
           }
 

@@ -42,6 +42,7 @@
 //   category,                -- Group to show the product in for the nav hamburger menu
 //   typeStoreMap,            -- An object mapping types to the store that should be used to retrieve information about the type
 //   hideSystemResources      -- Hide resources in namespaces where namespace.isSystem === true, or a namespace managed by fleet (per its annotation) and hide those namespaces from ns/project list and nsfilter (default false)
+//   hideNamespaceLocation    -- Hide the namespace link in the ResourceDetail masthead of namespaced resources and hide the ExplorerProjectsNamespaces namespace link (default false)
 // })
 //
 // externalLink(stringOrFn)  The product has an external page (function gets context object
@@ -103,6 +104,8 @@
 //                               customRoute: undefined,
 //                               hasGraph: undefined   -- If true, render ForceDirectedTreeChart graph (ATTENTION: option graphConfig is needed also!!!)
 //                               graphConfig: undefined   -- Use this to pass along the graph configuration
+//                               notFilterNamespace:  undefined -- Define namespaces that do not need to be filtered
+//                               localOnly: False -- Hide this type from the nav/search bar on downstream clusters
 //                           }
 // )
 // ignoreGroup(group):        Never show group or any types in it
@@ -137,7 +140,7 @@ import {
   ensureRegex, escapeHtml, escapeRegex, ucFirst, pluralize
 } from '@shell/utils/string';
 import {
-  importChart, importList, importDetail, importEdit, listProducts, loadProduct, importCustomPromptRemove, resolveList, resolveEdit, resolveWindowComponent, importWindowComponent, resolveChart, resolveDetail, importDialog
+  importChart, importList, importDetail, importEdit, listProducts, loadProduct, importCustomPromptRemove, resolveList, resolveEdit, resolveWindowComponent, importWindowComponent, resolveChart, resolveDetail, importDialog, importMachineConfig, resolveMachineConfigComponent, resolveCloudCredentialComponent, importCloudCredential
 } from '@shell/utils/dynamic-importer';
 
 import { NAME as EXPLORER } from '@shell/config/product/explorer';
@@ -146,6 +149,8 @@ import { normalizeType } from '@shell/plugins/dashboard-store/normalize';
 import { sortBy } from '@shell/utils/sort';
 import { haveV1Monitoring, haveV2Monitoring } from '@shell/utils/monitoring';
 import { NEU_VECTOR_NAMESPACE } from '@shell/config/product/neuvector';
+
+import { ExtensionPoint, TableColumnLocation } from '@shell/core/types';
 
 export const NAMESPACED = 'namespaced';
 export const CLUSTER_LEVEL = 'cluster';
@@ -167,14 +172,14 @@ const graphConfigMap = {};
 const FIELD_REGEX = /^\$\.metadata\.fields\[([0-9]*)\]/;
 
 export const IF_HAVE = {
-  V1_MONITORING:            'v1-monitoring',
-  V2_MONITORING:            'v2-monitoring',
-  PROJECT:                  'project',
-  NO_PROJECT:               'no-project',
-  NOT_V1_ISTIO:             'not-v1-istio',
-  MULTI_CLUSTER:            'multi-cluster',
-  NEUVECTOR_NAMESPACE:      'neuvector-namespace',
-  ADMIN:                    'admin-user',
+  V1_MONITORING:       'v1-monitoring',
+  V2_MONITORING:       'v2-monitoring',
+  PROJECT:             'project',
+  NO_PROJECT:          'no-project',
+  NOT_V1_ISTIO:        'not-v1-istio',
+  MULTI_CLUSTER:       'multi-cluster',
+  NEUVECTOR_NAMESPACE: 'neuvector-namespace',
+  ADMIN:               'admin-user',
 };
 
 export function DSL(store, product, module = 'type-map') {
@@ -221,6 +226,33 @@ export function DSL(store, product, module = 'type-map') {
     },
 
     headers(type, headers) {
+      // gate it so that we prevent errors on older versions of dashboard
+      if (store.$plugin?.getUIConfig) {
+        const extensionCols = store.$plugin.getUIConfig(ExtensionPoint.TABLE_COL, TableColumnLocation.RESOURCE);
+
+        // Try and insert the columns before the Age column, if that is the last column
+        let insertPosition = headers.length;
+
+        if (headers.length > 0) {
+          const lastColumn = headers[headers.length - 1];
+
+          if (lastColumn?.name === AGE.name) {
+            insertPosition--;
+          }
+        }
+
+        // adding extension defined cols to the correct header config
+        extensionCols.forEach((col) => {
+          if (col.locationConfig.resource) {
+            col.locationConfig.resource.forEach((resource) => {
+              if (resource && type === resource) {
+                headers.splice(insertPosition, 0, col);
+              }
+            });
+          }
+        });
+      }
+
       headers.forEach((header) => {
         // If on the client, then use the value getter if there is one
         if (header.getValue) {
@@ -365,16 +397,19 @@ export const state = function() {
     hideBulkActions:         {},
     schemaGeneration:        1,
     cache:                   {
-      typeMove:         {},
-      groupLabel:       {},
-      ignore:           {},
-      list:             {},
-      chart:            {},
-      detail:           {},
-      edit:             {},
-      componentFor:     {},
-      promptRemove:     {},
-      windowComponents: {},
+      typeMove:           {},
+      groupLabel:         {},
+      ignore:             {},
+      list:               {},
+      chart:              {},
+      detail:             {},
+      edit:               {},
+      componentFor:       {},
+      promptRemove:       {},
+      windowComponents:   {},
+      'machine-config':   {},
+      'cloud-credential': {}
+
     },
   };
 };
@@ -809,7 +844,7 @@ export const getters = {
 
   allTypes(state, getters, rootState, rootGetters) {
     return (product, mode = ALL) => {
-      const module = findBy(state.products, 'name', product).inStore;
+      const module = findBy(state.products, 'name', product)?.inStore;
       const schemas = rootGetters[`${ module }/all`](SCHEMA);
       const counts = rootGetters[`${ module }/all`](COUNT)?.[0]?.counts || {};
       const isDev = rootGetters['prefs/get'](VIEW_IN_API);
@@ -835,6 +870,8 @@ export const getters = {
           // Skip the schemas that aren't top-level types
           continue;
         } else if ( typeof typeOptions.ifRancherCluster !== 'undefined' && typeOptions.ifRancherCluster !== rootGetters.isRancher ) {
+          continue;
+        } else if (typeOptions.localOnly && !rootGetters.currentCluster?.isLocal) {
           continue;
         }
 
@@ -914,7 +951,15 @@ export const getters = {
 
           item.mode = mode;
           item.weight = weight;
-          item.label = item.label || item.name;
+
+          // Ensure labelKey is taken into account... with a mock count
+          // This is harmless if the translation doesn't require count
+          if (item.labelKey && rootGetters['i18n/exists'](item.labelKey)) {
+            item.label = rootGetters['i18n/t'](item.labelKey, { count: 2 }).trim();
+            delete item.labelKey; // Label should really take precedence over labelKey, but it doesn't, so remove it
+          } else {
+            item.label = item.label || item.name;
+          }
 
           out[id] = item;
         }
@@ -993,10 +1038,6 @@ export const getters = {
 
       return out;
 
-      function rowValueGetter(index) {
-        return row => row.metadata?.fields?.[index];
-      }
-
       function fromSchema(col, rootGetters) {
         let formatter, width, formatterOpts;
 
@@ -1014,32 +1055,19 @@ export const getters = {
           formatter = 'Number';
         }
 
+        const colName = col.name.includes(' ') ? col.name.split(' ').map(word => word.charAt(0).toUpperCase() + word.substring(1) ).join('') : col.name;
+
         const exists = rootGetters['i18n/exists'];
         const t = rootGetters['i18n/t'];
-        const labelKey = `tableHeaders.${ col.name }`;
+        const labelKey = `tableHeaders.${ colName.charAt(0).toLowerCase() + colName.slice(1) }`;
         const description = col.description || '';
         const tooltip = description && description[description.length - 1] === '.' ? description.slice(0, -1) : description;
 
-        // 'field' comes from the schema - typically it is of the form $.metadata.field[N]
-        // We will use JsonPath to look up this value, which is costly - so if we can detect this format
-        // Use a more efficient function to get the value
-        let value = col.field.startsWith('.') ? `$${ col.field }` : col.field;
-
-        if (process.client) {
-          const found = value.match(FIELD_REGEX);
-
-          if (found && found.length === 2) {
-            const fieldIndex = parseInt(found[1], 10);
-
-            value = rowValueGetter(fieldIndex);
-          }
-        }
-
         return {
-          name:    col.name.toLowerCase(),
-          label:   exists(labelKey) ? t(labelKey) : col.name,
-          value,
-          sort:    [col.field],
+          name:  col.name.toLowerCase(),
+          label: exists(labelKey) ? t(labelKey) : col.name,
+          value: _rowValueGetter(col),
+          sort:  [col.field],
           formatter,
           formatterOpts,
           width,
@@ -1123,6 +1151,22 @@ export const getters = {
     };
   },
 
+  hasCustomMachineConfigComponent(state, getters, rootState) {
+    return (rawType, subType) => {
+      const key = getters.componentFor(rawType, subType);
+
+      return hasCustom(state, rootState, 'machine-config', key, key => resolveMachineConfigComponent(key));
+    };
+  },
+
+  hasCustomCloudCredentialComponent(state, getters, rootState) {
+    return (rawType, subType) => {
+      const key = getters.componentFor(rawType, subType);
+
+      return hasCustom(state, rootState, 'cloud-credential', key, key => resolveCloudCredentialComponent(key));
+    };
+  },
+
   importComponent(state, getters) {
     return (path) => {
       return importEdit(path);
@@ -1168,6 +1212,18 @@ export const getters = {
   importWindowComponent(state, getters, rootState) {
     return (rawType, subType) => {
       return loadExtension(rootState, 'windowComponents', getters.componentFor(rawType, subType), importWindowComponent);
+    };
+  },
+
+  importMachineConfig(state, getters, rootState) {
+    return (rawType, subType) => {
+      return loadExtension(rootState, 'machine-config', getters.componentFor(rawType, subType), importMachineConfig);
+    };
+  },
+
+  importCloudCredential(state, getters, rootState) {
+    return (rawType, subType) => {
+      return loadExtension(rootState, 'cloud-credential', getters.componentFor(rawType, subType), importCloudCredential);
     };
   },
 
@@ -1314,6 +1370,14 @@ export const getters = {
       }
 
       return false;
+    };
+  },
+
+  rowValueGetter(state) {
+    return (schema, colName) => {
+      const col = _findColumnByName(schema, colName);
+
+      return _rowValueGetter(col);
     };
   },
 };
@@ -1773,6 +1837,32 @@ export function isAdminUser(getters) {
   const canPutHelmOperations = (getters['management/schemaFor'](CATALOG.OPERATION)?.resourceMethods || []).includes('PUT');
 
   return canEditSettings && canEditFeatureFlags && canInstallApps && canAddRepos && canPutHelmOperations;
+}
+
+function _findColumnByName(schema, colName) {
+  const attributes = schema.attributes || {};
+  const columns = attributes.columns || [];
+
+  return findBy(columns, 'name', colName);
+}
+
+function _rowValueGetter(col) {
+  // 'field' comes from the schema - typically it is of the form $.metadata.field[N]
+  // We will use JsonPath to look up this value, which is costly - so if we can detect this format
+  // Use a more efficient function to get the value
+  const value = col.field.startsWith('.') ? `$${ col.field }` : col.field;
+
+  if (process.client) {
+    const found = value.match(FIELD_REGEX);
+
+    if (found && found.length === 2) {
+      const fieldIndex = parseInt(found[1], 10);
+
+      return row => row.metadata?.fields?.[fieldIndex];
+    }
+  }
+
+  return value;
 }
 
 // Is V1 Istio installed?

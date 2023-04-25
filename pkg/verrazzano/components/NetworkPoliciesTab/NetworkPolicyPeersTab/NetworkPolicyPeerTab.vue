@@ -87,7 +87,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -107,7 +110,10 @@ export default {
             :label="t('verrazzano.common.fields.networkPolicyPeerType')"
           />
         </div>
-        <div v-if="isIpBlock" class="col span-4">
+        <div
+          v-if="isIpBlock"
+          class="col span-4"
+        >
           <LabeledInput
             :value="getField('cidr')"
             :mode="mode"
@@ -117,7 +123,10 @@ export default {
             @input="setFieldIfNotEmpty('cidr', $event)"
           />
         </div>
-        <div v-if="isIpBlock" class="col span-4">
+        <div
+          v-if="isIpBlock"
+          class="col span-4"
+        >
           <LabeledArrayList
             :value="getListField('except')"
             :mode="mode"
@@ -128,7 +137,10 @@ export default {
         </div>
       </div>
     </template>
-    <template v-if="isSelectors" #nestedTabs>
+    <template
+      v-if="isSelectors"
+      #nestedTabs
+    >
       <LabelSelectorTab
         :value="getField('namespaceSelector')"
         :mode="mode"

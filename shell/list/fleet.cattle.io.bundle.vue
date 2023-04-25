@@ -23,11 +23,17 @@ export default {
       type:     Object,
       required: true,
     },
+    useQueryParamsForSimpleFiltering: {
+      type:    Boolean,
+      default: false
+    }
   },
 
   async fetch() {
-    await this.$fetchType(FLEET.BUNDLE);
-    this.allFleet = await this.$store.dispatch('management/findAll', { type: FLEET.CLUSTER });
+    await this.$fetchType(this.resource);
+    if (this.$store.getters['management/schemaFor']( FLEET.CLUSTER )) {
+      this.allFleet = await this.$store.getters['management/all'](FLEET.CLUSTER);
+    }
   },
 
   data() {
@@ -86,27 +92,35 @@ export default {
 
   // override with relevant info for the loading indicator since this doesn't use it's own masthead
   $loadingResources() {
-    return {
-      loadResources:     [FLEET.BUNDLE],
-      loadIndeterminate: true, // results are filtered so we wouldn't get the correct count on indicator...
-    };
+    // results are filtered so we wouldn't get the correct count on indicator...
+    return { loadIndeterminate: true };
   },
 };
 </script>
 
 <template>
   <div>
-    <Banner v-if="hidden" color="info" :label="t('fleet.bundles.harvester', {count: hidden} )" />
+    <Banner
+      v-if="hidden"
+      color="info"
+      :label="t('fleet.bundles.harvester', {count: hidden} )"
+    />
     <ResourceTable
       :schema="schema"
       :headers="headers"
       :rows="bundles"
       :loading="loading"
+      :use-query-params-for-simple-filtering="useQueryParamsForSimpleFiltering"
+      :force-update-live-and-delayed="forceUpdateLiveAndDelayed"
     >
       <template #cell:deploymentsReady="{row}">
-        <span v-if="row.status.summary.desiredReady != row.status.summary.ready" class="text-warning">
+        <span
+          v-if="row.status && (row.status.summary.desiredReady !== row.status.summary.ready)"
+          class="text-warning"
+        >
           {{ row.status.summary.ready }}/{{ row.status.summary.desiredReady }}</span>
-        <span v-else>{{ row.status.summary.desiredReady }}</span>
+        <span v-else-if="row.status">{{ row.status.summary.desiredReady }}</span>
+        <span v-else>-</span>
       </template>
     </ResourceTable>
   </div>

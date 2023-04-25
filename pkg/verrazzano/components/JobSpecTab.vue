@@ -66,7 +66,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -168,7 +171,10 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab :name="createTabName(treeTabName, 'labelSelector')" :label="t('verrazzano.common.tabs.labelSelector')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'labelSelector')"
+        :label="t('verrazzano.common.tabs.labelSelector')"
+      >
         <PodAffinityTerm
           :value="getField('selector')"
           :mode="mode"

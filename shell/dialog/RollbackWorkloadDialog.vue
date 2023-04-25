@@ -10,6 +10,8 @@ import { WORKLOAD_TYPES } from '@shell/config/types';
 import { diffFrom } from '@shell/utils/time';
 import { mapGetters } from 'vuex';
 import { ACTIVELY_REMOVE, NEVER_ADD } from '@shell/utils/create-yaml';
+import { DATE_FORMAT, TIME_FORMAT } from '@shell/store/prefs';
+import { escapeHtml } from '@shell/utils/string';
 
 const HIDE = [
   'metadata.labels.pod-template-hash',
@@ -34,78 +36,55 @@ export default {
     Banner,
     YamlEditor,
   },
-  props:      {
-    resources: {
-      type:     Array,
+  props: {
+    workload: {
+      type:     Object,
       required: true
     }
   },
   data() {
     return {
-      errors:             [],
-      selectedRevision:   null,
-      currentRevision:    null,
-      revisions:          [],
-      editorMode:         EDITOR_MODES.DIFF_CODE,
-      showDiff:           false,
+      errors:           [],
+      selectedRevision: null,
+      currentRevision:  null,
+      revisions:        [],
+      editorMode:       EDITOR_MODES.DIFF_CODE,
+      showDiff:         false,
     };
   },
   computed: {
     ...mapGetters({ t: 'i18n/t' }),
     ...mapGetters(['currentCluster']),
-    workload() {
-      return this.resources[0];
-    },
     workloadName() {
       return this.workload.metadata.name;
     },
     workloadNamespace() {
       return this.workload.metadata.namespace;
     },
-    currentRevisionNumber() {
-      return this.workload.metadata.annotations['deployment.kubernetes.io/revision'];
+    workloadType() {
+      return this.workload.kind.toLowerCase();
     },
-    rollbackRequestBody() {
-      if (!this.selectedRevision) {
-        return null;
-      }
-
-      // Build the request body in the same format that kubectl
-      // uses to call the Kubernetes API to roll back a workload.
-      // To see an example request body, run:
-      // kubectl rollout undo deployment/[deployment name] --to-revision=[revision number] -v=8
-      const body = [
-        {
-          op:      'replace',
-          path:  '/spec/template',
-          value: {
-            metadata: {
-              creationTimestamp: null,
-              labels:            { 'workload.user.cattle.io/workloadselector': this.selectedRevision.spec.template.metadata.labels['workload.user.cattle.io/workloadselector'] }
-            },
-            spec: this.selectedRevision.spec.template.spec
-          }
-        }, {
-          op:    'replace',
-          path:  '/metadata/annotations',
-          value: { 'deployment.kubernetes.io/revision': this.selectedRevision.metadata.annotations['deployment.kubernetes.io/revision'] }
-        }
-      ];
-
-      return body;
+    revisionsType() {
+      return this.workloadType === 'deployment' ? WORKLOAD_TYPES.REPLICA_SET : 'apps.controllerrevision';
     },
     selectedRevisionId() {
       return this.selectedRevision.id;
     },
     sanitizedSelectedRevision() {
       return this.sanitizeYaml(this.selectedRevision);
-    }
+    },
+    timeFormatStr() {
+      const dateFormat = escapeHtml( this.$store.getters['prefs/get'](DATE_FORMAT));
+      const timeFormat = escapeHtml( this.$store.getters['prefs/get'](TIME_FORMAT));
+
+      return `${ dateFormat }, ${ timeFormat }`;
+    },
   },
   fetch() {
     // Fetch revisions of the current workload
-    this.$store.dispatch('cluster/findAll', { type: WORKLOAD_TYPES.REPLICA_SET })
+    this.$store.dispatch('cluster/findAll', { type: this.revisionsType })
       .then(( response ) => {
-        const allReplicaSets = response;
+        const allRevisions = response;
 
         const hasRelationshipWithCurrentWorkload = ( replicaSet ) => {
           const relationshipsOfReplicaSet = replicaSet.metadata.relationships;
@@ -119,15 +98,13 @@ export default {
           return revisionsOfCurrentWorkload.length > 0;
         };
 
-        const workloadRevisions = allReplicaSets.filter(( replicaSet ) => {
+        const workloadRevisions = allRevisions.filter(( replicaSet ) => {
           return hasRelationshipWithCurrentWorkload( replicaSet );
         });
 
         const revisionOptions = workloadRevisions
           .map( (revision ) => {
-            const isCurrentRevision = this.getRevisionNumber(revision) === this.currentRevisionNumber;
-
-            if (isCurrentRevision) {
+            if (this.isCurrentRevision(revision)) {
               this.currentRevision = revision;
             }
 
@@ -147,28 +124,32 @@ export default {
     },
     async save() {
       try {
-        await this.workload.rollBackWorkload(this.currentCluster, this.workload, this.rollbackRequestBody);
+        await this.workload.rollBack(this.currentCluster, this.workload, this.selectedRevision);
         this.close();
       } catch (err) {
         this.errors = exceptionToErrorsArray(err);
       }
     },
-    getRevisionNumber( revision ) {
-      return revision.metadata.annotations['deployment.kubernetes.io/revision'];
+    isCurrentRevision(revision) {
+      return revision.revisionNumber === this.workload.currentRevisionNumber;
     },
     buildRevisionOption( revision ) {
-      const revisionNumber = this.getRevisionNumber(revision);
-      const isCurrentRevision = revisionNumber === this.currentRevisionNumber;
+      const { revisionNumber } = revision;
+      const isCurrentRevision = this.isCurrentRevision(revision);
       const now = day();
       const createdDate = day(revision.metadata.creationTimestamp);
-      const revisionAge = diffFrom(createdDate, now, this.t);
-      const units = this.t(revisionAge.unitsKey, { count: revisionAge.label });
+      const createdDateFormatted = createdDate.format(this.timeFormatStr);
+
+      const revisionAgeObject = diffFrom(createdDate, now, this.t);
+      const revisionAge = `${ createdDateFormatted }, ${ revisionAgeObject.label }`;
+      const units = this.t(revisionAgeObject.unitsKey, { count: revisionAgeObject.label });
       const currentLabel = this.t('promptRollback.currentLabel');
+
       const optionLabel = this.t('promptRollback.revisionOption', {
         revisionNumber,
-        revisionAge:    revisionAge.label,
+        revisionAge,
         units,
-        currentLabel:   isCurrentRevision ? currentLabel : ''
+        currentLabel: isCurrentRevision ? currentLabel : ''
       });
 
       return {
@@ -219,11 +200,21 @@ export default {
     class="prompt-rollback"
     :show-highlight-border="false"
   >
-    <h4 slot="title" class="text-default-text">
+    <h4
+      slot="title"
+      class="text-default-text"
+    >
       {{ t('promptRollback.modalTitle', { workloadName }, true) }}
     </h4>
-    <div slot="body" class="pl-10 pr-10 ">
-      <Banner v-if="revisions.length === 1" color="info" :label="t('promptRollback.singleRevisionBanner')" />
+    <div
+      slot="body"
+      class="pl-10 pr-10 "
+    >
+      <Banner
+        v-if="revisions.length === 1"
+        color="info"
+        :label="t('promptRollback.singleRevisionBanner')"
+      />
       <form>
         <LabeledSelect
           v-model="selectedRevision"
@@ -234,7 +225,13 @@ export default {
           :get-option-label="getOptionLabel"
         />
       </form>
-      <Banner v-for="(error, i) in errors" :key="i" class="" color="error" :label="error" />
+      <Banner
+        v-for="(error, i) in errors"
+        :key="i"
+        class=""
+        color="error"
+        :label="error"
+      />
       <YamlEditor
         v-if="selectedRevision && showDiff"
         :key="selectedRevisionId"
@@ -245,7 +242,10 @@ export default {
         :as-object="true"
       />
     </div>
-    <div slot="actions" class="buttons ">
+    <div
+      slot="actions"
+      class="buttons "
+    >
       <div class="left">
         <button
           :disabled="!selectedRevision"
@@ -256,7 +256,10 @@ export default {
         </button>
       </div>
       <div class="right">
-        <button class="btn role-secondary mr-10" @click="close">
+        <button
+          class="btn role-secondary mr-10"
+          @click="close"
+        >
           {{ t('generic.cancel') }}
         </button>
         <AsyncButton

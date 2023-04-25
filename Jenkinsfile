@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2022, Oracle and/or its affiliates.
+=======
+// Copyright (c) 2022, 2023, Oracle and/or its affiliates.
+>>>>>>> oracle/release/2.7.2
 
 // Added by Verrazzano
 
@@ -23,7 +27,11 @@ pipeline {
     }
 
     environment {
+<<<<<<< HEAD
         DASHBOARD_VERSION = "2.7.1"
+=======
+        DASHBOARD_VERSION = "2.7.2"
+>>>>>>> oracle/release/2.7.2
         OCI_CLI_AUTH = "instance_principal"
         OCI_OS_NAMESPACE = credentials('oci-os-namespace')
         OCI_OS_BUCKET = "verrazzano-builds"
@@ -41,7 +49,11 @@ pipeline {
                 }
                 sh '''
                     cd ./pkg/verrazzano/assets
+<<<<<<< HEAD
                     jq --arg version "${VERSION}" '.dashboardBuild |= $version' buildVersion.json > tmp.json 
+=======
+                    jq --arg version "${VERSION}" '.dashboardBuild |= $version' buildVersion.json > tmp.json
+>>>>>>> oracle/release/2.7.2
                     mv tmp.json buildVersion.json
                 '''
             }

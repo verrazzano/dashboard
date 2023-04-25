@@ -23,7 +23,7 @@ export default {
       default: 'create'
     },
     tabName: {
-      type:      String,
+      type:     String,
       required: true
     },
     tabLabel: {
@@ -50,7 +50,11 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel" :weight="weight">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+    :weight="weight"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"

@@ -5,8 +5,8 @@ import { Checkbox } from '@components/Form/Checkbox';
 import YamlEditor from '@shell/components/YamlEditor';
 import { mapGetters } from 'vuex';
 import FileSelector from '@shell/components/form/FileSelector';
-import Tab from '@shell/components/Tabbed/Tab';
 import { Banner } from '@components/Banner';
+import ChartPsp from '@shell/components/ChartPsp';
 
 const defaultOverlayFile = `#apiVersion: install.istio.io/v1alpha1
 #kind: IstioOperator
@@ -54,13 +54,11 @@ export default {
     Checkbox,
     FileSelector,
     YamlEditor,
-    Tab,
-    Banner
+    Banner,
+    ChartPsp
   },
 
-  hasTabs: true,
-
-  props:   {
+  props: {
     value: {
       type:    Object,
       default: () => {
@@ -80,6 +78,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['currentCluster'], { t: 'i18n/t' }),
     valuesYaml: {
       get() {
         try {
@@ -100,8 +99,6 @@ export default {
         }
       }, 500)
     },
-
-    ...mapGetters({ t: 'i18n/t' })
   },
 
   methods: {
@@ -131,57 +128,116 @@ export default {
 
 <template>
   <div>
-    <Tab name="components" :label="t('istio.titles.components') ">
-      <div class="row">
-        <div v-if="value.cni" class="col span-4">
-          <Checkbox v-model="value.cni.enabled" :label="t('istio.cni')" @input="update" />
-        </div>
-        <div v-if="value.ingressGateways" class="col span-4">
-          <Checkbox v-model="value.ingressGateways.enabled" :label="t('istio.ingressGateway')" />
-        </div>
-        <div v-if="value.egressGateways" class="col span-4">
-          <Checkbox v-model="value.egressGateways.enabled" :label="t('istio.egressGateway')" />
-        </div>
-      </div>
-      <div class="row">
-        <div v-if="value.pilot" class="col span-4">
-          <Checkbox v-model="value.pilot.enabled" :label="t('istio.pilot')" />
-        </div>
-        <div v-if="value.policy" class="col span-4">
-          <Checkbox v-model="value.policy.enabled" :label="t('istio.policy')" />
-        </div>
-        <div v-if="value.telemetry" class="col span-4">
-          <Checkbox v-model="value.telemetry.enabled" :label="t('istio.telemetry')" />
-        </div>
-      </div>
-      <div class="row">
-        <div v-if="value.kiali" class="col span-4">
-          <Checkbox v-model="value.kiali.enabled" :label="t('istio.kiali')" />
-        </div>
-        <div v-if="value.tracing" class="col span-4">
-          <Checkbox v-model="value.tracing.enabled" :label="t('istio.tracing')" />
-        </div>
-        <div class="col span-4">
-        </div>
-      </div>
-    </Tab>
+    <!-- Conditionally display PSP checkbox -->
+    <ChartPsp
+      :value="value"
+      :title="t('catalog.chart.global')"
+      :cluster="currentCluster"
+    />
 
-    <Tab :label="t('istio.customOverlayFile.label')" name="overlay" @active="$refs['yaml-editor'].refresh()">
-      <div class="custom-overlay">
-        <Banner color="info">
-          <span
-            v-html="t('istio.customOverlayFile.tip', {}, true)"
-          ></span>
-        </Banner>
-        <YamlEditor
-          ref="yaml-editor"
-          class="yaml-editor mb-10"
-          :value="overlayFile"
-          @onInput="valuesChanged"
+    <h3>
+      {{ t('istio.titles.components') }}
+    </h3>
+    <div class="row">
+      <div
+        v-if="value.cni"
+        class="col span-4"
+      >
+        <Checkbox
+          v-model="value.cni.enabled"
+          :label="t('istio.cni')"
+          @input="update"
         />
-        <FileSelector class="role-primary  btn-sm" :label="t('generic.readFromFile')" @selected="onFileSelected" />
       </div>
-    </Tab>
+      <div
+        v-if="value.ingressGateways"
+        class="col span-4"
+      >
+        <Checkbox
+          v-model="value.ingressGateways.enabled"
+          :label="t('istio.ingressGateway')"
+        />
+      </div>
+      <div
+        v-if="value.egressGateways"
+        class="col span-4"
+      >
+        <Checkbox
+          v-model="value.egressGateways.enabled"
+          :label="t('istio.egressGateway')"
+        />
+      </div>
+    </div>
+    <div class="row">
+      <div
+        v-if="value.pilot"
+        class="col span-4"
+      >
+        <Checkbox
+          v-model="value.pilot.enabled"
+          :label="t('istio.pilot')"
+        />
+      </div>
+      <div
+        v-if="value.policy"
+        class="col span-4"
+      >
+        <Checkbox
+          v-model="value.policy.enabled"
+          :label="t('istio.policy')"
+        />
+      </div>
+      <div
+        v-if="value.telemetry"
+        class="col span-4"
+      >
+        <Checkbox
+          v-model="value.telemetry.enabled"
+          :label="t('istio.telemetry')"
+        />
+      </div>
+    </div>
+    <div class="row mb-20">
+      <div
+        v-if="value.kiali"
+        class="col span-4"
+      >
+        <Checkbox
+          v-model="value.kiali.enabled"
+          :label="t('istio.kiali')"
+        />
+      </div>
+      <div
+        v-if="value.tracing"
+        class="col span-4"
+      >
+        <Checkbox
+          v-model="value.tracing.enabled"
+          :label="t('istio.tracing')"
+        />
+      </div>
+      <div class="col span-4" />
+    </div>
+
+    <h3>{{ t('istio.customOverlayFile.label') }}</h3>
+    <div class="custom-overlay">
+      <Banner color="info">
+        <span
+          v-html="t('istio.customOverlayFile.tip', {}, true)"
+        />
+      </Banner>
+      <YamlEditor
+        ref="yaml-editor"
+        class="yaml-editor mb-10"
+        :value="overlayFile"
+        @onInput="valuesChanged"
+      />
+      <FileSelector
+        class="role-primary  btn-sm"
+        :label="t('generic.readFromFile')"
+        @selected="onFileSelected"
+      />
+    </div>
   </div>
 </template>
 

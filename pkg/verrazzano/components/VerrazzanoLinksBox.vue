@@ -32,8 +32,17 @@ export default {
 
 <template>
   <SimpleBox :title="t('verrazzano.links.title')">
-    <div v-for="(value, name) in links" :key="name" class="support-link">
-      <a v-t="`verrazzano.links.${ name }`" :href="value" target="_blank" rel="noopener noreferrer nofollow" />
+    <div
+      v-for="(value, name) in links"
+      :key="name"
+      class="support-link"
+    >
+      <a
+        v-t="`verrazzano.links.${ name }`"
+        :href="value"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+      />
     </div>
   </SimpleBox>
 </template>

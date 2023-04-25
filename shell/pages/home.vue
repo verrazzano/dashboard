@@ -63,8 +63,21 @@ export default {
     this.whatsNewVersion = vzVersion;
 
     // Added by Verrazzano End
-    this.$store.dispatch('management/findAll', { type: CAPI.RANCHER_CLUSTER });
-    this.$store.dispatch('management/findAll', { type: MANAGEMENT.CLUSTER });
+    if ( this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER) ) {
+      this.$store.dispatch('management/findAll', { type: CAPI.RANCHER_CLUSTER });
+    }
+
+    if ( this.$store.getters['management/schemaFor'](MANAGEMENT.CLUSTER) ) {
+      this.$store.dispatch('management/findAll', { type: MANAGEMENT.CLUSTER });
+    }
+
+    if ( this.$store.getters['management/canList'](CAPI.MACHINE) ) {
+      this.$store.dispatch('management/findAll', { type: CAPI.MACHINE });
+    }
+
+    if ( this.$store.getters['management/canList'](MANAGEMENT.NODE) ) {
+      this.$store.dispatch('management/findAll', { type: MANAGEMENT.NODE });
+    }
   },
 
   data() {
@@ -83,11 +96,12 @@ export default {
     ];
 
     return {
+      // Added by Verrazzano Start
+      // HIDE_HOME_PAGE_CARDS, fullVersion, pageActions, vendor: getVendor(),
       HIDE_HOME_PAGE_CARDS,
       fullVersion,
       pageActions,
       vendor:          getVendor(),
-      // Added by Verrazzano Start
       whatsNewVersion: undefined,
       // Added by Verrazzano End
     };
@@ -102,10 +116,28 @@ export default {
       return this.$store.getters['management/all'](CAPI.RANCHER_CLUSTER);
     },
 
+    // User can go to Cluster Management if they can see the cluster schema
+    canManageClusters() {
+      const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
+
+      return !!schema;
+    },
+
     canCreateCluster() {
       const schema = this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER);
 
       return !!schema?.collectionMethods.find(x => x.toLowerCase() === 'post');
+    },
+
+    manageLocation() {
+      return {
+        name:   'c-cluster-product-resource',
+        params: {
+          product:  MANAGER,
+          cluster:  BLANK_CLUSTER,
+          resource: CAPI.RANCHER_CLUSTER
+        },
+      };
     },
 
     createLocation() {
@@ -221,6 +253,12 @@ export default {
     markSeenReleaseNotes(this.$store);
   },
 
+  // Forget the types when we leave the page
+  beforeDestroy() {
+    this.$store.dispatch('management/forgetType', CAPI.MACHINE);
+    this.$store.dispatch('management/forgetType', MANAGEMENT.NODE);
+  },
+
   methods: {
     /**
      * Define actions for each navigation link
@@ -294,21 +332,43 @@ export default {
 
 </script>
 <template>
-  <div v-if="managementReady" class="home-page">
-    <BannerGraphic :small="true" :title="t('landing.welcomeToRancher', {vendor})" :pref="HIDE_HOME_PAGE_CARDS" pref-key="welcomeBanner" />
+  <div
+    v-if="managementReady"
+    class="home-page"
+  >
+    <BannerGraphic
+      :small="true"
+      :title="t('landing.welcomeToRancher', {vendor})"
+      :pref="HIDE_HOME_PAGE_CARDS"
+      pref-key="welcomeBanner"
+    />
     <IndentedPanel class="mt-20 mb-20">
-      <div v-if="!readWhatsNewAlready" class="row">
+      <div
+        v-if="!readWhatsNewAlready"
+        class="row"
+      >
         <div class="col span-12">
           <Banner
             data-testid="changelog-banner"
             color="info whats-new"
           >
-            <div>{{ t('landing.seeWhatsNew') }}</div>
+            <div>
+              {{ t('landing.seeWhatsNew') }}
+            </div>
             <!-- Added by Verrazzano Start -->
             <!--
-            <a class="hand" @click.prevent.stop="showWhatsNew"><span v-html="t('landing.whatsNewLink')" /></a>
+            <a
+              class="hand"
+              @click.prevent.stop="showWhatsNew"
+            ><span v-html="t('landing.whatsNewLink')" /></a>
             -->
-            <a v-if="whatsNewVersion" :href="whatsNewLink" target="_blank" rel="noopener noreferrer nofollow" class="hand">
+            <a
+              v-if="whatsNewVersion"
+              :href="whatsNewLink"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              class="hand"
+            >
               <span v-html="t('landing.whatsNewLink', {version: whatsNewVersion})" />
             </a>
 
@@ -319,11 +379,23 @@ export default {
 
       <div class="row home-panels">
         <div class="col main-panel">
-          <div v-if="!showSetLoginBanner" class="mb-10 row">
+          <div
+            v-if="!showSetLoginBanner"
+            class="mb-10 row"
+          >
             <div class="col span-12">
-              <Banner color="set-login-page" :closable="true" @close="closeSetLoginBanner()">
-                <div>{{ t('landing.landingPrefs.title') }}</div>
-                <a class="hand mr-20" @click.prevent.stop="showUserPrefs"><span v-html="t('landing.landingPrefs.userPrefs')" /></a>
+              <Banner
+                color="set-login-page mt-0"
+                :closable="true"
+                @close="closeSetLoginBanner()"
+              >
+                <div>
+                  {{ t('landing.landingPrefs.title') }}
+                </div>
+                <a
+                  class="hand mr-20"
+                  @click.prevent.stop="showUserPrefs"
+                ><span v-html="t('landing.landingPrefs.userPrefs')" /></a>
               </Banner>
             </div>
           </div>
@@ -343,7 +415,12 @@ export default {
                   <span>
                     {{ t('landing.gettingStarted.body') }}
                   </span>
-                  <a :href="gettingStartedLink" target="_blank" rel="noopener noreferrer nofollow" class="getting-started-btn">
+                  <a
+                    :href="gettingStartedLink"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    class="getting-started-btn"
+                  >
                     {{ t('landing.gettingStarted.link') }}
                   </a>
                 </div>
@@ -353,7 +430,10 @@ export default {
           <!-- Added by Verrazzano End -->
 
           <div class="row panel">
-            <div v-if="mcm" class="col span-12">
+            <div
+              v-if="mcm"
+              class="col span-12"
+            >
               <SortableTable
                 :table-actions="false"
                 :row-actions="false"
@@ -367,18 +447,34 @@ export default {
                     <h2 class="mb-0">
                       {{ t('landing.clusters.title') }}
                     </h2>
-                    <BadgeState v-if="kubeClusters" :label="kubeClusters.length.toString()" color="role-tertiary ml-20 mr-20" />
+                    <BadgeState
+                      v-if="kubeClusters"
+                      :label="kubeClusters.length.toString()"
+                      color="role-tertiary ml-20 mr-20"
+                    />
                   </div>
                 </template>
-                <template v-if="canCreateCluster" #header-middle>
+                <template
+                  v-if="canCreateCluster || canManageClusters"
+                  #header-middle
+                >
                   <div class="table-heading">
                     <n-link
+                      v-if="canManageClusters"
+                      :to="manageLocation"
+                      class="btn btn-sm role-secondary"
+                    >
+                      {{ t('cluster.manageAction') }}
+                    </n-link>
+                    <n-link
+                      v-if="canCreateCluster"
                       :to="importLocation"
                       class="btn btn-sm role-primary"
                     >
                       {{ t('cluster.importAction') }}
                     </n-link>
                     <n-link
+                      v-if="canCreateCluster"
                       :to="createLocation"
                       class="btn btn-sm role-primary"
                     >
@@ -388,12 +484,22 @@ export default {
                 </template>
                 <template #col:name="{row}">
                   <td>
-                    <span v-if="row.mgmt">
-                      <n-link v-if="row.mgmt.isReady && !row.hasError" :to="{ name: 'c-cluster-explorer', params: { cluster: row.mgmt.id }}">
-                        {{ row.nameDisplay }}
-                      </n-link>
-                      <span v-else>{{ row.nameDisplay }}</span>
-                    </span>
+                    <div class="list-cluster-name">
+                      <span v-if="row.mgmt">
+                        <n-link
+                          v-if="row.mgmt.isReady && !row.hasError"
+                          :to="{ name: 'c-cluster-explorer', params: { cluster: row.mgmt.id }}"
+                        >
+                          {{ row.nameDisplay }}
+                        </n-link>
+                        <span v-else>{{ row.nameDisplay }}</span>
+                      </span>
+                      <i
+                        v-if="row.unavailableMachines"
+                        v-tooltip="row.unavailableMachines"
+                        class="conditions-alert-icon icon-alert icon"
+                      />
+                    </div>
                   </td>
                 </template>
                 <template #col:cpu="{row}">
@@ -422,16 +528,22 @@ export default {
                 </template> -->
               </SortableTable>
             </div>
-            <div v-else class="col span-12">
+            <div
+              v-else
+              class="col span-12"
+            >
               <SingleClusterInfo />
             </div>
           </div>
         </div>
         <!-- Added by Verrazzano Start -->
+        <!-- <CommunityLinks class="col span-3 side-panel" /> -->
         <div class="col span-3 side-panel">
-          <!-- <CommunityLinks class="col span-3 side-panel" /> -->
           <VerrazzanoLinksBox class="mb-20" />
-          <CommunityLinks class="mb-20" :link-options="communityLinks" />
+          <CommunityLinks
+            class="mb-20"
+            :link-options="communityLinks"
+          />
         </div>
         <!-- Added by Verrazzano End -->
       </div>
@@ -454,19 +566,19 @@ export default {
     }
   }
 
-  .banner.info.whats-new, .banner.set-login-page {
-    border: 0;
-    margin-top: 0;
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    > div {
-      flex: 1;
-    }
-    > a {
-      align-self: flex-end;
+  .set-login-page, .whats-new {
+    > ::v-deep .banner__content {
+      display: flex;
+
+      > div {
+        flex: 1;
+      }
+      > a {
+        align-self: flex-end;
+      }
     }
   }
+
   .banner.set-login-page {
     border: 1px solid var(--border);
   }
@@ -476,7 +588,7 @@ export default {
     height: 39px;
 
     & > a {
-      margin-left: 5px;
+      margin-left: 10px;
     }
   }
   .panel:not(:first-child) {
@@ -495,12 +607,35 @@ export default {
     display: contents;
     white-space: nowrap;
   }
+
+  .list-cluster-name {
+    align-items: center;
+    display: flex;
+
+    .conditions-alert-icon {
+      color: var(--error);
+      margin-left: 4px;
+    }
+  }
+
+  // Hide the side-panel showing links when the screen is small
+  @media screen and (max-width: 996px) {
+    .side-panel {
+      display: none;
+    }
+  }
 </style>
 <style lang="scss">
 .home-page {
-  .search > INPUT {
-    background-color: transparent;
-    padding: 8px;
+  .search {
+    align-items: center;
+    display: flex;
+
+    > INPUT {
+      background-color: transparent;
+      height: 30px;
+      padding: 8px;
+    }
   }
 
   h2 {

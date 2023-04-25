@@ -57,8 +57,8 @@ export default {
   mixins: [VerrazzanoHelper, V1WorkloadMetrics],
   data() {
     return {
-      actionMenuTargetElement:  null,
-      actionMenuTargetEvent:    null,
+      actionMenuTargetElement: null,
+      actionMenuTargetEvent:   null,
       actionMenuIsOpen:        false,
       fetchInProgress:         true,
       namespace:               this.value.metadata?.namespace,
@@ -202,7 +202,7 @@ export default {
       return this.sockets[clusterId];
     }
   },
-  computed:   {
+  computed: {
     ...mapGetters(['currentCluster']),
     ...mapGetters({ t: 'i18n/t' }),
     isJob() {
@@ -267,7 +267,7 @@ export default {
         STATE,
         {
           ...NAME,
-          value:            row => row.metadata?.name,
+          value:         row => row.metadata?.name,
           formatter:     'ClusterLinkName',
           formatterOpts: {
             type:      POD,
@@ -275,10 +275,10 @@ export default {
           },
         },
         {
-          name:          'cluster',
-          labelKey:      'verrazzano.common.headers.cluster',
-          value:         'clusterDisplay',
-          sort:          ['nameSort'],
+          name:     'cluster',
+          labelKey: 'verrazzano.common.headers.cluster',
+          value:    'clusterDisplay',
+          sort:     ['nameSort'],
         },
         POD_IMAGES
       ];
@@ -329,7 +329,11 @@ export default {
     <h3>
       {{ isJob || isCronJob ? t('workload.detailTop.runs') :t('workload.detailTop.pods') }}
     </h3>
-    <div v-if="rowsData || value.jobGauges" class="gauges mb-20" :class="{'gauges__pods': !!rowsData}">
+    <div
+      v-if="rowsData || value.jobGauges"
+      class="gauges mb-20"
+      :class="{'gauges__pods': !!rowsData}"
+    >
       <template v-if="value.jobGauges">
         <CountGauge
           v-for="(group, key) in value.jobGauges"
@@ -354,7 +358,12 @@ export default {
       </template>
     </div>
     <ResourceTabs :value="value">
-      <Tab v-if="isCronJob" name="jobs" :label="t('tableHeaders.jobs')" :weight="4">
+      <Tab
+        v-if="isCronJob"
+        name="jobs"
+        :label="t('tableHeaders.jobs')"
+        :weight="4"
+      >
         <SortableTable
           :rows="value.jobs"
           :headers="jobHeaders"
@@ -364,7 +373,12 @@ export default {
           :search="false"
         />
       </Tab>
-      <Tab v-else name="pods" :label="t('tableHeaders.pods')" :weight="4">
+      <Tab
+        v-else
+        name="pods"
+        :label="t('tableHeaders.pods')"
+        :weight="4"
+      >
         <div>
           <SortableTable
             :rows="rowsData"
@@ -377,7 +391,12 @@ export default {
           />
         </div>
       </Tab>
-      <Tab v-if="showMetrics" :label="t('workload.container.titles.metrics')" name="workload-metrics" :weight="3">
+      <Tab
+        v-if="showMetrics"
+        :label="t('workload.container.titles.metrics')"
+        name="workload-metrics"
+        :weight="3"
+      >
         <template #default="props">
           <DashboardMetrics
             v-if="props.active"
@@ -388,9 +407,17 @@ export default {
           />
         </template>
       </Tab>
-      <Tab v-if="v1MonitoringUrl" name="v1Metrics" :label="t('node.detail.tab.metrics')" :weight="10">
+      <Tab
+        v-if="v1MonitoringUrl"
+        name="v1Metrics"
+        :label="t('node.detail.tab.metrics')"
+        :weight="10"
+      >
         <div id="ember-anchor">
-          <EmberPage inline="ember-anchor" :src="v1MonitoringUrl" />
+          <EmberPage
+            inline="ember-anchor"
+            :src="v1MonitoringUrl"
+          />
         </div>
       </Tab>
     </ResourceTabs>

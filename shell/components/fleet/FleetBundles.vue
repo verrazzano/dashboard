@@ -26,7 +26,9 @@ export default {
   },
 
   async fetch() {
-    this.allFleet = await this.$store.getters['management/all'](FLEET.CLUSTER);
+    if (this.$store.getters['management/schemaFor']( FLEET.CLUSTER )) {
+      this.allFleet = await this.$store.getters['management/all'](FLEET.CLUSTER);
+    }
   },
 
   data() {
@@ -115,14 +117,21 @@ export default {
   <div>
     <Loading v-if="$fetchState.pending" />
     <div v-else>
-      <Banner v-if="hidden" color="info" :label="t('fleet.bundles.harvester', {count: hidden} )" />
+      <Banner
+        v-if="hidden"
+        color="info"
+        :label="t('fleet.bundles.harvester', {count: hidden} )"
+      />
       <ResourceTable
         :schema="schema"
         :headers="headers"
         :rows="bundles"
       >
         <template #cell:deploymentsReady="{row}">
-          <span v-if="displayWarning(row)" class="text-warning">
+          <span
+            v-if="displayWarning(row)"
+            class="text-warning"
+          >
             {{ row.status.summary.ready }}/{{ row.status.summary.desiredReady }}</span>
           <span v-else-if="row.status">{{ row.status.summary.desiredReady }}</span>
         </template>

@@ -18,10 +18,12 @@ export default {
     Banner,
   },
 
-  props:      {
-    resources: {
-      type:     Array,
-      required: true
+  props: {
+    cluster: {
+      type:    Object,
+      default: () => {
+        return {};
+      }
     }
   },
 
@@ -49,12 +51,6 @@ export default {
 
   data() {
     return { errors: [], latestBackup: null };
-  },
-
-  computed: {
-    cluster() {
-      return this.resources?.[0];
-    },
   },
 
   methods: {
@@ -122,22 +118,48 @@ export default {
 </script>
 
 <template>
-  <Card class="prompt-rotate" :show-highlight-border="false">
-    <h4 slot="title" class="text-default-text" v-html="t('promptRotateEncryptionKey.title')" />
+  <Card
+    class="prompt-rotate"
+    :show-highlight-border="false"
+  >
+    <h4
+      slot="title"
+      class="text-default-text"
+      v-html="t('promptRotateEncryptionKey.title')"
+    />
 
-    <div slot="body" class="pl-10 pr-10">
-      <Banner color="warning" label-key="promptRotateEncryptionKey.warning" />
+    <div
+      slot="body"
+      class="pl-10 pr-10"
+    >
+      <Banner
+        color="warning"
+        label-key="promptRotateEncryptionKey.warning"
+      />
 
       <div v-if="!$fetchState.pending">
-        <p v-if="latestBackup" class="pt-10 pb-10">
+        <p
+          v-if="latestBackup"
+          class="pt-10 pb-10"
+        >
           {{ t('promptRotateEncryptionKey.description', latestBackup, true) }}
         </p>
-        <Banner v-else color="error" label-key="promptRotateEncryptionKey.error" />
+        <Banner
+          v-else
+          color="error"
+          label-key="promptRotateEncryptionKey.error"
+        />
       </div>
     </div>
 
-    <div slot="actions" class="buttons">
-      <button class="btn role-secondary mr-10" @click="close">
+    <div
+      slot="actions"
+      class="buttons"
+    >
+      <button
+        class="btn role-secondary mr-10"
+        @click="close"
+      >
         {{ t('generic.cancel') }}
       </button>
 
@@ -147,7 +169,12 @@ export default {
         @click="apply"
       />
 
-      <Banner v-for="(err, i) in errors" :key="i" color="error" :label="err" />
+      <Banner
+        v-for="(err, i) in errors"
+        :key="i"
+        color="error"
+        :label="err"
+      />
     </div>
   </Card>
 </template>

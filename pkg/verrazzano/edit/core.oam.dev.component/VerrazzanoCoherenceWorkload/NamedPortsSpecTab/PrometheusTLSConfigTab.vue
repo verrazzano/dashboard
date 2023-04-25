@@ -111,7 +111,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -145,7 +148,10 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab :name="createTabName(treeTabName, 'ca')" :label="t('verrazzano.coherence.tabs.prometheusCA')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'ca')"
+        :label="t('verrazzano.coherence.tabs.prometheusCA')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.coherence.tabs.prometheusCA')"
@@ -165,7 +171,10 @@ export default {
                 :label="t('verrazzano.coherence.fields.serviceMonitor.caType')"
               />
             </div>
-            <div v-if="caType === 'file'" class="col span-4">
+            <div
+              v-if="caType === 'file'"
+              class="col span-4"
+            >
               <LabeledInput
                 :value="getField('caFile')"
                 :mode="mode"
@@ -188,7 +197,10 @@ export default {
         </template>
       </TreeTab>
 
-      <TreeTab :name="createTabName(treeTabName, 'cert')" :label="t('verrazzano.coherence.tabs.prometheusCert')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'cert')"
+        :label="t('verrazzano.coherence.tabs.prometheusCert')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.coherence.tabs.prometheusCert')"
@@ -208,7 +220,10 @@ export default {
                 :label="t('verrazzano.coherence.fields.serviceMonitor.certType')"
               />
             </div>
-            <div v-if="certType === 'file'" class="col span-4">
+            <div
+              v-if="certType === 'file'"
+              class="col span-4"
+            >
               <LabeledInput
                 :value="getField('certFile')"
                 :mode="mode"
@@ -231,7 +246,10 @@ export default {
         </template>
       </TreeTab>
 
-      <TreeTab :name="createTabName(treeTabName, 'key')" :label="t('verrazzano.coherence.tabs.prometheusKey')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'key')"
+        :label="t('verrazzano.coherence.tabs.prometheusKey')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.coherence.tabs.prometheusKey')"
@@ -251,7 +269,10 @@ export default {
                 :label="t('verrazzano.coherence.fields.serviceMonitor.keyType')"
               />
             </div>
-            <div v-if="keyType === 'file'" class="col span-4">
+            <div
+              v-if="keyType === 'file'"
+              class="col span-4"
+            >
               <LabeledInput
                 :value="getField('keyFile')"
                 :mode="mode"

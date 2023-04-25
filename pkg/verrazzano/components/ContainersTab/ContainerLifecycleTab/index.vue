@@ -10,8 +10,8 @@ export default {
     LifecycleHook,
     TreeTab
   },
-  mixins:     [VerrazzanoHelper],
-  props:      {
+  mixins: [VerrazzanoHelper],
+  props:  {
     value: {
       type:    Object,
       default: () => ({})
@@ -44,16 +44,25 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #nestedTabs>
-      <TreeTab :name="createTabName(treeTabName, 'postStart')" :label="t('verrazzano.common.tabs.lifecycleHandler.postStart')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'postStart')"
+        :label="t('verrazzano.common.tabs.lifecycleHandler.postStart')"
+      >
         <LifecycleHook
           :value="getField('postStart')"
           :mode="mode"
           @input="setFieldIfNotEmpty('postStart', $event)"
         />
       </TreeTab>
-      <TreeTab :name="createTabName(treeTabName, 'preStop')" :label="t('verrazzano.common.tabs.lifecycleHandler.preStop')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'preStop')"
+        :label="t('verrazzano.common.tabs.lifecycleHandler.preStop')"
+      >
         <LifecycleHook
           :value="getField('preStop')"
           :mode="mode"

@@ -128,7 +128,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -214,7 +217,10 @@ export default {
         @input="$emit('input', value)"
       />
 
-      <TreeTab :name="createTabName(treeTabName, 'envVariables')" :label="t('verrazzano.common.tabs.environmentVariables')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'envVariables')"
+        :label="t('verrazzano.common.tabs.environmentVariables')"
+      >
         <EnvironmentVariables
           :value="value"
           :mode="mode"
@@ -267,7 +273,10 @@ export default {
         @delete="setField('resources', undefined)"
       />
 
-      <TreeTab :name="createTabName(treeTabName, 'nodeSelector')" :label="t('verrazzano.weblogic.tabs.nodeSelector')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'nodeSelector')"
+        :label="t('verrazzano.weblogic.tabs.nodeSelector')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.weblogic.tabs.nodeSelector')"

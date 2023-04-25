@@ -27,7 +27,10 @@ export default {
 </script>
 
 <template>
-  <IconMessage icon="icon-monitoring" message-key="legacy.project.select" />
+  <IconMessage
+    icon="icon-monitoring"
+    message-key="legacy.project.select"
+  />
 </template>
 Added by Verrazzano End
 -->

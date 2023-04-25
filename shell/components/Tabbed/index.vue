@@ -92,12 +92,12 @@ export default {
     sortedTabs(tabs) {
       const {
         defaultTab,
-        useHash,
-        $route: { hash }
+        useHash
       } = this;
       const activeTab = tabs.find(t => t.active);
 
-      const windowHash = hash.slice(1);
+      const hash = useHash ? this.$route.hash : undefined;
+      const windowHash = useHash ? hash.slice(1) : undefined;
       const windowHashTabMatch = tabs.find(t => t.name === windowHash && !t.active);
       const firstTab = head(tabs) || null;
 
@@ -148,11 +148,7 @@ export default {
     },
 
     select(name/* , event */) {
-      const {
-        sortedTabs,
-        $route: { hash: routeHash },
-        $router: { currentRoute },
-      } = this;
+      const { sortedTabs } = this;
 
       const selected = this.find(name);
       const hashName = `#${ name }`;
@@ -160,13 +156,22 @@ export default {
       if ( !selected || selected.disabled) {
         return;
       }
+      /**
+       * Exclude logic with URL anchor (hash) for projects without routing logic (vue-router)
+       */
+      if ( this.useHash ) {
+        const {
+          $route: { hash: routeHash },
+          $router: { currentRoute },
+        } = this;
 
-      if (this.useHash && routeHash !== hashName) {
-        const kurrentRoute = { ...currentRoute };
+        if (this.useHash && routeHash !== hashName) {
+          const kurrentRoute = { ...currentRoute };
 
-        kurrentRoute.hash = hashName;
+          kurrentRoute.hash = hashName;
 
-        this.$router.replace(kurrentRoute);
+          this.$router.replace(kurrentRoute);
+        }
       }
 
       for ( const tab of sortedTabs ) {
@@ -244,20 +249,45 @@ export default {
           @click.prevent="select(tab.name, $event)"
         >
           <span>{{ tab.labelDisplay }}</span>
-          <span v-if="tab.badge" class="tab-badge">{{ tab.badge }}</span>
-          <i v-if="hasIcon(tab)" v-tooltip="t('validation.tab')" class="conditions-alert-icon icon-error icon-lg" />
+          <span
+            v-if="tab.badge"
+            class="tab-badge"
+          >{{ tab.badge }}</span>
+          <i
+            v-if="hasIcon(tab)"
+            v-tooltip="t('validation.tab')"
+            class="conditions-alert-icon icon-error"
+          />
         </a>
       </li>
-      <li v-if="sideTabs && !sortedTabs.length" class="tab disabled">
-        <a href="#" @click.prevent>(None)</a>
+      <li
+        v-if="sideTabs && !sortedTabs.length"
+        class="tab disabled"
+      >
+        <a
+          href="#"
+          @click.prevent
+        >(None)</a>
       </li>
-      <ul v-if="sideTabs && showTabsAddRemove" class="tab-list-footer">
+      <ul
+        v-if="sideTabs && showTabsAddRemove"
+        class="tab-list-footer"
+      >
         <li>
-          <button type="button" class="btn bg-transparent" @click="tabAddClicked">
-            <i class="icon icon-plus icon-lg" />
+          <button
+            type="button"
+            class="btn bg-transparent"
+            @click="tabAddClicked"
+          >
+            <i class="icon icon-plus" />
           </button>
-          <button type="button" class="btn bg-transparent" :disabled="!sortedTabs.length" @click="tabRemoveClicked">
-            <i class="icon icon-minus icon-lg" />
+          <button
+            type="button"
+            class="btn bg-transparent"
+            :disabled="!sortedTabs.length"
+            @click="tabRemoveClicked"
+          >
+            <i class="icon icon-minus" />
           </button>
         </li>
       </ul>

@@ -24,7 +24,7 @@ export default {
       required: true,
     },
     favoriteResource: {
-      type:     String,
+      type:    String,
       default: null
     },
     schema: {
@@ -63,6 +63,11 @@ export default {
     loadIndeterminate: {
       type:    Boolean,
       default: false
+    },
+
+    loadNamespace: {
+      type:    String,
+      default: null
     },
 
     showIncrementalLoadingIndicator: {
@@ -169,19 +174,22 @@ export default {
     </slot>
     <div class="title">
       <h1 class="m-0">
-        {{ _typeDisplay }} <Favorite v-if="isExplorer" :resource="favoriteResource || resource" />
+        {{ _typeDisplay }} <Favorite
+          v-if="isExplorer"
+          :resource="favoriteResource || resource"
+        />
       </h1>
       <ResourceLoadingIndicator
         v-if="showIncrementalLoadingIndicator"
         :resources="loadResources"
         :indeterminate="loadIndeterminate"
+        :namespace="loadNamespace"
       />
     </div>
     <div class="actions-container">
       <slot name="actions">
         <div class="actions">
-          <slot name="extraActions">
-          </slot>
+          <slot name="extraActions" />
 
           <slot name="createButton">
             <n-link
@@ -214,5 +222,9 @@ export default {
     h1 {
       margin: 0;
     }
+  }
+
+  header {
+    margin-bottom: 20px;
   }
 </style>

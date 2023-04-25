@@ -3,7 +3,8 @@ import {
   CAPI,
   CATALOG,
   NORMAN,
-  HCI
+  HCI,
+  MANAGEMENT
 } from '@shell/config/types';
 import { MULTI_CLUSTER } from '@shell/store/features';
 import { DSL } from '@shell/store/type-map';
@@ -29,7 +30,7 @@ export function init(store) {
     icon:                'cluster-management',
     removable:           false,
     showClusterSwitcher: false,
-    to:                   {
+    to:                  {
       name:   'c-cluster-product-resource',
       params: {
         cluster:  BLANK_CLUSTER,
@@ -40,24 +41,24 @@ export function init(store) {
   });
 
   virtualType({
-    name:        'cloud-credentials',
-    labelKey:    'manager.cloudCredentials.label',
+    name:       'cloud-credentials',
+    labelKey:   'manager.cloudCredentials.label',
     group:      'Root',
-    namespaced:  false,
+    namespaced: false,
     icon:       'globe',
-    weight:      99,
-    route:       { name: 'c-cluster-manager-cloudCredential' },
+    weight:     99,
+    route:      { name: 'c-cluster-manager-cloudCredential' },
   });
 
   virtualType({
-    labelKey:       'legacy.psps',
-    name:           'pod-security-policies',
-    group:          'Root',
-    namespaced:     false,
-    weight:         0,
-    icon:           'folder',
-    route:          { name: 'c-cluster-manager-pages-page', params: { cluster: 'local', page: 'pod-security-policies' } },
-    exact:          true
+    labelKey:   'legacy.psps',
+    name:       'pod-security-policies',
+    group:      'Root',
+    namespaced: false,
+    weight:     5,
+    icon:       'folder',
+    route:      { name: 'c-cluster-manager-pages-page', params: { cluster: 'local', page: 'pod-security-policies' } },
+    exact:      true
   });
 
   basicType([
@@ -119,12 +120,15 @@ export function init(store) {
   weightType(CAPI.MACHINE_SET, 2, true);
   weightType(CAPI.MACHINE, 1, true);
   weightType(CATALOG.CLUSTER_REPO, 0, true);
+  weightType(MANAGEMENT.PSA, 5, true);
 
   basicType([
     CAPI.MACHINE_DEPLOYMENT,
     CAPI.MACHINE_SET,
     CAPI.MACHINE,
     CATALOG.CLUSTER_REPO,
+    'pod-security-policies',
+    MANAGEMENT.PSA
   ], 'advanced');
 
   weightGroup('advanced', -1, true);

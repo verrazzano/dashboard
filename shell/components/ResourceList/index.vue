@@ -4,13 +4,21 @@ import Loading from '@shell/components/Loading';
 import Masthead from './Masthead';
 import ResourceLoadingIndicator from './ResourceLoadingIndicator';
 import ResourceFetch from '@shell/mixins/resource-fetch';
+import IconMessage from '@shell/components/IconMessage.vue';
+import { ResourceListComponentName } from './resource-list.config';
+import { PanelLocation, ExtensionPoint } from '@shell/core/types';
+import ExtensionPanel from '@shell/components/ExtensionPanel';
 
 export default {
+  name: ResourceListComponentName,
+
   components: {
     Loading,
     ResourceTable,
     Masthead,
-    ResourceLoadingIndicator
+    ResourceLoadingIndicator,
+    IconMessage,
+    ExtensionPanel
   },
   mixins: [ResourceFetch],
 
@@ -28,19 +36,16 @@ export default {
       default: false
     },
   },
+
   async fetch() {
     const store = this.$store;
     const resource = this.resource;
 
-    let hasFetch = false;
-
-    const inStore = store.getters['currentStore'](resource);
-
-    const schema = store.getters[`${ inStore }/schemaFor`](resource);
+    const schema = this.schema;
 
     if ( this.hasListComponent ) {
       // If you provide your own list then call its asyncData
-      const importer = store.getters['type-map/importList'](resource);
+      const importer = this.listComponent;
       const component = (await importer())?.default;
 
       if ( component?.typeDisplay ) {
@@ -49,7 +54,7 @@ export default {
 
       // If your list page has a fetch then it's responsible for populating rows itself
       if ( component?.fetch ) {
-        hasFetch = true;
+        this.hasFetch = true;
       }
 
       // If the custom component supports it, ask it what resources it loads, so we can
@@ -62,14 +67,17 @@ export default {
       }
     }
 
-    if ( !hasFetch ) {
+    if ( !this.hasFetch ) {
       if ( !schema ) {
         store.dispatch('loadingError', new Error(`Type ${ resource } not found, unable to display list`));
 
         return;
       }
 
-      await this.$fetchType(resource);
+      // See comment for `namespaceFilterRequired` watcher, skip fetch if we don't have a valid NS
+      if (!this.namespaceFilterRequired) {
+        await this.$fetchType(resource);
+      }
     }
   },
 
@@ -89,17 +97,22 @@ export default {
       inStore,
       schema,
       hasListComponent,
-      showMasthead:      showMasthead === undefined ? true : showMasthead,
+      showMasthead:                     showMasthead === undefined ? true : showMasthead,
       resource,
+      extensionType:                    ExtensionPoint.PANEL,
+      extensionLocation:                PanelLocation.RESOURCE_LIST,
+      loadResources:                    [resource], // List of resources that will be loaded, this could be many (`Workloads`)
+      hasFetch:                         false,
       // manual refresh
-      manualRefreshInit: false,
-      watch:             false,
-      force:             false,
+      manualRefreshInit:                false,
+      watch:                            false,
+      force:                            false,
       // Provided by fetch later
-      customTypeDisplay: null,
+      customTypeDisplay:                null,
       // incremental loading
-      loadResources:     [resource],
-      loadIndeterminate: false,
+      loadIndeterminate:                false,
+      // query param for simple filtering
+      useQueryParamsForSimpleFiltering: true
     };
   },
 
@@ -119,6 +132,24 @@ export default {
 
     showIncrementalLoadingIndicator() {
       return this.perfConfig?.incrementalLoading?.enabled;
+    },
+
+  },
+
+  watch: {
+    /**
+     * When a NS filter is required and the user selects a different one, kick off a new set of API requests
+     *
+     * ResourceList has two modes
+     * 1) ResourceList component handles API request to fetch resources
+     * 2) Custom list component handles API request to fetch resources
+     *
+     * This covers case 1
+     */
+    namespaceFilter(neu) {
+      if (neu && !this.hasFetch) {
+        this.$fetchType(this.resource);
+      }
     }
   },
 
@@ -138,7 +169,20 @@ export default {
 </script>
 
 <template>
-  <div>
+  <IconMessage
+    v-if="namespaceFilterRequired"
+    :vertical="true"
+    :subtle="false"
+    icon="icon-filter_alt"
+  >
+    <template #message>
+      <span
+        class="filter"
+        v-html="t('resourceList.nsFiltering', { resource: $store.getters['type-map/labelFor'](schema, 2) || customTypeDisplay }, true)"
+      />
+    </template>
+  </IconMessage>
+  <div v-else>
     <Masthead
       v-if="showMasthead"
       :type-display="customTypeDisplay"
@@ -147,11 +191,19 @@ export default {
       :show-incremental-loading-indicator="showIncrementalLoadingIndicator"
       :load-resources="loadResources"
       :load-indeterminate="loadIndeterminate"
+      :load-namespace="namespaceFilter"
     >
       <template slot="extraActions">
-        <slot name="extraActions"></slot>
+        <slot name="extraActions" />
       </template>
     </Masthead>
+    <!-- Extensions area -->
+    <ExtensionPanel
+      :resource="{}"
+      :type="extensionType"
+      :location="extensionLocation"
+    />
+
     <div v-if="hasListComponent">
       <component
         :is="listComponent"
@@ -170,6 +222,8 @@ export default {
       :has-advanced-filtering="hasAdvancedFiltering"
       :adv-filter-hide-labels-as-cols="advFilterHideLabelsAsCols"
       :adv-filter-prevent-filtering-labels="advFilterPreventFilteringLabels"
+      :use-query-params-for-simple-filtering="useQueryParamsForSimpleFiltering"
+      :force-update-live-and-delayed="forceUpdateLiveAndDelayed"
     />
   </div>
 </template>
@@ -181,6 +235,9 @@ export default {
     H2 {
       position: relative;
       margin: 0 0 20px 0;
+    }
+    .filter{
+      line-height: 45px;
     }
     .right-action {
       position: absolute;

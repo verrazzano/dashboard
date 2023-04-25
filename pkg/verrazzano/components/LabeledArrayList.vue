@@ -210,8 +210,16 @@ export default {
             </slot>
           </div>
         </slot>
-        <div v-if="showRemove" class="remove">
-          <slot name="remove-button" :remove="() => remove(idx)" :i="idx" :row="row">
+        <div
+          v-if="showRemove"
+          class="remove"
+        >
+          <slot
+            name="remove-button"
+            :remove="() => remove(idx)"
+            :i="idx"
+            :row="row"
+          >
             <button
               type="button"
               :disabled="isView"
@@ -225,14 +233,23 @@ export default {
         </div>
       </div>
     </template>
-    <div v-else-if="mode==='view'" class="text-muted">
+    <div
+      v-else-if="mode==='view'"
+      class="text-muted"
+    >
       &mdash;
     </div>
     <div v-else>
       <slot name="empty" />
     </div>
-    <div v-if="showAdd && !isView" class="footer">
-      <slot v-if="showAdd" name="add">
+    <div
+      v-if="showAdd && !isView"
+      class="footer"
+    >
+      <slot
+        v-if="showAdd"
+        name="add"
+      >
         <button
           type="button"
           class="btn role-tertiary add"
@@ -240,7 +257,10 @@ export default {
           data-testid="add-item"
           @click="add()"
         >
-          <i v-if="loading" class="mr-5 icon icon-spinner icon-spin icon-lg" />
+          <i
+            v-if="loading"
+            class="mr-5 icon icon-spinner icon-spin icon-lg"
+          />
           {{ addLabel }}
         </button>
       </slot>

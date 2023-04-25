@@ -27,7 +27,7 @@ export default {
       default: () => ({})
     },
     mode: {
-      type:     String,
+      type:    String,
       default: 'create'
     },
     tabName: {
@@ -54,7 +54,10 @@ export default {
 </script>
 
 <template>
-  <TreeTab :name="treeTabName" :label="treeTabLabel">
+  <TreeTab
+    :name="treeTabName"
+    :label="treeTabLabel"
+  >
     <template #beside-header>
       <TabDeleteButton
         :element-name="treeTabLabel"
@@ -115,7 +118,10 @@ export default {
       </div>
     </template>
     <template #nestedTabs>
-      <TreeTab :name="createTabName(treeTabName, 'dnsConfig')" :label="t('verrazzano.coherence.tabs.dnsConfig')">
+      <TreeTab
+        :name="createTabName(treeTabName, 'dnsConfig')"
+        :label="t('verrazzano.coherence.tabs.dnsConfig')"
+      >
         <template #beside-header>
           <TabDeleteButton
             :element-name="t('verrazzano.coherence.tabs.dnsConfig')"

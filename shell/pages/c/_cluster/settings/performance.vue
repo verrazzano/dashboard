@@ -131,7 +131,10 @@ export default {
         <div class="mt-40">
           <h2 v-t="'performance.manualRefresh.label'" />
           <p>{{ t('performance.manualRefresh.description') }}</p>
-          <Banner color="error" label-key="performance.manualRefresh.banner" />
+          <Banner
+            color="error"
+            label-key="performance.experimental"
+          />
           <Checkbox
             v-model="value.manualRefresh.enabled"
             :mode="mode"
@@ -158,7 +161,10 @@ export default {
         <div class="mt-40">
           <h2 v-t="'performance.gc.label'" />
           <p>{{ t('performance.gc.description') }}</p>
-          <Banner color="error" label-key="performance.gc.banner" />
+          <Banner
+            color="error"
+            label-key="performance.experimental"
+          />
           <Checkbox
             v-model="value.garbageCollection.enabled"
             :mode="mode"
@@ -213,7 +219,10 @@ export default {
                 min="30"
                 class="input"
               />
-              <p class="mt-20" :class="{ 'text-muted': !value.garbageCollection.enabled }">
+              <p
+                class="mt-20"
+                :class="{ 'text-muted': !value.garbageCollection.enabled }"
+              >
                 {{ t('performance.gc.howRun.count.description') }}
               </p>
               <LabeledInput
@@ -228,13 +237,67 @@ export default {
             </div>
           </div>
         </div>
+        <!-- Force NS filter -->
+        <div class="mt-40">
+          <h2>{{ t('performance.nsFiltering.label') }}</h2>
+          <p>{{ t('performance.nsFiltering.description') }}</p>
+          <Banner
+            color="error"
+            label-key="performance.experimental"
+          />
+          <Checkbox
+            v-model="value.forceNsFilter.enabled"
+            :mode="mode"
+            :label="t('performance.nsFiltering.checkboxLabel')"
+            class="mt-10 mb-20"
+            :primary="true"
+          />
+          <div class="ml-20">
+            <p :class="{ 'text-muted': !value.forceNsFilter.enabled }">
+              {{ t('performance.nsFiltering.count.description') }}
+            </p>
+            <LabeledInput
+              v-model="value.forceNsFilter.threshold"
+              :mode="mode"
+              :label="t('performance.nsFiltering.count.inputLabel')"
+              :disabled="!value.forceNsFilter.enabled"
+              class="input"
+              type="number"
+              min="0"
+            />
+          </div>
+        </div>
+        <!-- Advanced Websocket Worker -->
+        <div class="mt-40">
+          <h2>{{ t('performance.advancedWorker.label') }}</h2>
+          <p>{{ t('performance.advancedWorker.description') }}</p>
+          <Banner
+            color="error"
+            label-key="performance.experimental"
+          />
+          <Checkbox
+            v-model="value.advancedWorker.enabled"
+            :mode="mode"
+            :label="t('performance.advancedWorker.checkboxLabel')"
+            class="mt-10 mb-20"
+            :primary="true"
+          />
+        </div>
       </div>
     </div>
     <template v-for="err in errors">
-      <Banner :key="err" color="error" :label="err" />
+      <Banner
+        :key="err"
+        color="error"
+        :label="err"
+      />
     </template>
     <div v-if="mode === 'edit'">
-      <AsyncButton class="pull-right mt-20" mode="apply" @click="save" />
+      <AsyncButton
+        class="pull-right mt-20"
+        mode="apply"
+        @click="save"
+      />
     </div>
   </div>
 </template>

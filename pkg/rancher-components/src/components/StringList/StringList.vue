@@ -85,11 +85,11 @@ export default Vue.extend({
   },
   data() {
     return {
-      value:             null as string | null,
-      selected:          null as string | null,
-      isEditItem:        null as string | null,
-      isCreateItem:      false,
-      errors:            { duplicate: false } as Record<Error, boolean>
+      value:        null as string | null,
+      selected:     null as string | null,
+      editedItem:   null as string | null,
+      isCreateItem: false,
+      errors:       { duplicate: false } as Record<Error, boolean>
     };
   },
 
@@ -100,7 +100,7 @@ export default Vue.extend({
      */
     errorMessagesArray(): string[] {
       return (Object.keys(this.errors) as Error[])
-        .filter(f => !!(this.errors)[f])
+        .filter(f => this.errors[f] && this.errorMessages[f])
         .map(k => this.errorMessages[k]);
     },
   },
@@ -113,23 +113,35 @@ export default Vue.extend({
       this.toggleEditMode(false);
       this.toggleCreateMode(false);
     },
+    value(val) {
+      this.$emit('type:item', val);
+    },
+    errors: {
+      handler(val) {
+        this.$emit('errors', val);
+      },
+      deep: true
+    }
   },
 
   methods: {
     onChange(value: string) {
       this.value = value;
-      /**
-       * Remove duplicate error when a new value is typed
-       */
+
+      const items = [
+        ...this.items,
+        this.value
+      ];
+
       this.toggleError(
         'duplicate',
-        false,
-        this.isCreateItem ? INPUT.create : INPUT.edit,
+        hasDuplicatedStrings(items, this.caseSensitive),
+        this.isCreateItem ? INPUT.create : INPUT.edit
       );
     },
 
     onSelect(item: string) {
-      if (this.isCreateItem || this.isEditItem === item) {
+      if (this.readonly || this.isCreateItem || this.editedItem === item) {
         return;
       }
       this.selected = item;
@@ -160,7 +172,7 @@ export default Vue.extend({
     },
 
     onClickEmptyBody() {
-      if (!this.isCreateItem && !this.isEditItem) {
+      if (!this.isCreateItem && !this.editedItem) {
         this.toggleCreateMode(true);
       }
     },
@@ -176,38 +188,43 @@ export default Vue.extend({
 
         return;
       }
-      if (this.isEditItem) {
+      if (this.editedItem) {
+        this.deleteAndSelectNext(this.editedItem);
         this.toggleEditMode(false);
 
         return;
       }
       if (this.selected) {
-        const index = findStringIndex(this.items, this.selected, false);
+        this.deleteAndSelectNext(this.selected);
+      }
+    },
 
-        if (index !== -1) {
-          /**
-           * Select the next item in the list when an item is to be deleted.
-           */
-          const item = (this.items[index + 1] || this.items[index - 1]);
+    deleteAndSelectNext(currItem: string) {
+      const index = findStringIndex(this.items, currItem, false);
 
-          this.onSelect(item);
-          this.setFocus(item);
+      if (index !== -1) {
+        /**
+         * Select the next item in the list.
+         */
+        const item = (this.items[index + 1] || this.items[index - 1]);
 
-          this.deleteItem(this.items[index]);
-        }
+        this.onSelect(item);
+        this.setFocus(item);
+
+        this.deleteItem(this.items[index]);
       }
     },
 
     setFocus(refId: string) {
-      this.$nextTick(() => this.getElemByRef(refId)?.focus());
+      this.$nextTick(() => (this.getElemByRef(refId) as Vue & HTMLElement)?.focus());
     },
 
     /**
      * Move scrollbar when the selected item is over the top or bottom side of the box
      */
     moveScrollbar(arrow: Arrow, value?: number) {
-      const box = this.getElemByRef(BOX);
-      const item = this.getElemByRef(this.selected || '');
+      const box = this.getElemByRef(BOX) as HTMLElement;
+      const item = this.getElemByRef(this.selected || '') as HTMLElement;
 
       if (box && item && item.className.includes(CLASS.item)) {
         const boxRect = box.getClientRects()[0];
@@ -229,13 +246,14 @@ export default Vue.extend({
      */
     toggleError(type: Error, val: boolean, refId?: string) {
       this.errors[type] = val;
+
       if (refId) {
         this.toggleErrorClass(refId, val);
       }
     },
 
     toggleErrorClass(refId: string, val: boolean) {
-      const input = this.getElemByRef(refId)?.$el;
+      const input = (this.getElemByRef(refId) as Vue)?.$el;
 
       if (input) {
         if (val) {
@@ -250,7 +268,11 @@ export default Vue.extend({
      * Show/Hide the input line to create new item
      */
     toggleCreateMode(show: boolean) {
+      if (this.readonly) {
+        return;
+      }
       if (show) {
+        this.toggleEditMode(false);
         this.value = '';
 
         this.isCreateItem = true;
@@ -268,31 +290,34 @@ export default Vue.extend({
      * Show/Hide the in-line editing to edit an existing item
      */
     toggleEditMode(show: boolean, item?: string) {
+      if (this.readonly) {
+        return;
+      }
       if (show) {
         this.toggleCreateMode(false);
-        this.value = this.isEditItem;
+        this.value = this.editedItem;
 
-        this.isEditItem = item || '';
+        this.editedItem = item || '';
         this.setFocus(INPUT.edit);
       } else {
         this.value = null;
         this.toggleError('duplicate', false);
         this.onSelectLeave();
 
-        this.isEditItem = null;
+        this.editedItem = null;
       }
     },
 
     getElemByRef(id: string) {
       const ref = this.$refs[id];
 
-      return (Array.isArray(ref) ? ref[0] : ref) as any;
+      return Array.isArray(ref) ? ref[0] : ref;
     },
 
     /**
      * Create a new item and insert in the items list
      */
-    saveItem() {
+    saveItem(closeInput = true) {
       const value = this.value?.trim();
 
       if (value) {
@@ -301,21 +326,20 @@ export default Vue.extend({
           value,
         ];
 
-        if (hasDuplicatedStrings(items, this.caseSensitive)) {
-          this.toggleError('duplicate', true, INPUT.create);
-
-          return;
+        if (!hasDuplicatedStrings(items, this.caseSensitive)) {
+          this.updateItems(items);
         }
-
-        this.updateItems(items);
       }
-      this.toggleCreateMode(false);
+
+      if (closeInput) {
+        this.toggleCreateMode(false);
+      }
     },
 
     /**
      * Update an existing item in the items list
      */
-    updateItem(item: string) {
+    updateItem(item: string, closeInput = true) {
       const value = this.value?.trim();
 
       if (value) {
@@ -326,15 +350,14 @@ export default Vue.extend({
           items[index] = value;
         }
 
-        if (hasDuplicatedStrings(items, this.caseSensitive)) {
-          this.toggleError('duplicate', true, INPUT.edit);
-
-          return;
+        if (!hasDuplicatedStrings(items, this.caseSensitive)) {
+          this.updateItems(items);
         }
-
-        this.updateItems(items);
       }
-      this.toggleEditMode(false);
+
+      if (closeInput) {
+        this.toggleEditMode(false);
+      }
     },
 
     /**
@@ -387,19 +410,20 @@ export default Vue.extend({
         @blur="onSelectLeave(item)"
       >
         <span
-          v-if="!isEditItem || isEditItem !== item"
+          v-if="!editedItem || editedItem !== item"
           class="label static"
         >
           {{ item }}
         </span>
         <LabeledInput
-          v-if="isEditItem && isEditItem === item"
+          v-if="editedItem && editedItem === item"
           ref="item-edit"
+          :data-testid="`item-edit-${item}`"
           class="edit-input static"
           :value="value != null ? value : item"
           @input="onChange($event)"
-          @blur.prevent="toggleEditMode(false)"
-          @keydown.native.enter="updateItem(item)"
+          @blur.prevent="updateItem(item)"
+          @keydown.native.enter="updateItem(item, !errors.duplicate)"
         />
       </div>
       <div
@@ -408,12 +432,14 @@ export default Vue.extend({
       >
         <LabeledInput
           ref="item-create"
+          data-testid="item-create"
           class="create-input static"
           type="text"
           :value="value"
           :placeholder="placeholder"
           @input="onChange($event)"
-          @keydown.native.enter="saveItem"
+          @blur.prevent="saveItem"
+          @keydown.native.enter="saveItem(!errors.duplicate)"
         />
       </div>
     </div>
@@ -427,25 +453,32 @@ export default Vue.extend({
         class="action-buttons"
       >
         <button
+          data-testid="button-remove"
           class="btn btn-sm role-tertiary remove-button"
-          :disabled="!selected && !isCreateItem && !isEditItem"
+          :disabled="!selected && !isCreateItem && !editedItem"
           @mousedown.prevent="onClickMinusButton"
         >
           <span class="icon icon-minus icon-sm" />
         </button>
         <button
+          data-testid="button-add"
           class="btn btn-sm role-tertiary add-button"
-          :disabled="isCreateItem"
+          :disabled="isCreateItem || editedItem"
           @click.prevent="onClickPlusButton"
         >
           <span class="icon icon-plus icon-sm" />
         </button>
       </div>
       <div class="messages">
-        <i v-if="errorMessagesArray.length > 0" class="icon icon-warning icon-lg" />
+        <i
+          v-if="errorMessagesArray.length > 0"
+          data-testid="i-warning-icon"
+          class="icon icon-warning icon-lg"
+        />
         <span
           v-for="(msg, idx) in errorMessagesArray"
           :key="idx"
+          :data-testid="`span-error-message-${msg}`"
           class="error"
         >
           {{ idx > 0 ? '; ' : '' }}
@@ -499,6 +532,7 @@ export default Vue.extend({
         width: auto;
         user-select: none;
         overflow: hidden;
+        white-space: no-wrap;
         text-overflow: ellipsis;
         padding-top: 1px;
       }

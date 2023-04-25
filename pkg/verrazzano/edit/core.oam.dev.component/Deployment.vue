@@ -62,7 +62,10 @@ export default {
 <template>
   <TreeTabbed>
     <template #nestedTabs>
-      <TreeTab name="general" :label="t('verrazzano.common.tabs.general')">
+      <TreeTab
+        name="general"
+        :label="t('verrazzano.common.tabs.general')"
+      >
         <template #default>
           <div class="row">
             <div class="col span-4">
@@ -134,7 +137,10 @@ export default {
           </div>
         </template>
         <template #nestedTabs>
-          <TreeTab name="deploymentStrategy" :label="t('verrazzano.common.tabs.deploymentStrategy')">
+          <TreeTab
+            name="deploymentStrategy"
+            :label="t('verrazzano.common.tabs.deploymentStrategy')"
+          >
             <template #beside-header>
               <TabDeleteButton
                 :element-name="t('verrazzano.common.tabs.deploymentStrategy')"

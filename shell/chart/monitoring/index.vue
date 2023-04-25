@@ -12,6 +12,7 @@ import { LabeledInput } from '@components/Form/LabeledInput';
 import Loading from '@shell/components/Loading';
 import Prometheus from '@shell/chart/monitoring/prometheus';
 import Tab from '@shell/components/Tabbed/Tab';
+import ChartPsp from '@shell/components/ChartPsp';
 
 import { allHash } from '@shell/utils/promise';
 import { STORAGE_CLASS, PVC, SECRET, WORKLOAD_TYPES } from '@shell/config/types';
@@ -26,6 +27,7 @@ export default {
     Loading,
     Prometheus,
     Tab,
+    ChartPsp
   },
 
   hasTabs: true,
@@ -136,7 +138,7 @@ export default {
           rbac: {
             userRoles: {
               create:                  this.mergeValue(this.value?.global?.rbac?.userRoles?.create, true),
-              aggregateToDefaultRoles:  this.mergeValue(this.value?.global?.rbac?.userRoles?.aggregateToDefaultRoles, true),
+              aggregateToDefaultRoles: this.mergeValue(this.value?.global?.rbac?.userRoles?.aggregateToDefaultRoles, true),
             },
           },
         },
@@ -192,14 +194,33 @@ export default {
 </script>
 
 <template>
-  <Loading v-if="$fetchState.pending" mode="relative" />
-  <div v-else class="config-monitoring-container">
-    <Tab name="general" :label="t('monitoring.tabs.general')" :weight="99">
+  <Loading
+    v-if="$fetchState.pending"
+    mode="relative"
+  />
+  <div
+    v-else
+    class="config-monitoring-container"
+  >
+    <Tab
+      name="general"
+      :label="t('monitoring.tabs.general')"
+      :weight="99"
+    >
       <div>
         <div class="row mb-20">
-          <ClusterSelector :value="value" :mode="mode" @onClusterTypeChanged="clusterType = $event" />
+          <div class="col span-6">
+            <ClusterSelector
+              :value="value"
+              :mode="mode"
+              @onClusterTypeChanged="clusterType = $event"
+            />
+          </div>
         </div>
-        <div v-if="clusterType.group === 'managed'" class="row mb-20">
+        <div
+          v-if="clusterType.group === 'managed'"
+          class="row mb-20"
+        >
           <Checkbox
             v-model="value.prometheusOperator.hostNetwork"
             label-key="monitoring.hostNetwork.label"
@@ -226,7 +247,10 @@ export default {
             />
           </div>
         </div>
-        <div v-if="provider === 'rke' && value.rkeEtcd" class="row mt-20">
+        <div
+          v-if="provider === 'rke' && value.rkeEtcd"
+          class="row mt-20"
+        >
           <div class="col span-6">
             <LabeledInput
               v-model="value.rkeEtcd.clients.https.certDir"
@@ -237,6 +261,12 @@ export default {
             />
           </div>
         </div>
+
+        <!-- Conditionally display PSP checkbox -->
+        <ChartPsp
+          :value="value"
+          :cluster="currentCluster"
+        />
       </div>
     </Tab>
     <Tab
@@ -256,12 +286,24 @@ export default {
         />
       </div>
     </Tab>
-    <Tab name="alerting" :label="t('monitoring.tabs.alerting')" :weight="97">
+    <Tab
+      name="alerting"
+      :label="t('monitoring.tabs.alerting')"
+      :weight="97"
+    >
       <div>
-        <Alerting v-model="value" :mode="mode" :secrets="secrets" />
+        <Alerting
+          v-model="value"
+          :mode="mode"
+          :secrets="secrets"
+        />
       </div>
     </Tab>
-    <Tab name="grafana" :label="t('monitoring.tabs.grafana')" :weight="96">
+    <Tab
+      name="grafana"
+      :label="t('monitoring.tabs.grafana')"
+      :weight="96"
+    >
       <div>
         <Grafana
           v-model="value"
