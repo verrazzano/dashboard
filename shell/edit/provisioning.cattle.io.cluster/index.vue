@@ -367,15 +367,9 @@ export default {
 
   methods: {
     showRkeToggle(i) {
-      if (this.isImport || !this.rke2Enabled) {
-        return false;
-      }
-
-      if (this.firstNodeDriverItem >= 0) {
-        return i === this.firstNodeDriverItem;
-      }
-
-      return i === this.firstCustomClusterItem;
+      // Added by Verrazzano Start
+      return false
+      // Added by Verrazzano End
     },
 
     loadStylesheet(url, id) {
