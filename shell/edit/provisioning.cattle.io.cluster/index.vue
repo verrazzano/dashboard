@@ -368,6 +368,15 @@ export default {
   methods: {
     showRkeToggle(i) {
       // Added by Verrazzano Start
+      // if (this.isImport || !this.rke2Enabled) {
+      //   return false;
+      // }
+      //
+      // if (this.firstNodeDriverItem >= 0) {
+      //   return i === this.firstNodeDriverItem;
+      // }
+      //
+      // return i === this.firstCustomClusterItem;
       return false
       // Added by Verrazzano End
     },
