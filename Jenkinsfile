@@ -126,13 +126,13 @@ def get_artifact_version() {
 def get_upstream_jobname(branchNameParam) {
     def branch_name
     if (branchNameParam?.trim()) {
-        // if the job parameter specified the branch to use, use it
+        // if RANCHER_UPSTREAM_BRANCH was specified, use the branch the job initiator specified
         branch_name =  java.net.URLEncoder.encode(branchNameParam, "UTF-8")
     } else {
-        // if the job parameter was left empty, default the upstream job to the same branch name as rancher-dashboard
+        // if RANCHER_UPSTREAM_BRANCH was left empty, default the upstream job to the same branch name as dashboard
         switch(env.BRANCH_NAME) {
             case "oracle/release/2.7.2":
-                // Map Dashboard 2.7.2 to Rancher 2.7.3 until there is a matching Dashboard version
+                // Map Dashboard 2.7.2 to Rancher 2.7.3 until there is a matching dashboard version
                 branch_name = java.net.URLEncoder.encode("oracle/release/2.7.3", "UTF-8")
                 break
             default:
