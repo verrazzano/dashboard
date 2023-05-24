@@ -377,10 +377,9 @@ export default {
 
     // Added by Verrazzano Start
     isVerrazzano15() {
-      if (this.vzVersion.startsWith("1.5")) {
+      if (this.vzVersion.startsWith('1.5')) {
         return true;
-      }
-      else {
+      } else {
         return false;
       }
     }
