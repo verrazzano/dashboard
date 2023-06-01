@@ -1,3 +1,4 @@
+<!-- Added by Verrazzano -->
 <script>
 import KeyValue from '@shell/components/form/KeyValue';
 import { LabeledInput } from '@components/Form/LabeledInput';
