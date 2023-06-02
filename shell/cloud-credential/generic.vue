@@ -79,7 +79,7 @@ export default {
       :key-options="hasSupport || !keyOptions.length ? null : keyOptions"
       :key-editable="!hasSupport"
       :mode="mode"
-      :read-allowed="true"
+      :read-allowed="false"
       :add-allowed="!hasSupport"
       :remove-allowed="!hasSupport"
       :initial-empty-row="true"
