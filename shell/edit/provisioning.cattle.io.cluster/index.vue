@@ -365,6 +365,7 @@ export default {
 
       for ( const k in out ) {
         // Added by Verrazzano Start
+        // out[k].types = sortBy(out[k].types, 'label');
         if (out[k].name === 'kontainer') {
           out[k].types = out[k].types.sort((a, b) => {
             const aName = a.id;
