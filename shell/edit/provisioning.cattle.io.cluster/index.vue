@@ -18,7 +18,9 @@ import { CAPI, MANAGEMENT, DEFAULT_WORKSPACE } from '@shell/config/types';
 import { mapFeature, RKE2 as RKE2_FEATURE } from '@shell/store/features';
 import { allHash } from '@shell/utils/promise';
 import { BLANK_CLUSTER } from '@shell/store';
-import { ELEMENTAL_PRODUCT_NAME, ELEMENTAL_CLUSTER_PROVIDER } from '../../config/elemental-types';
+// Added by Verrazzano Start
+// import { ELEMENTAL_PRODUCT_NAME, ELEMENTAL_CLUSTER_PROVIDER } from '../../config/elemental-types';
+// Added by Verrazzano End
 import Rke2Config from './rke2';
 import Import from './import';
 // Added by Verrazzano Start
@@ -118,7 +120,6 @@ export default {
 
     this.nodeDrivers = res.nodeDrivers || [];
     this.kontainerDrivers = res.kontainerDrivers || [];
-
     if ( !this.value.spec ) {
       set(this.value, 'spec', {});
     }
@@ -255,7 +256,9 @@ export default {
     subTypes() {
       const getters = this.$store.getters;
       const isImport = this.isImport;
-      const isElementalActive = !!this.activeProducts.find(item => item.name === ELEMENTAL_PRODUCT_NAME);
+      // Added by Verrazzano Start
+      // const isElementalActive = !!this.activeProducts.find(item => item.name === ELEMENTAL_PRODUCT_NAME);
+      // Added by Verrazzano End
 
       const out = [];
 
@@ -296,11 +299,13 @@ export default {
             addType(id, 'rke2', false);
           });
 
-          addType('custom', 'custom2', false);
-
-          if (isElementalActive) {
-            addType(ELEMENTAL_CLUSTER_PROVIDER, 'custom2', false);
-          }
+          // Added by Verrazzano Start
+          // addType('custom', 'custom2', false);
+          //
+          // if (isElementalActive) {
+          //   addType(ELEMENTAL_CLUSTER_PROVIDER, 'custom2', false);
+          // }
+          // Added by Verrazzano End
         }
       }
 
@@ -361,7 +366,31 @@ export default {
       }
 
       for ( const k in out ) {
-        out[k].types = sortBy(out[k].types, 'label');
+        // Added by Verrazzano Start
+        if (out[k].name === 'kontainer') {
+          out[k].types = out[k].types.sort((a, b) => {
+            const aName = a.id;
+            const bName = b.id;
+
+            if (aName === 'ociocne') {
+              return -1;
+            }
+            if (aName === 'oracleoke') {
+              return -1;
+            }
+            if (bName === 'ociocne') {
+              return 1;
+            }
+            if (bName === 'oracleoke') {
+              return 1;
+            }
+
+            return aName.localeCompare(bName);
+          });
+        } else {
+          out[k].types = sortBy(out[k].types, 'label');
+        }
+        // Added by Verrazzano End
       }
 
       return sortBy(Object.values(out), 'sort');
