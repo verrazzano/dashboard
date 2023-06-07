@@ -1770,6 +1770,7 @@ cluster:
   providerGroup:
     create-custom1: Use existing nodes and create a cluster using RKE
     # Added by Verrazzano Start
+    # create-custom2: Use existing nodes and create a cluster using RKE2/K3s
     create-custom2:
     # Added by Verrazzano End
     # Added by Verrazzano Start
