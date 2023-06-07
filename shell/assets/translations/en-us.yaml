@@ -1772,8 +1772,6 @@ cluster:
     # Added by Verrazzano Start
     # create-custom2: Use existing nodes and create a cluster using RKE2/K3s
     create-custom2:
-    # Added by Verrazzano End
-    # Added by Verrazzano Start
     # create-kontainer: Create a cluster in a hosted Kubernetes provider
     create-kontainer: Create a Kubernetes Cluster using a Cloud Provider
     # Added by Verrazzano End
