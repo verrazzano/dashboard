@@ -299,13 +299,11 @@ export default {
             addType(id, 'rke2', false);
           });
 
-          // Added by Verrazzano Start
-          // addType('custom', 'custom2', false);
-          //
-          // if (isElementalActive) {
-          //   addType(ELEMENTAL_CLUSTER_PROVIDER, 'custom2', false);
-          // }
-          // Added by Verrazzano End
+          addType('custom', 'custom2', false);
+
+          if (isElementalActive) {
+            addType(ELEMENTAL_CLUSTER_PROVIDER, 'custom2', false);
+          }
         }
       }
 
