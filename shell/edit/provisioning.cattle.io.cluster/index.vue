@@ -18,13 +18,12 @@ import { CAPI, MANAGEMENT, DEFAULT_WORKSPACE } from '@shell/config/types';
 import { mapFeature, RKE2 as RKE2_FEATURE } from '@shell/store/features';
 import { allHash } from '@shell/utils/promise';
 import { BLANK_CLUSTER } from '@shell/store';
-// Added by Verrazzano Start
-// import { ELEMENTAL_PRODUCT_NAME, ELEMENTAL_CLUSTER_PROVIDER } from '../../config/elemental-types';
-// Added by Verrazzano End
+import { ELEMENTAL_PRODUCT_NAME, ELEMENTAL_CLUSTER_PROVIDER } from '../../config/elemental-types';
 import Rke2Config from './rke2';
 import Import from './import';
 // Added by Verrazzano Start
 import { getVerrazzanoVersion } from '@pkg/verrazzano/utils/version';
+import semver from 'semver';
 // Added by Verrazzano End
 
 const SORT_GROUPS = {
@@ -256,9 +255,7 @@ export default {
     subTypes() {
       const getters = this.$store.getters;
       const isImport = this.isImport;
-      // Added by Verrazzano Start
-      // const isElementalActive = !!this.activeProducts.find(item => item.name === ELEMENTAL_PRODUCT_NAME);
-      // Added by Verrazzano End
+      const isElementalActive = !!this.activeProducts.find(item => item.name === ELEMENTAL_PRODUCT_NAME);
 
       const out = [];
 
@@ -366,7 +363,7 @@ export default {
       for ( const k in out ) {
         // Added by Verrazzano Start
         // out[k].types = sortBy(out[k].types, 'label');
-        if (out[k].name === 'kontainer') {
+        if (out[k].name === 'kontainer' && this.isVerrazzano16OrGreater) {
           out[k].types = out[k].types.sort((a, b) => {
             const aName = a.id;
             const bName = b.id;
@@ -410,6 +407,10 @@ export default {
       } else {
         return false;
       }
+    },
+
+    isVerrazzano16OrGreater() {
+      return semver.gte(semver.coerce(this.vzVersion), '1.6.0');
     }
     // Added by Verrazzano End
   },
