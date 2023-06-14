@@ -14,7 +14,7 @@ export default {
       // This is the workaround.
       // Added by Verrazzano Start
       isImported: props.row.mgmt?.providerForEmberParam === 'import',
-      isManaged: props.row.mgmt?.providerForEmberParam === 'managed'
+      isManaged:  props.row.mgmt?.providerForEmberParam === 'managed'
       // Added by Verrazzano End
     };
   }

@@ -232,6 +232,7 @@ export default class CapiMachine extends SteveModel {
     // Added by Verrazzano Start
     // return notOnlyOfRole(this, this.cluster.machines);
     const machines = this.cluster?.machines;
+
     if (machines) {
       return notOnlyOfRole(this, machines);
     }

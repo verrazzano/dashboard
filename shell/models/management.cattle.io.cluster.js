@@ -116,17 +116,22 @@ export default class MgmtCluster extends HybridModel {
     } else if ( this.driver ) {
       provider = this.driver;
     //  Added by Verrazzano Start
+    // } else if ( provisioner && provisioner.endsWith('v2') ) {
+    //   provider = provisioner;
+    // } else {
+    //   provider = 'import';
+    // }
     } else if ( provisioner ) {
       if (provisioner.startsWith('import')) {
         provider = 'import';
       } else if (provisioner.endsWith('ocne') || provisioner.endsWith('oke')) {
         provider = 'managed';
-      }
-      else if (provisioner.endsWith('v2')) {
+      } else if (provisioner.endsWith('v2')) {
         provider = provisioner;
       }
     }
     //  Added by Verrazzano End
+
     return provider;
   }
 
