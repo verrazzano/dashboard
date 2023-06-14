@@ -1737,6 +1737,9 @@ cluster:
     linode: Linode
     linodelke: Linode LKE
     local: Local
+    # Added by Verrazzano Start
+    managed: Managed
+    # Added by Verrazzano End
     minikube: Minikube
     oci: Oracle OCI
     openstack: OpenStack

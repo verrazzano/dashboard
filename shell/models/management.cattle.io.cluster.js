@@ -117,6 +117,10 @@ export default class MgmtCluster extends HybridModel {
       provider = this.driver;
     } else if ( provisioner && provisioner.endsWith('v2') ) {
       provider = provisioner;
+    //  Added by Verrazzano Start
+    } else if (provisioner && provisioner.endsWith('ocne') ) {
+      provider = 'managed';
+    //  Added by Verrazzano End
     } else {
       provider = 'import';
     }
