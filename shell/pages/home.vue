@@ -411,7 +411,6 @@ export default {
                 pref-key="migrationTip"
               >
                 <div class="getting-started">
-                  <div>{{ t('landing.gettingStarted.title') }}</div>
                   <span>
                     {{ t('landing.gettingStarted.body') }}
                   </span>
