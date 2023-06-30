@@ -744,7 +744,32 @@ export default class Resource {
   get stateDescription() {
     const trans = this.stateObj?.transitioning || false;
     const error = this.stateObj?.error || false;
-    const message = this.stateObj?.message;
+    // Added by Verrazzano Start
+    // const message = this.stateObj?.message;
+    let message = this.stateObj?.message;
+
+    if (message && error) {
+      let res = '';
+      let hitDelimiter = false;
+      const maxLength = 256;
+
+      // Truncate large messages to a maximum of 256 characters
+      for (let i = 0; i < message.length && i < maxLength; i++) {
+        if (res === ':') {
+          hitDelimiter = true;
+        }
+        res += message[i];
+        if (i === maxLength) {
+          res += '...';
+        }
+        if (hitDelimiter && (res === ',' || res === '.' || res === ':')) {
+          break;
+        }
+      }
+
+      message = res;
+    }
+    // Added by Verrazzano End
 
     return trans || error ? ucFirst(message) : '';
   }
