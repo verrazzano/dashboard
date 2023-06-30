@@ -744,9 +744,10 @@ export default class Resource {
   get stateDescription() {
     const trans = this.stateObj?.transitioning || false;
     const error = this.stateObj?.error || false;
+    // Added by Verrazzano Start
+    // const message = this.stateObj?.message;
     let message = this.stateObj?.message;
 
-    // Added by Verrazzano Start
     if (message && error) {
       let res = '';
       let hitDelimiter = false;
