@@ -747,7 +747,7 @@ export default class Resource {
     let message = this.stateObj?.message;
 
     // Added by Verrazzano Start
-    if (message) {
+    if (message && error) {
       let res = '';
       let hitDelimiter = false;
       const maxLength = 256;
