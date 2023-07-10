@@ -1441,6 +1441,7 @@ verrazzano:
   ### verrazzano.links ###
   ########################
   links:
+    alertmanagerUrl: Alertmanager Console
     argoCDUrl: Argo CD Console
     consoleUrl: Verrazzano Console
     docs: Docs
