@@ -1441,6 +1441,7 @@ verrazzano:
   ### verrazzano.links ###
   ########################
   links:
+    alertmanagerUrl: Alertmanager Console
     argoCDUrl: Argo CD Console
     consoleUrl: Verrazzano Console
     docs: Docs
@@ -1458,7 +1459,6 @@ verrazzano:
     thanosQueryUrl: Thanos Query
     slack: Slack
     title: Verrazzano Links
-    alertmanagerUrl: Alertmanager Console
 
   ###################################
   ### verrazzano.multiClusterApps ###
