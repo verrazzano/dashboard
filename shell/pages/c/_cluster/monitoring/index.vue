@@ -163,6 +163,11 @@ export default {
           'id',
           `${ VERRAZZANO_MONITORING_NAMESPACE }/prometheus-operated`
         );
+        const vzAlertmanager = findBy(
+          hash.endpoints,
+          'id',
+          `${ VERRAZZANO_MONITORING_NAMESPACE }/alertmanager-operated`
+        );
 
         if (hash.verrazzanos) {
           // There should really never be more than one of these so...
@@ -172,6 +177,11 @@ export default {
 
         if (!isEmpty(alertmanager) && !isEmpty(alertmanager.subsets)) {
           amMatch.enabled = true;
+          // Added by Verrazzano Start
+        } else if (!isEmpty(vzAlertmanager) && !isEmpty(vzAlertmanager.subsets)) {
+          amMatch.enabled = true;
+          amMatch.link = this.links['alertmanagerUrl'];
+        // Added by Verrazzano End
         }
         if (!isEmpty(grafana) && !isEmpty(grafana.subsets)) {
           grafanaMatch.enabled = true;

@@ -1458,6 +1458,7 @@ verrazzano:
     thanosQueryUrl: Thanos Query
     slack: Slack
     title: Verrazzano Links
+    alertmanagerUrl: Alertmanager Console
 
   ###################################
   ### verrazzano.multiClusterApps ###
