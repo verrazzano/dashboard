@@ -202,6 +202,10 @@ export default class MgmtCluster extends HybridModel {
     return this.kubernetesVersionRaw || this.$rootGetters['i18n/t']('generic.provisioning');
   }
 
+  get verrazzanoVersion() {
+    return 'mgmt';
+  }
+
   get kubernetesVersionBase() {
     return this.kubernetesVersion.replace(/[+-].*$/, '');
   }

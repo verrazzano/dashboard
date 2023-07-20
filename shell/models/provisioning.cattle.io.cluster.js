@@ -367,6 +367,10 @@ export default class ProvCluster extends SteveModel {
     }
   }
 
+  get verrazzanoVersion() {
+    return 'provisioning';
+  }
+
   get machineProvider() {
     if ( this.isImported ) {
       return null;

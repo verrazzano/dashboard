@@ -159,7 +159,10 @@ export function init(store) {
     },
     {
       name:     'kubernetesVersion',
-      labelKey: 'tableHeaders.version',
+      // Added by Verrazzano Start
+      // labelKey: 'tableHeaders.version',
+      labelKey: 'tableHeaders.kubernetesVersion',
+      // Added by Verrazzano Start
       value:    'kubernetesVersion',
       sort:     'kubernetesVersion',
       search:   'kubernetesVersion',
@@ -171,6 +174,15 @@ export function init(store) {
       sort:      ['machineProvider', 'provisioner'],
       formatter: 'ClusterProvider',
     },
+    // Added by Verrazzano Start
+    {
+      name:     'verrazzanoVersion',
+      labelKey: 'tableHeaders.verrazzanoVersion',
+      value:    'verrazzanoVersion',
+      sort:     'verrazzanoVersion',
+      search:   'verrazzanoVersion',
+    },
+    // Added by Verrazzano End
     MACHINE_SUMMARY,
     AGE,
     {
