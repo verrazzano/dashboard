@@ -6,6 +6,7 @@ import { sortBy } from '@shell/utils/sort';
 import { ucFirst } from '@shell/utils/string';
 import { compare } from '@shell/utils/version';
 import { AS, MODE, _VIEW, _YAML } from '@shell/config/query-params';
+import { getVerrazzanoVersion } from '~/pkg/verrazzano/utils/version';
 
 /**
  * Class representing Cluster resource.
@@ -367,8 +368,10 @@ export default class ProvCluster extends SteveModel {
     }
   }
 
-  get verrazzanoVersion() {
-    return 'provisioning';
+  async verrazzanoVersion() {
+    const vzVersion = await getVerrazzanoVersion(this.$store);
+
+    return vzVersion;
   }
 
   get machineProvider() {

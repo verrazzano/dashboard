@@ -14,6 +14,7 @@ import { isHarvesterCluster } from '@shell/utils/cluster';
 import HybridModel from '@shell/plugins/steve/hybrid-class';
 import { LINUX, WINDOWS } from '@shell/store/catalog';
 import { KONTAINER_TO_DRIVER } from './management.cattle.io.kontainerdriver';
+import { getVerrazzanoVersion } from '~/pkg/verrazzano/utils/version';
 
 // See translation file cluster.providers for list of providers
 // If the logo is not named with the provider name, add an override here
@@ -202,8 +203,10 @@ export default class MgmtCluster extends HybridModel {
     return this.kubernetesVersionRaw || this.$rootGetters['i18n/t']('generic.provisioning');
   }
 
-  get verrazzanoVersion() {
-    return 'mgmt';
+  async verrazzanoVersion() {
+    const vzVersion = await getVerrazzanoVersion(this.$store);
+
+    return vzVersion;
   }
 
   get kubernetesVersionBase() {
