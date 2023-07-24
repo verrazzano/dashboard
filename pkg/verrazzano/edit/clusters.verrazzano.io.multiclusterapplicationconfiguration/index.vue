@@ -84,6 +84,8 @@ export default {
       } else {
         this.setField('spec.placement.clusters', undefined);
       }
+
+      this.clusterNames = this.getListField('spec.placement.clusters').map(cluster => cluster.name);
     }
   },
   watch: {
