@@ -1457,6 +1457,7 @@ verrazzano:
     prometheusUrl: Prometheus Console
     rancherUrl: Rancher Console
     thanosQueryUrl: Thanos Query
+    thanosRulerUrl: Thanos Ruler
     slack: Slack
     title: Verrazzano Links
 
