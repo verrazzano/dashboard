@@ -103,11 +103,7 @@ export default {
     const appName = this.value.metadata.name;
 
     if (res.allClusters) {
-      const placementClusters = res.allClusters.filter((cluster) => {
-        return this.value?.spec?.placement?.clusters?.find(c => c.name === cluster.nameDisplay);
-      });
-
-      for (const cluster of placementClusters) {
+      for (const cluster of res.allClusters) {
         const socket = getSocket.call(this, cluster);
 
         socket.addEventListener(EVENT_CONNECTED, (e) => {
@@ -135,13 +131,15 @@ export default {
                   this.resetPods();
                 }
               } else if (msg.name === 'resource.create') {
-                const newPod = ClusteredPodFactory.call(this, msg.data, cluster);
+                if (msg.data.metadata.namespace === this.value.metadata.namespace) {
+                  const newPod = ClusteredPodFactory.call(this, msg.data, cluster);
 
-                if (!this.allPods[newPod.metadata.namespace]?.find(p => p.id === newPod.id)) {
-                  if (newPod?.metadata?.labels['app.oam.dev/name'] === appName && newPod?.metadata?.namespace === this.namespace) {
-                    this.allPods[newPod.metadata.namespace]?.push(newPod);
+                  if (!this.allPods[newPod.metadata.namespace]?.find(p => p.id === newPod.id)) {
+                    if (newPod?.metadata?.labels['app.oam.dev/name'] === appName) {
+                      this.allPods[newPod.metadata.namespace]?.push(newPod);
 
-                    this.resetPods();
+                      this.resetPods();
+                    }
                   }
                 }
               } else if (msg.name === 'resource.remove') {
@@ -172,17 +170,29 @@ export default {
     function ClusteredPodFactory(data, cluster) {
       const inStore = this.$store.getters['currentProduct'].inStore;
 
+      const store = this.$store;
+      const getters = store.getters;
       const pod = new ClusteredPod(data, {
-        dispatch: (c, payload) => {
-          return this.$store.dispatch(c.includes('/') ? c : `${ inStore }/${ c }`, payload);
+        get dispatch() {
+          return (c, payload) => {
+            return store.dispatch(c.includes('/') ? c : `${ inStore }/${ c }`, payload);
+          };
         },
-        getters: {
-          schemaFor: (type) => {
-            this.$store.getters[`${ inStore }/schemaFor`](type);
-          }
+        get getters() {
+          return {
+            schemaFor: (type) => {
+              getters[`${ inStore }/schemaFor`](type);
+            }
+          };
         },
-        rootGetters: this.$store.getters
-      });
+        get rootGetters() {
+          return getters;
+        },
+        get rootState() {
+          return {};
+        },
+      },
+      );
 
       if (cluster) {
         pod.cluster = cluster.id;
