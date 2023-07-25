@@ -2652,6 +2652,9 @@ landing:
       other {cores}}
     cpuUsed: CPU Used
     memoryUsed: Memory Used
+    # Added by Verrazzano Start
+    verrazzanoVersion: Verrazzano Version
+    # Added by Verrazzano End
   seeWhatsNew: Learn more about the improvements and new capabilities in this version.
   whatsNewLink: "What's new in 2.7"
   learnMore: Learn More
@@ -5244,6 +5247,9 @@ tableHeaders:
   jobs: Jobs
   key: Key
   keys: Data
+  # Added by Verrazzano Start
+  kubernetesVersion: Kubernetes Version
+  # Added by Verrazzano End
   labels: Labels
   lastUpdated: Last Updated
   lastSchedule: Last Schedule
@@ -5369,6 +5375,9 @@ tableHeaders:
   userStatus: Status
   username: Local Username
   value: Value
+  # Added by Verrazzano Start
+  verrazzanoVersion: Verrazzano Version
+  # Added by Verrazzano End
   version: Version
   volume: Volume
   volumeMode: Volume Mode

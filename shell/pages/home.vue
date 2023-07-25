@@ -198,6 +198,13 @@ export default {
           name:  'Kubernetes Version'
         },
         {
+          // Added by Verrazzano Start
+          label: this.t('landing.clusters.verrazzanoVersion'),
+          value: 'verrazzanoVersion',
+          name:  'Verrazzano Version'
+        },
+        {
+          // Added by Verrazzano End
           label: this.t('tableHeaders.cpu'),
           value: '',
           name:  'cpu',
