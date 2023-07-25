@@ -20,7 +20,7 @@ export default class ProvCluster extends SteveModel {
     super(data, ctx, rehydrateNamespace, setClone);
     this.setVzVersion();
   }
-  // Added by Verrazzano Start
+  // Added by Verrazzano End
 
   get details() {
     const out = [

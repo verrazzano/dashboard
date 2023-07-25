@@ -162,7 +162,7 @@ export function init(store) {
       // Added by Verrazzano Start
       // labelKey: 'tableHeaders.version',
       labelKey: 'tableHeaders.kubernetesVersion',
-      // Added by Verrazzano Start
+      // Added by Verrazzano End
       value:    'kubernetesVersion',
       sort:     'kubernetesVersion',
       search:   'kubernetesVersion',
