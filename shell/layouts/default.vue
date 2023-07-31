@@ -33,6 +33,11 @@ import { HARVESTER_NAME as HARVESTER } from '@shell/config/features';
 import isEqual from 'lodash/isEqual';
 import { ucFirst } from '@shell/utils/string';
 import { getVersionInfo, markSeenReleaseNotes } from '@shell/utils/version';
+// Added by Verrazzano Start
+import { getVerrazzanoVersion } from '@pkg/verrazzano/utils/version';
+import { createRKE1ConfigurationGroup } from '@shell/config/product/manager';
+// Added by Verrazzano End
+
 import { sortBy } from '@shell/utils/sort';
 import PageHeaderActions from '@shell/mixins/page-actions';
 import BrowserTabVisibility from '@shell/mixins/browser-tab-visibility';
@@ -73,9 +78,26 @@ export default {
       unwatchPin:       undefined,
       wmPin:            null,
       draggable:        false,
+      // Added by Verrazzano Start
+      vzVersion:        '',
+      // Added by Verrazzano End
     };
   },
 
+  // Added by Verrazzano Start
+  fetch() {
+    getVerrazzanoVersion(this.$store).then((versionInfo) => {
+      this.vzVersion = versionInfo;
+
+      // RKE1 Configuration is not supported in 1.6+, create types on demand now that version is known
+      if (versionInfo.startsWith('1.5')) {
+        createRKE1ConfigurationGroup(this.$store);
+        this.getGroups();
+      }
+    });
+  },
+
+  // Added by Verrazzano End
   // Note - These will run on route change
   middleware: [
     'authenticated'
@@ -714,6 +736,8 @@ export default {
           v-else
           class="version text-muted flex"
         >
+          <!-- Added by Verrazzano Start -->
+          <!--
           <span>{{ displayVersion }}</span>
           <span
             v-if="isVirtualCluster && isExplorer"
@@ -722,6 +746,9 @@ export default {
           >
             (Harvester-{{ harvesterVersion }})
           </span>
+          -->
+          {{ vzVersion }}
+          <!-- Added by Verrazzano End -->
         </div>
       </nav>
       <main

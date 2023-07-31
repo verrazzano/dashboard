@@ -282,6 +282,12 @@ export default class ProvCluster extends SteveModel {
     return !!this.mgmt?.spec?.rancherKubernetesEngineConfig;
   }
 
+  // Added by Verrazzano Start
+  get isOciOcne() {
+    return this.mgmt?.status?.driver === 'ociocne';
+  }
+  // Added by Verrazzano End
+
   get isHarvester() {
     return !!this.mgmt?.isHarvester;
   }
@@ -760,7 +766,10 @@ export default class ProvCluster extends SteveModel {
   }
 
   get _stateObj() {
-    if (!this.isRke2) {
+    // Added by Verrazzano Start
+    // if (!this.isRke2) {
+    if (!this.isRke2 && !this.isOciOcne) {
+    // Added by Verrazzano End
       return this.mgmt?.stateObj || this.metadata?.state;
     }
 
