@@ -9,12 +9,22 @@ import { ucFirst } from '@shell/utils/string';
 import { compare } from '@shell/utils/version';
 import { AS, MODE, _VIEW, _YAML } from '@shell/config/query-params';
 import { HARVESTER_NAME as HARVESTER } from '@shell/config/features';
+// Added by Verrazzano Start
+import Vue from 'vue';
+// Added by Verrazzano End
 
 /**
  * Class representing Cluster resource.
  * @extends SteveModal
  */
 export default class ProvCluster extends SteveModel {
+  // Added by Verrazzano Start
+  constructor(data, ctx, rehydrateNamespace = null, setClone = false) {
+    super(data, ctx, rehydrateNamespace, setClone);
+    this.setVzVersion();
+  }
+  // Added by Verrazzano End
+
   get details() {
     const out = [
       {
@@ -385,6 +395,29 @@ export default class ProvCluster extends SteveModel {
       return unknown;
     }
   }
+
+  // Added by Verrazzano Start
+  setVzVersion() {
+    const url = `/k8s/clusters/${ this.name }/v1/install.verrazzano.io.verrazzanos`;
+
+    fetch(url, { headers: { Accept: 'application/json' } })
+      .then((response) => {
+        if (!response.ok) {
+          Vue.set(this, 'verrazzanoVersion', '-');
+
+          return Promise.reject(response);
+        }
+
+        return response.json();
+      })
+      .then((vzCollection) => {
+        const version = vzCollection.data?.[0]?.status?.version;
+
+        Vue.set(this, 'verrazzanoVersion', version);
+      })
+      .catch();
+  }
+  // Added by Verrazzano End
 
   get machineProvider() {
     if (this.isHarvester) {
