@@ -1,10 +1,10 @@
-// Copyright (c) 2022, 2023, Oracle and/or its affiliates.
+// Copyright (c) 2023, Oracle and/or its affiliates.
 
 // Added by Verrazzano
 
 pipeline {
     agent {
-       docker {
+        docker {
             image "${RUNNER_DOCKER_IMAGE_1_3}"
             args "${RUNNER_DOCKER_ARGS_1_3}"
             registryUrl "${RUNNER_DOCKER_REGISTRY_URL}"
@@ -23,7 +23,7 @@ pipeline {
     }
 
     environment {
-        DASHBOARD_VERSION = "2.7.2"
+        DASHBOARD_VERSION = "2.7.5"
         OCI_CLI_AUTH = "instance_principal"
         OCI_OS_NAMESPACE = credentials('oci-os-namespace')
         OCI_OS_BUCKET = "verrazzano-builds"
@@ -63,7 +63,7 @@ pipeline {
             }
         }
 
-         stage('release') {
+        stage('release') {
             when {
                 allOf {
                     branch "oracle/release/*"
@@ -95,11 +95,11 @@ pipeline {
                 archiveArtifacts artifacts: "dist/${env.TAR_FILE_NAME}"
 
                 build job: get_upstream_jobname("${params.RANCHER_UPSTREAM_BRANCH}"),
-                    propagate: false,
-                    wait: false,
-                    parameters: [
-                        string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard%2F${env.TAR_FILE_NAME}")
-                    ]
+                        propagate: false,
+                        wait: false,
+                        parameters: [
+                                string(name: "CATTLE_DASHBOARD_TAR_URL", value: "${OCI_OS_BUILD_URL}/rancher-dashboard%2F${env.TAR_FILE_NAME}")
+                        ]
             }
         }
     }
