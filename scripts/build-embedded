@@ -47,6 +47,7 @@ find $OUTPUT_DIR -type d -empty -depth -exec rmdir {} \;
 # Added by Verrazzano Start
 
 #TARBALL=${DIR}.tar.gz
+#echo "Compressing to ${TARBALL}..."
 #tar -czf dist/${TARBALL} $OUTPUT_DIR/
 TARBALL=${DIR}.tar
 
