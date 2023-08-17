@@ -16,6 +16,9 @@ import { isDevBuild } from '@shell/utils/version';
 import { exceptionToErrorsArray } from '@shell/utils/error';
 import Password from '@shell/components/form/Password';
 import { applyProducts } from '@shell/store/type-map';
+// Added by Verrazzano Start
+// import BrandImage from '@shell/components/BrandImage';
+// Added by Verrazzano End
 
 const calcIsFirstLogin = (store) => {
   const firstLoginSetting = store.getters['management/byId'](MANAGEMENT.SETTING, SETTING.FIRST_LOGIN);
@@ -76,7 +79,10 @@ export default {
   },
 
   components: {
+    // Added by Verrazzano Start
+    // AsyncButton, LabeledInput, CopyToClipboard, Checkbox, RadioGroup, Password, BrandImage
     AsyncButton, LabeledInput, CopyToClipboard, Checkbox, RadioGroup, Password
+    // Added by Verrazzano End
   },
 
   async asyncData({ route, req, store }) {
@@ -280,10 +286,18 @@ export default {
           </h1>
 
           <template v-if="mustChangePassword">
+            <!-- Added by Verrazzano Start -->
+            <!--
             <p
+              v-clean-html="t(isFirstLogin ? 'setup.setPassword' : 'setup.newUserSetPassword', { username }, true)"
               class="text-center mb-20 mt-20 setup-title"
-              v-html="t(isFirstLogin ? 'setup.setPassword' : 'setup.newUserSetPassword', { username }, true)"
             />
+            -->
+            <p
+              v-clean-html="t(isFirstLogin ? 'setup.setPassword' : 'setup.newUserSetPassword', { username }, true)"
+              class="text-center mb-20 mt-20 setup-title"
+            />
+            <!-- Added by Verrazzano End -->
 
             <Password
               v-if="!haveCurrent"
@@ -302,7 +316,7 @@ export default {
               autocomplete="username"
               :value="username"
             >
-            <div class="mb-20">
+            </p><div class="mb-20">
               <RadioGroup
                 v-model="useRandom"
                 data-testid="setup-password-mode"
@@ -432,7 +446,13 @@ export default {
         </div>
       </div>
 
+      <!-- Added by Verrazzano Start -->
+      <!-- BrandImage
+      class="col span-6 landscape"
+      file-name="login-landscape.svg"
+      /-->
       <div class="col span-6 landscape" />
+      <!-- Added by Verrazzano End-->
     </div>
   </form>
 </template>
@@ -464,6 +484,16 @@ export default {
       .span-6 {
         padding: 0 60px;
       }
+      /* Added by Verrazzano Start */
+      /*
+      .landscape {
+        height: 100vh;
+        margin: 0;
+        object-fit: cover;
+        padding: 0;
+      }
+      */
+      /* Added by Verrazzano End */
     }
 
     .form-col {
@@ -494,6 +524,7 @@ export default {
 
   }
 
+  /* Added by Verrazzano Start */
   .landscape {
     /* Added by Verrazzano Start */
     /* background-image: url('~shell/assets/images/pl/login-landscape.svg'); */
@@ -504,4 +535,5 @@ export default {
     background-position: center center;
     height: 100vh;
   }
+  /* Added by Verrazzano End */
 </style>
