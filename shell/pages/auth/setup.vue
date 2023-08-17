@@ -316,7 +316,7 @@ export default {
               autocomplete="username"
               :value="username"
             >
-            </p><div class="mb-20">
+            <div class="mb-20">
               <RadioGroup
                 v-model="useRandom"
                 data-testid="setup-password-mode"
