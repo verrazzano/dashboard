@@ -21,6 +21,10 @@ import { BLANK_CLUSTER } from '@shell/store';
 import { ELEMENTAL_PRODUCT_NAME, ELEMENTAL_CLUSTER_PROVIDER } from '../../config/elemental-types';
 import Rke2Config from './rke2';
 import Import from './import';
+// Added by Verrazzano Start
+import { getVerrazzanoVersion } from '@pkg/verrazzano/utils/version';
+import semver from 'semver';
+// Added by Verrazzano End
 
 const SORT_GROUPS = {
   template:  1,
@@ -78,6 +82,11 @@ export default {
   },
 
   async fetch() {
+    // Added by Verrazzano Start
+    getVerrazzanoVersion(this.$store).then((version) => {
+      this.vzVersion = version;
+    });
+    // Added by Verrazzano End
     const hash = {
       // These aren't explicitly used, but need to be listening for change events
       mgmtClusters: this.$store.dispatch('management/findAll', { type: MANAGEMENT.CLUSTER }),
@@ -110,7 +119,6 @@ export default {
 
     this.nodeDrivers = res.nodeDrivers || [];
     this.kontainerDrivers = res.kontainerDrivers || [];
-
     if ( !this.value.spec ) {
       set(this.value, 'spec', {});
     }
@@ -153,6 +161,9 @@ export default {
       isImport,
       providerCluster:  null,
       iconClasses:      {},
+      // Added by Verrazzano Start
+      vzVersion:        '',
+      // Added by Verrazzano End
     };
   },
 
@@ -278,14 +289,17 @@ export default {
           machineTypes.forEach((id) => {
             addType(id, 'rke1', false, `/g/clusters/add/launch/${ id }`, this.iconClasses[id]);
           });
-
-          addType('custom', 'custom1', false, '/g/clusters/add/launch/custom');
+          // Added by Verrazzano Start
+          // addType('custom', 'custom1', false, '/g/clusters/add/launch/custom');
+          // Added by Verrazzano End
         } else {
           machineTypes.forEach((id) => {
             addType(id, 'rke2', false);
           });
 
-          addType('custom', 'custom2', false);
+          // Added by Verrazzano Start
+          // addType('custom', 'custom2', false);
+          // Added by Verrazzano End
 
           if (isElementalActive) {
             addType(ELEMENTAL_CLUSTER_PROVIDER, 'custom2', false);
@@ -350,7 +364,32 @@ export default {
       }
 
       for ( const k in out ) {
-        out[k].types = sortBy(out[k].types, 'label');
+        // Added by Verrazzano Start
+        // out[k].types = sortBy(out[k].types, 'label');
+        if (out[k].name === 'kontainer' && this.isVerrazzano16OrGreater) {
+          out[k].types = out[k].types.sort((a, b) => {
+            const aName = a.id;
+            const bName = b.id;
+
+            if (aName === 'ociocne') {
+              return -1;
+            }
+            if (aName === 'oracleoke') {
+              return -1;
+            }
+            if (bName === 'ociocne') {
+              return 1;
+            }
+            if (bName === 'oracleoke') {
+              return 1;
+            }
+
+            return aName.localeCompare(bName);
+          });
+        } else {
+          out[k].types = sortBy(out[k].types, 'label');
+        }
+        // Added by Verrazzano End
       }
 
       return sortBy(Object.values(out), 'sort');
@@ -363,6 +402,20 @@ export default {
     firstCustomClusterItem() {
       return this.groupedSubTypes.findIndex(obj => ['custom', 'custom1', 'custom2'].includes(obj.name));
     },
+
+    // Added by Verrazzano Start
+    isVerrazzano15() {
+      if (this.vzVersion.startsWith('1.5')) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+    isVerrazzano16OrGreater() {
+      return semver.gte(semver.coerce(this.vzVersion), '1.6.0');
+    }
+    // Added by Verrazzano End
   },
 
   methods: {
@@ -493,7 +546,7 @@ export default {
       >
         <h4>
           <div
-            v-if="showRkeToggle(i)"
+            v-if="isVerrazzano15 && showRkeToggle(i)"
             class="grouped-type"
           >
             <ToggleSwitch

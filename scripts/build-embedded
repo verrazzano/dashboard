@@ -44,10 +44,19 @@ echo "Destroying..."
 find $OUTPUT_DIR -name "index.html" -mindepth 2 -exec rm {} \;
 find $OUTPUT_DIR -type d -empty -depth -exec rmdir {} \;
 
-TARBALL=${DIR}.tar.gz
-echo "Compressing to ${TARBALL}..."
-tar -czf dist/${TARBALL} $OUTPUT_DIR/
+# Added by Verrazzano Start
 
+#TARBALL=${DIR}.tar.gz
+#echo "Compressing to ${TARBALL}..."
+#tar -czf dist/${TARBALL} $OUTPUT_DIR/
+TARBALL=${DIR}.tar
+
+echo "Compressing to ${TARBALL}.gz..."
+tar -cf dist/${TARBALL} $OUTPUT_DIR/
+tar -rf dist/${TARBALL} pkg/verrazzano/assets/images/*
+
+gzip -f dist/$TARBALL
+# Added by Verrazzano End
 echo "Cleaning up..."
 rm -r $OUTPUT_DIR
 

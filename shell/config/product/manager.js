@@ -111,11 +111,15 @@ export function init(store) {
     exact:      true
   });
 
-  basicType([
-    'rke-templates',
-    'rke-node-templates'
-  ], 'RKE1Configuration');
+  // Added by Verrazzano Start
 
+  // Defer creation of RKE1Configuration types because they are not applicable to 1.6+. Verrazzano version is not known yet.
+  // basicType([
+  //   'rke-templates',
+  //   'rke-node-templates'
+  // ], 'RKE1Configuration');
+
+  // Added by Verrazzano End
   weightType(CAPI.MACHINE_DEPLOYMENT, 3, true);
   weightType(CAPI.MACHINE_SET, 2, true);
   weightType(CAPI.MACHINE, 1, true);
@@ -155,7 +159,10 @@ export function init(store) {
     },
     {
       name:     'kubernetesVersion',
-      labelKey: 'tableHeaders.version',
+      // Added by Verrazzano Start
+      // labelKey: 'tableHeaders.version',
+      labelKey: 'tableHeaders.kubernetesVersion',
+      // Added by Verrazzano End
       value:    'kubernetesVersion',
       sort:     'kubernetesVersion',
       search:   'kubernetesVersion',
@@ -167,6 +174,15 @@ export function init(store) {
       sort:      ['machineProvider', 'provisioner'],
       formatter: 'ClusterProvider',
     },
+    // Added by Verrazzano Start
+    {
+      name:     'verrazzanoVersion',
+      labelKey: 'tableHeaders.verrazzanoVersion',
+      value:    'verrazzanoVersion',
+      sort:     'verrazzanoVersion',
+      search:   'verrazzanoVersion',
+    },
+    // Added by Verrazzano End
     MACHINE_SUMMARY,
     AGE,
     {
@@ -184,3 +200,14 @@ export function init(store) {
     AGE
   ]);
 }
+
+// Added by Verrazzano Start
+export function createRKE1ConfigurationGroup(store) {
+  const { basicType } = DSL(store, NAME);
+
+  basicType([
+    'rke-templates',
+    'rke-node-templates'
+  ], 'RKE1Configuration');
+}
+// Added by Verrazzano End

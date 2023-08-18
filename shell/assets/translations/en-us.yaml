@@ -1776,6 +1776,9 @@ cluster:
     linode: Linode
     linodelke: Linode LKE
     local: Local
+    # Added by Verrazzano Start
+    managed: Managed
+    # Added by Verrazzano End
     minikube: Minikube
     oci: Oracle OCI
     openstack: OpenStack
@@ -1783,6 +1786,9 @@ cluster:
     otccce: Open Telekom Cloud CCE
     oracle: Oracle
     oracleoke: Oracle OKE
+    # Added by Verrazzano Start
+    ociocne: Oracle OCNE on OCI
+    # Added by Verrazzano End
     otc: Open Telekom Cloud
     other: Other
     packet: Equinix Metal
@@ -1805,8 +1811,12 @@ cluster:
       harvester: '{tag}'
   providerGroup:
     create-custom1: Use existing nodes and create a cluster using RKE
-    create-custom2: Use existing nodes and create a cluster using RKE2/K3s
-    create-kontainer: Create a cluster in a hosted Kubernetes provider
+    # Added by Verrazzano Start
+    # create-custom2: Use existing nodes and create a cluster using RKE2/K3s
+    create-custom2:
+    # create-kontainer: Create a cluster in a hosted Kubernetes provider
+    create-kontainer: Create a Kubernetes Cluster using a Cloud Provider
+    # Added by Verrazzano End
     register-kontainer: Register an existing cluster in a hosted Kubernetes provider
     create-rke1: Provision new nodes and create a cluster using RKE
     create-rke2: Provision new nodes and create a cluster using RKE2/K3s
@@ -2691,6 +2701,9 @@ landing:
       other {cores}}
     cpuUsed: CPU Used
     memoryUsed: Memory Used
+    # Added by Verrazzano Start
+    verrazzanoVersion: Verrazzano Version
+    # Added by Verrazzano End    
   seeWhatsNew: Learn more about the improvements and new capabilities in this version.
   whatsNewLink: "What's new in 2.7"
   learnMore: Learn More
@@ -3727,6 +3740,13 @@ persistentVolume:
     secretFile:
       label: Secret File
       placeholder: e.g. secret
+  # Added by Verrazzano Start
+  oci:
+     driver: Driver type
+     label: OCI
+     fs: File Storage
+     bv: Block Storage
+  # Added by Verrazzano End      
   rbd:
     label: Ceph RBD (Unsupported)
     user:
@@ -5350,6 +5370,9 @@ tableHeaders:
   jobs: Jobs
   key: Key
   keys: Data
+  # Added by Verrazzano Start
+  kubernetesVersion: Kubernetes Version
+  # Added by Verrazzano End
   labels: Labels
   lastUpdated: Last Updated
   lastSchedule: Last Schedule
@@ -5476,6 +5499,9 @@ tableHeaders:
   userStatus: Status
   username: Local Username
   value: Value
+  # Added by Verrazzano Start
+  verrazzanoVersion: Verrazzano Version
+  # Added by Verrazzano End  
   version: Version
   volume: Volume
   volumeMode: Volume Mode

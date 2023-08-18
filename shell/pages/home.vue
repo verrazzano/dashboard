@@ -22,6 +22,13 @@ import { filterOnlyKubernetesClusters, filterHiddenLocalCluster } from '@shell/u
 
 import { RESET_CARDS_ACTION, SET_LOGIN_ACTION } from '@shell/config/page-actions';
 
+// Added by Verrazzano Start
+import { vzCommunityLinks, vzGettingStartedLink, vzWhatsNewLink } from '@/pkg/verrazzano/home-page-links.json';
+import VerrazzanoLinksBox from '@/pkg/verrazzano/components/VerrazzanoLinksBox';
+import SimpleBox from '@shell/components/SimpleBox';
+import { getVerrazzanoVersion } from '@pkg/verrazzano/utils/version';
+// Added by Verrazzano End
+
 export default {
   name:       'Home',
   layout:     'home',
@@ -33,11 +40,29 @@ export default {
     BadgeState,
     CommunityLinks,
     SingleClusterInfo,
+    // Added by Verrazzano Start
+    VerrazzanoLinksBox,
+    SimpleBox,
+    // Added by Verrazzano End
   },
 
   mixins: [PageHeaderActions],
 
-  fetch() {
+  // Added by Verrazzano Start
+  // fetch() {
+  async fetch() {
+    let vzVersion = await getVerrazzanoVersion(this.$store);
+
+    // strip dashboardBuild to {major}.{minor} when possible
+    const groups = vzVersion.match(/^v?(\d+)\.(\d+)\..*/);
+
+    if (groups) {
+      vzVersion = `${ groups[1] }.${ groups[2] }`;
+    }
+
+    this.whatsNewVersion = vzVersion;
+
+    // Added by Verrazzano End
     if ( this.$store.getters['management/schemaFor'](CAPI.RANCHER_CLUSTER) ) {
       this.$store.dispatch('management/findAll', { type: CAPI.RANCHER_CLUSTER });
     }
@@ -80,7 +105,14 @@ export default {
     ];
 
     return {
-      HIDE_HOME_PAGE_CARDS, fullVersion, pageActions, vendor: getVendor(),
+      // Added by Verrazzano Start
+      // HIDE_HOME_PAGE_CARDS, fullVersion, pageActions, vendor: getVendor(),
+      HIDE_HOME_PAGE_CARDS,
+      fullVersion,
+      pageActions,
+      vendor:          getVendor(),
+      whatsNewVersion: undefined,
+      // Added by Verrazzano End
     };
   },
 
@@ -175,6 +207,13 @@ export default {
           name:  'Kubernetes Version'
         },
         {
+          // Added by Verrazzano Start
+          label: this.t('landing.clusters.verrazzanoVersion'),
+          value: 'verrazzanoVersion',
+          name:  'Verrazzano Version'
+        },
+        {
+          // Added by Verrazzano End
           label: this.t('tableHeaders.cpu'),
           value: '',
           name:  'cpu',
@@ -202,6 +241,20 @@ export default {
         // }
       ];
     },
+
+    // Added by Verrazzano Start
+    communityLinks() {
+      return vzCommunityLinks;
+    },
+
+    gettingStartedLink() {
+      return vzGettingStartedLink;
+    },
+
+    whatsNewLink() {
+      return vzWhatsNewLink;
+    },
+    // Added by Verrazzano End
 
     ...mapGetters(['currentCluster', 'defaultClusterId']),
 
@@ -320,10 +373,24 @@ export default {
             <div>
               {{ t('landing.seeWhatsNew') }}
             </div>
+            <!-- Added by Verrazzano Start -->
+            <!--
             <a
               class="hand"
               @click.prevent.stop="showWhatsNew"
-            ><span v-clean-html="t('landing.whatsNewLink')" /></a>
+            ><span v-html="t('landing.whatsNewLink')" /></a>
+            -->
+            <a
+              v-if="whatsNewVersion"
+              :href="whatsNewLink"
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              class="hand"
+            >
+              <span v-html="t('landing.whatsNewLink', {version: whatsNewVersion})" />
+            </a>
+
+            <!-- Added by Verrazzano End -->
           </Banner>
         </div>
       </div>
@@ -350,6 +417,35 @@ export default {
               </Banner>
             </div>
           </div>
+
+          <!-- Added by Verrazzano Start -->
+          <div class="row panel">
+            <div class="col span-12">
+              <SimpleBox
+                id="migration"
+                class="panel"
+                :title="t('landing.gettingStarted.title')"
+                :pref="HIDE_HOME_PAGE_CARDS"
+                pref-key="migrationTip"
+              >
+                <div class="getting-started">
+                  <span>
+                    {{ t('landing.gettingStarted.body') }}
+                  </span>
+                  <a
+                    :href="gettingStartedLink"
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    class="getting-started-btn"
+                  >
+                    {{ t('landing.gettingStarted.link') }}
+                  </a>
+                </div>
+              </SimpleBox>
+            </div>
+          </div>
+          <!-- Added by Verrazzano End -->
+
           <div class="row panel">
             <div
               v-if="mcm"
@@ -457,7 +553,16 @@ export default {
             </div>
           </div>
         </div>
-        <CommunityLinks class="col span-3 side-panel" />
+        <!-- Added by Verrazzano Start -->
+        <!-- <CommunityLinks class="col span-3 side-panel" /> -->
+        <div class="col span-3 side-panel">
+          <VerrazzanoLinksBox class="mb-20" />
+          <CommunityLinks
+            class="mb-20"
+            :link-options="communityLinks"
+          />
+        </div>
+        <!-- Added by Verrazzano End -->
       </div>
     </IndentedPanel>
   </div>
