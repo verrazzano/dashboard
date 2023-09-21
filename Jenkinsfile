@@ -131,9 +131,9 @@ def get_upstream_jobname(branchNameParam) {
     } else {
         // if RANCHER_UPSTREAM_BRANCH was left empty, default the upstream job to the same branch name as dashboard
         switch(env.BRANCH_NAME) {
-            case "oracle/release/2.7.2":
-                // Map Dashboard 2.7.2 to Rancher 2.7.3 until there is a matching dashboard version
-                branch_name = java.net.URLEncoder.encode("oracle/release/2.7.3", "UTF-8")
+            case "oracle/release/2.7.5":
+                // Map Dashboard 2.7.5 to Rancher 2.7.6 until there is a matching dashboard version
+                branch_name = java.net.URLEncoder.encode("oracle/release/2.7.6", "UTF-8")
                 break
             default:
                 branch_name = java.net.URLEncoder.encode(env.BRANCH_NAME, "UTF-8")
