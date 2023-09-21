@@ -124,7 +124,7 @@ export default class MgmtCluster extends HybridModel {
     } else if ( provisioner ) {
       if (provisioner.startsWith('import')) {
         provider = 'import';
-      } else if (provisioner.endsWith('ocne') || provisioner.endsWith('oke')) {
+      } else if (provisioner.endsWith('ocne') || provisioner.endsWith('oke') || provisioner.endsWith('capi')) {
         provider = 'managed';
       } else if (provisioner.endsWith('v2')) {
         provider = provisioner;
