@@ -165,8 +165,8 @@ export default {
     },
 
     kubectlCmd() {
-      //return "kubectl get secret --namespace cattle-system bootstrap-secret -o go-template='{{.data.bootstrapPassword|base64decode}}{{\"\\n\"}}'";
       // Added by Verrazzano Start
+      //return "kubectl get secret --namespace cattle-system bootstrap-secret -o go-template='{{.data.bootstrapPassword|base64decode}}{{\"\\n\"}}'";
       return "kubectl get secret --namespace cattle-system rancher-admin-secret -o jsonpath='{.data.password}' | base64 --decode; echo";
       // Added by Verrazzano End
     },
