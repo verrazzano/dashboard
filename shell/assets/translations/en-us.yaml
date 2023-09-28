@@ -1785,9 +1785,11 @@ cluster:
     opentelekomcloudcontainerengine: Open Telekom Cloud CCE
     otccce: Open Telekom Cloud CCE
     oracle: Oracle
-    oracleoke: Oracle OKE
     # Added by Verrazzano Start
+#    oracleoke: Oracle OKE
+    oracleoke: Oracle OKE (Legacy)
     ociocne: Oracle OCNE on OCI
+    okecapi: Oracle OKE
     # Added by Verrazzano End
     otc: Open Telekom Cloud
     other: Other
@@ -2703,7 +2705,7 @@ landing:
     memoryUsed: Memory Used
     # Added by Verrazzano Start
     verrazzanoVersion: Verrazzano Version
-    # Added by Verrazzano End    
+    # Added by Verrazzano End
   seeWhatsNew: Learn more about the improvements and new capabilities in this version.
   whatsNewLink: "What's new in 2.7"
   learnMore: Learn More
@@ -3746,7 +3748,7 @@ persistentVolume:
      label: OCI
      fs: File Storage
      bv: Block Storage
-  # Added by Verrazzano End      
+  # Added by Verrazzano End
   rbd:
     label: Ceph RBD (Unsupported)
     user:
@@ -4061,14 +4063,14 @@ plugins:
     subtitle: Catalogs
     imageLoad:
       load: Import Extension Catalog
-      prompt: An Extension Catalog contains extension assets bundled into an image, importing will take the image and host a Helm repository to act as a catalog for custom built Extensions. 
+      prompt: An Extension Catalog contains extension assets bundled into an image, importing will take the image and host a Helm repository to act as a catalog for custom built Extensions.
       fields:
         image:
           label: Catalog Image Reference
           placeholder: "e.g. hub.docker.io/example-org/my-image:latest"
         secrets:
           banner: "If the registry that hosts the Catalog Image requires Pull Secrets, they must be created in the following namespace:<pre>cattle-ui-plugin-system</pre>"
-      banner: This will create an Deployment, Service, and Helm repository to serve the extension charts. 
+      banner: This will create an Deployment, Service, and Helm repository to serve the extension charts.
       imageVersion:
         title: Image Version Not Found
         message: Unable to determine image version from {image}, defaulting to latest
@@ -5501,7 +5503,7 @@ tableHeaders:
   value: Value
   # Added by Verrazzano Start
   verrazzanoVersion: Verrazzano Version
-  # Added by Verrazzano End  
+  # Added by Verrazzano End
   version: Version
   volume: Volume
   volumeMode: Volume Mode

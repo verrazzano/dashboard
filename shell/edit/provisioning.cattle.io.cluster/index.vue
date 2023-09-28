@@ -371,11 +371,17 @@ export default {
             const aName = a.id;
             const bName = b.id;
 
+            if (aName === 'okecapi') {
+              return -2;
+            }
             if (aName === 'ociocne') {
               return -1;
             }
             if (aName === 'oracleoke') {
               return -1;
+            }
+            if (bName === 'okecapi') {
+              return 2;
             }
             if (bName === 'ociocne') {
               return 1;
