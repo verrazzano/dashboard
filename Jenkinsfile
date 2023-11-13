@@ -26,7 +26,6 @@ pipeline {
         DASHBOARD_VERSION = "2.7.5"
         OCI_CLI_AUTH = "instance_principal"
         OCI_OS_NAMESPACE = credentials('oci-os-namespace')
-        OCI_OS_BUCKET = "verrazzano-builds"
         GITHUB_ACCESS_TOKEN = credentials('github-api-token-release-process')
     }
 
